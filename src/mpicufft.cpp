@@ -17,14 +17,11 @@
 #endif
 
 template<typename T> 
-MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : comm(comm), cuda_aware(mpi_cuda_aware) {
+MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware) : comm(comm), cuda_aware(mpi_cuda_aware) {
     comm_mode = Peer;
 
     MPI_Comm_size(comm, &pcnt);
     MPI_Comm_rank(comm, &pidx);
-
-    if (pcnt > max_world_size && max_world_size > 0)
-        pcnt = max_world_size;
 
     send_req.resize(pcnt, MPI_REQUEST_NULL);
     recv_req.resize(pcnt, MPI_REQUEST_NULL);

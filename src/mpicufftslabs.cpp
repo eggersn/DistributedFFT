@@ -16,7 +16,7 @@
 #define cudaCheck(e) {e}
 #endif
 
-#define DEBUG 1
+#define DEBUG 0
 #define debug(d, v) {                                                 \
   if (DEBUG == 1) {                                                   \
     printf("DEBUG: %s: %s in %s:%d:%d\n",d,v,__FILE__,__LINE__,this->pidx); \
@@ -36,7 +36,7 @@
 }
 
 template<typename T> 
-MPIcuFFT_Slabs<T>::MPIcuFFT_Slabs(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
+MPIcuFFT_Slabs<T>::MPIcuFFT_Slabs(MPI_Comm comm, bool mpi_cuda_aware) : MPIcuFFT<T>(comm, mpi_cuda_aware) {
     isizex.resize(this->pcnt, 0);
     istartx.resize(this->pcnt, 0);
     osizey.resize(this->pcnt, 0);

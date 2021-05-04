@@ -222,7 +222,7 @@ int main() {
         std::cout << "1: Run Distributed FFT" << std::endl;
 
         //initialize MPIcuFFT
-        MPIcuFFT_Slabs<float> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, world_size);
+        MPIcuFFT_Slabs<float> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1);
         mpicuFFT.initFFT(Nx, Ny, Nz, true);
     
         //execute

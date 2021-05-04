@@ -7,7 +7,7 @@
 
 template<typename T> class MPIcuFFT_Slabs : public MPIcuFFT<T> {
 public:
-    MPIcuFFT_Slabs (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
+    MPIcuFFT_Slabs (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false);
     ~MPIcuFFT_Slabs ();
 
     void initFFT(size_t nx, size_t ny, size_t nz, bool allocate=true);
