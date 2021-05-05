@@ -6,7 +6,7 @@
 
 template<typename T> class MPIcuFFT {
 public:
-    MPIcuFFT (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false);
+    MPIcuFFT (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
     ~MPIcuFFT ();
 
     virtual void initFFT(size_t nx, size_t ny, size_t nz, bool allocate=true)= 0;

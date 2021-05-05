@@ -36,18 +36,18 @@
 }
 
 template<typename T> 
-MPIcuFFT_Slabs<T>::MPIcuFFT_Slabs(MPI_Comm comm, bool mpi_cuda_aware) : MPIcuFFT<T>(comm, mpi_cuda_aware) {
-    isizex.resize(this->pcnt, 0);
-    istartx.resize(this->pcnt, 0);
-    osizey.resize(this->pcnt, 0);
-    ostarty.resize(this->pcnt, 0);
+MPIcuFFT_Slabs<T>::MPIcuFFT_Slabs(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
+  isizex.resize(this->pcnt, 0);
+  istartx.resize(this->pcnt, 0);
+  osizey.resize(this->pcnt, 0);
+  ostarty.resize(this->pcnt, 0);
 
-    isizez = 0;
-    osizez = 0;
+  isizez = 0;
+  osizez = 0;
 
-    planR2C = 0;
-    planC2R = 0;
-    planC2C = 0;
+  planR2C = 0;
+  planC2R = 0;
+  planC2C = 0;
 }
 
 template<typename T> 

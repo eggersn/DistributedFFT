@@ -17,7 +17,7 @@
 #endif
 
 template<typename T> 
-MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware) : comm(comm), cuda_aware(mpi_cuda_aware) {
+MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : comm(comm), cuda_aware(mpi_cuda_aware) {
     comm_mode = Peer;
 
     MPI_Comm_size(comm, &pcnt);
@@ -26,21 +26,24 @@ MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware) : comm(comm), cuda_awa
     send_req.resize(pcnt, MPI_REQUEST_NULL);
     recv_req.resize(pcnt, MPI_REQUEST_NULL);
 
+    if (max_world_size > 0 && pcnt > max_world_size)
+        pcnt = max_world_size;
+
     domainsize = 0;
     fft_worksize = 0;
-    
+
     worksize_d = 0;
     worksize_h = 0;
 
     workarea_d = nullptr;
     workarea_h = nullptr;
-  
+
     allocated_d = false;
     allocated_h = false;
     initialized = false;
     fft3d = (pcnt == 1);
     half_batch = false;
-    
+
     if (pcnt%2 == 1) {
         for (int i=0; i<pcnt; ++i){
             if ((pcnt+i-pidx)%pcnt != pidx)
