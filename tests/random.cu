@@ -1,4 +1,4 @@
-#include "mpicufftslabs.hpp"
+#include "mpicufft_slabs.hpp"
 #include "device_launch_parameters.h"
 #include <cmath>
 #include <stdio.h>
@@ -75,12 +75,16 @@ int main() {
     
     //initialize MPIcuFFT
     MPIcuFFT_Slabs<float> mpicuFFT(MPI_COMM_WORLD, true);
-    mpicuFFT.initFFT(Nx, Ny, Nz, true);
+
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT.initFFT(&global_size, true);
 
     //execute
     mpicuFFT.execR2C(out_d, in_d);
 
     CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(float), cudaMemcpyDeviceToHost));
+
+    //do stuff with out_h
 
     //finalize
     MPI_Finalize();

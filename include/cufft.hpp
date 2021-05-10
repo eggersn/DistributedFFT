@@ -20,9 +20,11 @@ template<typename T> struct cuFFT {
   static inline R_t* real(void *ptr) { return static_cast<R_t*>(ptr); };
   static inline R_t* real(const void *ptr) { return static_cast<R_t*>(const_cast<void*>(ptr)); };
 };
+
 template<typename T> decltype(cufftExecR2C)* cuFFT<T>::execR2C = cufftExecR2C;
 template<typename T> decltype(cufftExecC2R)* cuFFT<T>::execC2R = cufftExecC2R;
 template<typename T> decltype(cufftExecC2C)* cuFFT<T>::execC2C = cufftExecC2C;
+
 template<> struct cuFFT<double> {
   using C_t = cufftDoubleComplex;
   using R_t = cufftDoubleReal;
@@ -40,6 +42,8 @@ template<> struct cuFFT<double> {
   static inline R_t* real(void *ptr) { return static_cast<R_t*>(ptr); };
   static inline R_t* real(const void *ptr) { return static_cast<R_t*>(const_cast<void*>(ptr)); };
 };
-decltype(cufftExecD2Z)* cuFFT<double>::execR2C = cufftExecD2Z;
-decltype(cufftExecZ2D)* cuFFT<double>::execC2R = cufftExecZ2D;
-decltype(cufftExecZ2Z)* cuFFT<double>::execC2C = cufftExecZ2Z;
+
+// Initialization in mpicufft.cpp
+// decltype(cufftExecD2Z)* cuFFT<double>::execR2C = cufftExecD2Z;
+// decltype(cufftExecZ2D)* cuFFT<double>::execC2R = cufftExecZ2D;
+// decltype(cufftExecZ2Z)* cuFFT<double>::execC2C = cufftExecZ2Z;

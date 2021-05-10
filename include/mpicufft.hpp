@@ -1,5 +1,6 @@
 #pragma once
 
+#include "params.hpp"
 #include <iostream>
 #include <vector>
 #include <mpi.h>
@@ -9,7 +10,7 @@ public:
     MPIcuFFT (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
     ~MPIcuFFT ();
 
-    virtual void initFFT(size_t nx, size_t ny, size_t nz, bool allocate=true)= 0;
+    virtual void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true)= 0;
     virtual void setWorkArea(void *device=nullptr, void *host=nullptr) = 0;
 
     virtual void execR2C(void *out, const void *in) = 0;
@@ -39,9 +40,6 @@ protected:
 
     std::vector<int> comm_order;
 
-    std::vector<MPI_Request> send_req;
-    std::vector<MPI_Request> recv_req;
-
     size_t domainsize;
     size_t fft_worksize;
     
@@ -51,9 +49,11 @@ protected:
     void* workarea_d;
     void* workarea_h;
 
+    std::vector<void*> mem_d;
+    std::vector<void*> mem_h;
+
     bool allocated_d, allocated_h;
     bool cuda_aware;
     bool initialized;
     bool fft3d;
-    bool half_batch;
 };

@@ -11,7 +11,7 @@ find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cu
 find_package(MPI REQUIRED)
 
 # create library and link them
-add_library(mpicufft SHARED src/mpicufft.cpp src/mpicufftslabs.cpp)
+add_library(mpicufft SHARED src/mpicufft.cpp src/mpicufft_slabs.cpp src/mpicufft_pencil.cpp)
 add_executable(random tests/random.cu)
 add_executable(random_dist tests/random_dist.cu)
 

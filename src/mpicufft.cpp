@@ -1,4 +1,5 @@
 #include "mpicufft.hpp"
+#include "cufft.hpp"
 #include <cuda.h>
 #include <cuda_runtime_api.h>
 
@@ -16,15 +17,16 @@
 #define cudaCheck(e) {e}
 #endif
 
+decltype(cufftExecD2Z)* cuFFT<double>::execR2C = cufftExecD2Z;
+decltype(cufftExecZ2D)* cuFFT<double>::execC2R = cufftExecZ2D;
+decltype(cufftExecZ2Z)* cuFFT<double>::execC2C = cufftExecZ2Z;
+
 template<typename T> 
 MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : comm(comm), cuda_aware(mpi_cuda_aware) {
     comm_mode = Peer;
 
     MPI_Comm_size(comm, &pcnt);
     MPI_Comm_rank(comm, &pidx);
-
-    send_req.resize(pcnt, MPI_REQUEST_NULL);
-    recv_req.resize(pcnt, MPI_REQUEST_NULL);
 
     if (max_world_size > 0 && pcnt > max_world_size)
         pcnt = max_world_size;
@@ -42,27 +44,6 @@ MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : 
     allocated_h = false;
     initialized = false;
     fft3d = (pcnt == 1);
-    half_batch = false;
-
-    if (pcnt%2 == 1) {
-        for (int i=0; i<pcnt; ++i){
-            if ((pcnt+i-pidx)%pcnt != pidx)
-                comm_order.push_back((pcnt+i-pidx)%pcnt);
-        }
-    } else if (((pcnt-1)&pcnt) == 0) {
-        for (int i=1; i<pcnt; ++i)
-            comm_order.push_back(pidx^i);
-    } else {
-        for (int i=0; i<pcnt-1;++i) {
-            int idle = (pcnt*i/2)%(pcnt-1);
-            if (pidx == pcnt-1) 
-                comm_order.push_back(idle);
-            else if (pidx == idle) 
-                comm_order.push_back(pcnt-1);
-            else 
-                comm_order.push_back((pcnt+i-pidx-1) % (pcnt-1));
-        }
-    }
 }
 
 template<typename T> MPIcuFFT<T>::~MPIcuFFT() {

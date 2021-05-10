@@ -1,4 +1,4 @@
-#include "mpicufftslabs.hpp"
+#include "mpicufft_slabs.hpp"
 #include "cufft.hpp"
 #include "mpi.h"
 #include "mpi-ext.h"
@@ -89,7 +89,7 @@ int coordinate(int world_size){
     std::vector<MPI_Request> recv_req;
 
     R_t *in_d, *send_ptr;
-    C_t *out_d, *recv_ptr, *res_d, *out_h, *out_h1;
+    C_t *out_d, *recv_ptr, *res_d;
 
     size_t ws_r2c;
 
@@ -102,8 +102,6 @@ int coordinate(int world_size){
     //allocate memory (device)
     CUDA_CALL(cudaMalloc((void **)&in_d, Nx*Ny*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&out_d, Nx*Ny*Nz*sizeof(C_t)));
-    CUDA_CALL(cudaMallocHost((void **)&out_h, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
-    CUDA_CALL(cudaMallocHost((void **)&out_h1, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     
     if (CUDA_AWARE == 1){
         CUDA_CALL(cudaMalloc((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
@@ -231,7 +229,9 @@ int compute(int rank, int world_size){
 
     //initialize MPIcuFFT
     MPIcuFFT_Slabs<float> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, world_size);
-    mpicuFFT.initFFT(Nx, Ny, Nz, true);
+    
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT.initFFT(&global_size, true);
 
     //execute
     mpicuFFT.execR2C(out_d, in_d);
