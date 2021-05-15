@@ -26,9 +26,9 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);          \
     return EXIT_FAILURE;}} while(0)
 
-#define Nx 32
-#define Ny 32
-#define Nz 32
+#define Nx 64
+#define Ny 64
+#define Nz 64
 
 #define ALLOW_CUDA_AWARE 1
 #define CUDA_AWARE MPIX_Query_cuda_support() * ALLOW_CUDA_AWARE

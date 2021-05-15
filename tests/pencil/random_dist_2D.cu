@@ -30,11 +30,11 @@
 #define Ny 64
 #define Nz 64
 
-#define P1 2
-#define P2 2
+#define P1 4
+#define P2 4
 #define PartOfCluster 0
 
-#define ALLOW_CUDA_AWARE 1
+#define ALLOW_CUDA_AWARE 0
 #define CUDA_AWARE MPIX_Query_cuda_support() * ALLOW_CUDA_AWARE
 
 using R_t = typename cuFFT<double>::R_t;

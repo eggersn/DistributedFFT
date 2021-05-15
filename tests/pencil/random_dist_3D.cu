@@ -26,12 +26,12 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);          \
     return EXIT_FAILURE;}} while(0)
 
-#define Nx 64
-#define Ny 64
-#define Nz 64
+#define Nx 128
+#define Ny 128
+#define Nz 128
 
-#define P1 4
-#define P2 4
+#define P1 2
+#define P2 2
 #define PartOfCluster 0
 
 #define ALLOW_CUDA_AWARE 0
@@ -142,6 +142,7 @@ int coordinate(int world_size) {
             cpy_params.kind   = CUDA_AWARE==1 ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
             
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
+            CUDA_CALL(cudaDeviceSynchronize());
             
             recv_counts.push_back(recv_count);
 
@@ -157,7 +158,6 @@ int coordinate(int world_size) {
             send_count += input_dim.size_x[p_i] * input_dim.size_y[p_j] * Nz;
         }
     }
-    CUDA_CALL(cudaDeviceSynchronize());
 
     MPI_Waitall(world_size-1, send_req.data(), MPI_STATUSES_IGNORE);
     MPI_Barrier(MPI_COMM_WORLD);
@@ -200,11 +200,9 @@ int coordinate(int world_size) {
         
         CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
     } while (p != MPI_UNDEFINED);
+    CUDA_CALL(cudaDeviceSynchronize());
     
-    CUDA_CALL(cudaDeviceSynchronize());
-
     difference<<<(Nx*Ny*(Nz/2+1))/1024+1, 1024>>>(complex, res_d, Nx*Ny*(Nz/2+1));
-    CUDA_CALL(cudaDeviceSynchronize());
 
     double sum = 0;
     CUBLAS_CALL(cublasDzasum(handle, Nx*Ny*(Nz/2+1), complex, 1, &sum));
@@ -273,17 +271,16 @@ int compute(int rank, int distributor){
 
     if (CUDA_AWARE == 0){
         CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
-        CUDA_CALL(cudaDeviceSynchronize());
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
+    CUDA_CALL(cudaDeviceSynchronize());
 
     //execute
     mpicuFFT.execR2C(out_d, in_d);
 
     if (CUDA_AWARE == 0){
-        CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]*sizeof(C_t), cudaMemcpyDeviceToHost));
-        CUDA_CALL(cudaDeviceSynchronize());
+        CUDA_CALL(cudaMemcpy(send_ptr, out_d, output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]*sizeof(C_t), cudaMemcpyDeviceToHost));
     }
 
     MPI_Isend(send_ptr, output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]*sizeof(C_t), MPI_BYTE, distributor, distributor+1, MPI_COMM_WORLD, &send_req);

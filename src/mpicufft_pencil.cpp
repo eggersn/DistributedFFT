@@ -285,8 +285,10 @@ void MPIcuFFT_Pencil<T>::setWorkArea(void *device, void *host){
 
     // mem_d stores pointer to all (above described) workspaces (temp, recv, send, actual)
     mem_d.clear();
-    for (size_t i = 0; i < 1 + (fft3d ? 0 : (cuda_aware ? 3*domainsize : domainsize)); i++)
+    for (size_t i = 0; i < 1 + (fft3d ? 0 : (cuda_aware ? 3 : 1)); i++)
         mem_d.push_back(&static_cast<char*>(workarea_d)[i*domainsize]);
+
+    debug_int("mem_d size", mem_d.size());
     
     if (fft3d) {
         CUFFT_CALL(cufftSetWorkArea(planR2C, mem_d[0]));
@@ -296,6 +298,8 @@ void MPIcuFFT_Pencil<T>::setWorkArea(void *device, void *host){
         size_t offset = cuda_aware ? 3 : 1;
         for (size_t s = 1; s < num_of_streams; s++)
             mem_d.push_back(&static_cast<char*>(workarea_d)[offset*domainsize+s*ws_c2c_0]);
+
+        debug_int("mem_d size", mem_d.size());
 
         // Since each computation R2C, C2C_0 and C2C_1 is split by a global transpose,
         // the same workspace can be reused
@@ -684,6 +688,8 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
                     &recv_ptr[transposed_dim.start_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]], 
                     sizeof(C_t)*transposed_dim.size_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], cudaMemcpyHostToDevice, 
                     streams[(pidx_i + partition->P1 - p) % partition->P1])); // TODO: check if this is the best stream for selection!
+
+                CUDA_CALL(cudaDeviceSynchronize());
             } while (p != MPI_UNDEFINED);
         } else {
             MPI_Waitall(partition->P1, recv_req.data(), MPI_STATUSES_IGNORE);

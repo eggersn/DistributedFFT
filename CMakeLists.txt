@@ -29,7 +29,7 @@ target_link_libraries(pencil_random_dist2 PUBLIC mpicufft)
 target_link_libraries(pencil_random_dist3 PUBLIC mpicufft)
 
 #CUDA 
-set_property(TARGET mpicufft slab_random slab_random_dist pencil_random pencil_random_dist1 pencil_random_dist2 pencil_random_dist3 PROPERTY CUDA_ARCHITECTURES 50)
+set_property(TARGET mpicufft slab_random slab_random_dist pencil_random pencil_random_dist1 pencil_random_dist2 pencil_random_dist3 PROPERTY CUDA_ARCHITECTURES 50 61)
 
 #MPI
 target_link_libraries(mpicufft PUBLIC MPI::MPI_CXX)
