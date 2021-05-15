@@ -5,10 +5,10 @@
 #include <cuda.h>
 #include <vector>
 
-template<typename T> class MPIcuFFT_Slabs : public MPIcuFFT<T> {
+template<typename T> class MPIcuFFT_Slab : public MPIcuFFT<T> {
 public:
-    MPIcuFFT_Slabs (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
-    ~MPIcuFFT_Slabs ();
+    MPIcuFFT_Slab (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
+    ~MPIcuFFT_Slab ();
 
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
     void initFFT(GlobalSize *global_size, bool allocate=true) {

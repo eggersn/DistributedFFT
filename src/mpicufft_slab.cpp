@@ -1,4 +1,4 @@
-#include "mpicufft_slabs.hpp"
+#include "mpicufft_slab.hpp"
 #include "cufft.hpp"
 #include <cuda_runtime_api.h>
 
@@ -36,7 +36,7 @@
 }
 
 template<typename T> 
-MPIcuFFT_Slabs<T>::MPIcuFFT_Slabs(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
+MPIcuFFT_Slab<T>::MPIcuFFT_Slab(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
   isizex.resize(pcnt, 0);
   istartx.resize(pcnt, 0);
   osizey.resize(pcnt, 0);
@@ -74,7 +74,7 @@ MPIcuFFT_Slabs<T>::MPIcuFFT_Slabs(MPI_Comm comm, bool mpi_cuda_aware, int max_wo
 }
 
 template<typename T> 
-MPIcuFFT_Slabs<T>::~MPIcuFFT_Slabs() {
+MPIcuFFT_Slab<T>::~MPIcuFFT_Slab() {
     if (planR2C) 
         cudaCheck(cufftDestroy(planR2C));
     if (planC2R) 
@@ -84,7 +84,7 @@ MPIcuFFT_Slabs<T>::~MPIcuFFT_Slabs() {
 }
 
 template<typename T>
-void MPIcuFFT_Slabs<T>::initFFT(GlobalSize *global_size, Partition *partition, bool allocate) {
+void MPIcuFFT_Slab<T>::initFFT(GlobalSize *global_size, Partition *partition, bool allocate) {
   // isizex stores how the input 3d array is distributed among the mpi processes
   size_t N1    = global_size->Nx / pcnt;
   size_t N1mod = global_size->Nx % pcnt;
@@ -184,7 +184,7 @@ void MPIcuFFT_Slabs<T>::initFFT(GlobalSize *global_size, Partition *partition, b
 
 //default parameters device=nullptr, host=nullptr
 template<typename T> 
-void MPIcuFFT_Slabs<T>::setWorkArea(void *device, void *host) {
+void MPIcuFFT_Slab<T>::setWorkArea(void *device, void *host) {
   if (!domainsize) 
     return;
 
@@ -238,7 +238,7 @@ void MPIcuFFT_Slabs<T>::setWorkArea(void *device, void *host) {
 }
 
 template<typename T> 
-void MPIcuFFT_Slabs<T>::execR2C(void *out, const void *in) {
+void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
   if (!initialized) 
     return;
 
@@ -424,5 +424,5 @@ void MPIcuFFT_Slabs<T>::execR2C(void *out, const void *in) {
   }
 }
 
-template class MPIcuFFT_Slabs<float>;
-template class MPIcuFFT_Slabs<double>;
+template class MPIcuFFT_Slab<float>;
+template class MPIcuFFT_Slab<double>;

@@ -15,19 +15,24 @@ public:
     void setWorkArea(void *device=nullptr, void *host=nullptr);
 
     void execR2C(void *out, const void *in);
+    void getPartitionDimensions(Partition_Dimensions &input_dim_, Partition_Dimensions &transposed_dim_, Partition_Dimensions &output_dim_) {
+        input_dim_ = input_dim;
+        transposed_dim_ = transposed_dim;
+        output_dim_ = output_dim;
+    }
     // void execC2R(void *out, const void *in);
 
-    // inline void getInSize(size_t *isize) { isize[0] = input_dim.size_x[pidx]; isize[1] = isizey; isize[2] = isizez; };
-    // inline void getInStart(size_t *istart) { istart[0] = istartx[pidx]; istart[1] = 0; istart[2] = 0; };
-    // inline void getOutSize(size_t *osize) { osize[0] = osizex; osize[1] = osizey[pidx]; osize[2] = osizez; };
-    // inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = ostarty[pidx]; ostart[2] = 0; };
+    inline void getInSize(size_t *isize) { isize[0] = input_dim.size_x[pidx_i]; isize[1] = input_dim.size_y[pidx_j]; isize[2] = input_dim.size_z[0]; };
+    inline void getInStart(size_t *istart) { istart[0] = input_dim.start_x[pidx_i]; istart[1] = input_dim.start_y[pidx_j]; istart[2] = 0; };
+    inline void getOutSize(size_t *osize) { osize[0] = output_dim.size_x[0]; osize[1] = output_dim.size_y[pidx_i]; osize[2] = output_dim.size_z[pidx_j]; };
+    inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = output_dim.start_y[pidx_i]; ostart[2] = output_dim.start_x[pidx_j]; };
 
 protected:
     void commOrder_FirstTranspose();
     void commOrder_SecondTranspose();
 
-    void MPIsend_Callback_FirstTranspose(cudaStream_t stream, cudaError_t status, void *data);
-    void MPIsend_Callback_SecondTranspose(cudaStream_t stream, cudaError_t status, void *data);
+    static void CUDART_CB MPIsend_Callback_FirstTranspose(void *data);
+    static void CUDART_CB MPIsend_Callback_SecondTranspose(void *data);
 
     using MPIcuFFT<T>::Peer;
     using MPIcuFFT<T>::All2All;
@@ -67,10 +72,10 @@ protected:
     size_t ws_c2c_0;
     size_t num_of_streams;
 
-    std::vector<cudaStream_t*> streams;
+    std::vector<cudaStream_t> streams;
 
     cufftHandle planR2C;
-    std::vector<cufftHandle*> planC2C_0;
+    std::vector<cufftHandle> planC2C_0;
     cufftHandle planC2C_1;
 
     std::vector<MPI_Request> send_req;

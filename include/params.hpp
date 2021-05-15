@@ -37,12 +37,6 @@ struct Pencil_Partition : public Partition {
 };
 
 struct Partition_Dimensions{
-    Partition_Dimensions(std::vector<size_t> size_x_, std::vector<size_t> size_y_, std::vector<size_t> size_z_){
-        size_x = size_x_;
-        size_y = size_y_;
-        size_z = size_z_;
-    }
-
     void computeOffsets() {
         computeStart(&size_x, &start_x);
         computeStart(&size_y, &start_y);

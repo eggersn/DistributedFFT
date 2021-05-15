@@ -1,4 +1,4 @@
-#include "mpicufft_slabs.hpp"
+#include "mpicufft_slab.hpp"
 #include "cufft.hpp"
 #include "mpi.h"
 #include "mpi-ext.h"
@@ -123,8 +123,6 @@ int coordinate(int world_size){
     CUFFT_CALL(cufftCreate(&planR2C));
     CUFFT_CALL(cufftSetAutoAllocation(planR2C, 0));
     CUFFT_CALL(cufftMakePlan3d(planR2C, Nx, Ny, Nz, cuFFT<float>::R2Ctype, &ws_r2c));
-
-    CUDA_CALL(cudaDeviceSynchronize());
     CUFFT_CALL(cufftSetWorkArea(planR2C, in_d));
 
     //Distribute input data
@@ -228,7 +226,7 @@ int compute(int rank, int world_size){
     }
 
     //initialize MPIcuFFT
-    MPIcuFFT_Slabs<float> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, world_size);
+    MPIcuFFT_Slab<float> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, world_size);
     
     GlobalSize global_size(Nx, Ny, Nz);
     mpicuFFT.initFFT(&global_size, true);

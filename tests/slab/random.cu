@@ -1,4 +1,4 @@
-#include "mpicufft_slabs.hpp"
+#include "mpicufft_slab.hpp"
 #include "device_launch_parameters.h"
 #include <cmath>
 #include <stdio.h>
@@ -74,7 +74,7 @@ int main() {
     initializeRandArray(in_d, N1);
     
     //initialize MPIcuFFT
-    MPIcuFFT_Slabs<float> mpicuFFT(MPI_COMM_WORLD, true);
+    MPIcuFFT_Slab<float> mpicuFFT(MPI_COMM_WORLD, true);
 
     GlobalSize global_size(Nx, Ny, Nz);
     mpicuFFT.initFFT(&global_size, true);
