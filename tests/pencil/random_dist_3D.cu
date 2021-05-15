@@ -30,8 +30,8 @@
 #define Ny 128
 #define Nz 128
 
-#define P1 2
-#define P2 2
+#define P1 4
+#define P2 4
 #define PartOfCluster 0
 
 #define ALLOW_CUDA_AWARE 0

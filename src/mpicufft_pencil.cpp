@@ -15,7 +15,7 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);  \
     exit(EXIT_FAILURE); }} while(0)
 
-#define DEBUG 1
+#define DEBUG 0
 #define debug(d, v) {                                                 \
   if (DEBUG == 1) {                                                   \
     printf("DEBUG (%d,%d): %s: %s in %s:%d\n",pidx_i,pidx_j,d,v,__FILE__,__LINE__); \
@@ -402,9 +402,9 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
     } else {
         // compute 1D FFT in z-direction
         CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
-        CUDA_CALL(cudaDeviceSynchronize());
 
         // Used to random_dist_1D test
+        // CUDA_CALL(cudaDeviceSynchronize());
         // return; 
 
         C_t *recv_ptr, *send_ptr, *temp_ptr; 
@@ -439,6 +439,9 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         send_req.resize(partition->P2, MPI_REQUEST_NULL);
         recv_req.resize(partition->P2, MPI_REQUEST_NULL);
 
+        // Wait for 1D FFT in z-direction
+        CUDA_CALL(cudaDeviceSynchronize());
+
         for (size_t i = 0; i < comm_order.size(); i++){
             size_t p_i = pidx_i;
             size_t p_j = comm_order[i] % partition->P2;
@@ -450,8 +453,8 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
 
             // Copy 1D FFT results (z-direction) to the send buffer
             // cudaPos = {z (bytes), y (elements), x (elements)}
-            // cudaPitchedPtr = {pitch (byte), pointer, allocation width, allocation height}
-            // cudaExtend = {depth, height, width}
+            // cudaPitchedPtr = {pointer, pitch (byte), allocation width, allocation height}
+            // cudaExtend = {width, height, depth}
             cudaMemcpy3DParms cpy_params = {0};
             cpy_params.srcPos = make_cudaPos(transposed_dim.start_z[p_j]*sizeof(C_t), 0, 0);
             cpy_params.srcPtr = make_cudaPitchedPtr(complex, global_size->Nz_out*sizeof(C_t), global_size->Nz_out, input_dim.size_y[pidx_j]);
@@ -463,8 +466,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_j]));
             CUDA_CALL(cudaDeviceSynchronize());
-
-            // debug_p("send_ptr (before)", &send_ptr[input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.start_z[p_j]]);
 
             // // After copy is complete, MPI starts a non-blocking send operation
             // Callback_Params<T, C_t> params = {i, send_ptr, this};
@@ -661,7 +662,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[pidx_i]));            
         }
-        CUDA_CALL(cudaDeviceSynchronize());
 
         // Start copying the received blocks to GPU memory (if !cuda_aware)
         // Otherwise the data is already correctly aligned. Therefore, we compute the last 1D FFT (x-direction) in the recv buffer (= temp1 buffer)
@@ -688,8 +688,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
                     &recv_ptr[transposed_dim.start_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]], 
                     sizeof(C_t)*transposed_dim.size_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], cudaMemcpyHostToDevice, 
                     streams[(pidx_i + partition->P1 - p) % partition->P1])); // TODO: check if this is the best stream for selection!
-
-                CUDA_CALL(cudaDeviceSynchronize());
             } while (p != MPI_UNDEFINED);
         } else {
             MPI_Waitall(partition->P1, recv_req.data(), MPI_STATUSES_IGNORE);
