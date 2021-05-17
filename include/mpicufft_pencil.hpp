@@ -28,6 +28,34 @@ public:
     inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = output_dim.start_y[pidx_i]; ostart[2] = output_dim.start_x[pidx_j]; };
 
 protected:
+    template<typename S>
+    struct Callback_Params_Base {
+        S *send_ptr;
+        Partition_Dimensions &input_dim;
+        Partition_Dimensions &transposed_dim;
+        Partition_Dimensions &output_dim;
+        std::vector<MPI_Request> &send_req;
+        std::vector<int> &comm_order;
+        MPI_Comm &comm;
+
+        size_t pidx_i, pidx_j;
+    };
+
+
+    template<typename S>
+    struct FirstTransposeParams {
+        Callback_Params_Base<S> *base_params;
+
+        size_t i, p_j;
+    };
+
+    template<typename S>
+    struct SecondTransposeParams {
+        Callback_Params_Base<S> *base_params;
+
+        size_t i, p_i;
+    };
+
     void commOrder_FirstTranspose();
     void commOrder_SecondTranspose();
 

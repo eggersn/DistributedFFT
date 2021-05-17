@@ -26,9 +26,9 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);          \
     return EXIT_FAILURE;}} while(0)
 
-#define Nx 128
-#define Ny 128
-#define Nz 128
+#define Nx 64
+#define Ny 64
+#define Nz 64
 
 #define P1 4
 #define P2 4
@@ -237,7 +237,6 @@ int compute(int rank, int distributor){
     size_t pidx_j = rank % P2;
 
     //initialize MPIcuFFT
-    printf("\nworld_size %d\n", distributor + (PartOfCluster==1 ? 1 : 0));
     MPIcuFFT_Pencil<double> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, distributor + (PartOfCluster==1 ? 1 : 0));
 
     Pencil_Partition partition(P1, P2);
@@ -250,8 +249,6 @@ int compute(int rank, int distributor){
 
     size_t out_size = std::max(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1), transposed_dim.size_x[pidx_i]*transposed_dim.size_y[0]*transposed_dim.size_z[pidx_j]);
     out_size = std::max(out_size, output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]);
-
-    printf("(%d, %d) out_size: %d", pidx_i, pidx_j, out_size);
 
     //allocate memory (device)
     CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
