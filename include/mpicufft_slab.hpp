@@ -55,7 +55,6 @@ protected:
   using MPIcuFFT<T>::fft3d;
 
   cufftHandle planR2C;
-  cufftHandle planC2R;
   cufftHandle planC2C;
 
   std::vector<size_t> isizex;
@@ -68,6 +67,4 @@ protected:
 
   size_t isizey, isizez;
   size_t osizex, osizez;    
-
-  bool half_batch;
 };

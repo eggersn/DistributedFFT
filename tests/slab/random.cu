@@ -15,9 +15,9 @@
     printf("Error at %s:%d\n",__FILE__,__LINE__);\
     return EXIT_FAILURE;}} while(0)
 
-#define Nx 32
-#define Ny 32
-#define Nz 32
+#define Nx 64
+#define Ny 64
+#define Nz 64
 
 __global__ void scaleUniformArray( float* data_d, float factor, int n)
 {

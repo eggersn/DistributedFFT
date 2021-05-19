@@ -43,27 +43,11 @@ __global__ void scaleUniformArray(R_t* data_d, R_t factor, int n){
     }
 }
 
-__global__ void difference(C_t* array1, C_t* array2, int n, int N2, int N2_mod){
+__global__ void difference(C_t* array1, C_t* array2, int n){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if(i < n) {
-        int x = i / (Ny * (Nz/2+1));
-        int y = (i / (Nz/2+1)) % Ny;
-        int z = i % (Nz/2+1);
-
-        int y_num = y / N2;
-        int y_start = 0, y_pidx = 0;
-        if (y_num < N2_mod){
-            y_start = (N2+1)*y_num;
-            y_pidx = N2+1;
-        } else{
-            y_start = N2*y_num + N2_mod;
-            y_pidx = N2;
-        } 
-        
-        int index = y_start*(Nz/2+1)*Nx + x*y_pidx*(Nz/2+1) + (y - y_start)*(Nz/2+1) + z;
-
-        array1[i].x -= array2[index].x;
-        array1[i].y -= array2[index].y;
+        array1[i].x -= array2[i].x;
+        array1[i].y -= array2[i].y;
     }
 }
 
@@ -101,16 +85,15 @@ int coordinate(int world_size){
 
     //allocate memory (device)
     CUDA_CALL(cudaMalloc((void **)&in_d, Nx*Ny*Nz*sizeof(R_t)));
-    CUDA_CALL(cudaMalloc((void **)&out_d, Nx*Ny*Nz*sizeof(C_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
+    CUDA_CALL(cudaMalloc((void **)&res_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     
     if (CUDA_AWARE == 1){
         CUDA_CALL(cudaMalloc((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
         CUDA_CALL(cudaMalloc((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
-        res_d = recv_ptr;
     } else {
         CUDA_CALL(cudaMallocHost((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
         CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
-        CUDA_CALL(cudaMalloc((void **)&res_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     }
 
     //random initialization of full Nx*Ny*Nz array
@@ -130,14 +113,19 @@ int coordinate(int world_size){
     size_t N2 = Ny/world_size;
     size_t send_count = 0;
     size_t recv_count = 0;
+    std::vector<size_t> recv_counts;
+    std::vector<size_t> ostarty;
+    ostarty.push_back(0);
     for (int pidx = 0; pidx < world_size; pidx++){
         size_t Nxpidx = N1 + (pidx<Nx%world_size?1:0);
         size_t Nypidx = N2 + (pidx<Ny%world_size?1:0);
         recv_req[pidx] = MPI_REQUEST_NULL;
         send_req[pidx] = MPI_REQUEST_NULL;
+        ostarty.push_back(ostarty[pidx]+Nypidx);
 
         //start non-blocking receive for distributed results (asynch to local fft computation)
         MPI_Irecv(&recv_ptr[recv_count], Nx*Nypidx*(Nz/2+1)*sizeof(C_t), MPI_BYTE, pidx, pidx, MPI_COMM_WORLD, &recv_req[pidx]);
+        recv_counts.push_back(recv_count);
         recv_count += Nx*Nypidx*(Nz/2+1);
 
         //start non-blocking send for input data
@@ -157,17 +145,30 @@ int coordinate(int world_size){
 
     CUBLAS_CALL(cublasCreate(&handle));
 
-    //wait till distributed results are received
-    MPI_Waitall(world_size, recv_req.data(), MPI_STATUSES_IGNORE);
+    int p;
+    do {
+        // recv_req contains one null handle (i.e. recv_req[pidx_i]) and P1-1 active handles
+        // If all active handles are processed, Waitany will return MPI_UNDEFINED
+        MPI_Waitany(world_size, recv_req.data(), &p, MPI_STATUSES_IGNORE);
+        if (p == MPI_UNDEFINED)
+            break;
 
-    if (CUDA_AWARE==0){ //received data has to be copied to gpu
-        CUDA_CALL(cudaMemcpyAsync(res_d, recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t), cudaMemcpyHostToDevice));
-        CUDA_CALL(cudaDeviceSynchronize());
-    }
+        size_t osizey = N2 + (p<Ny%world_size?1:0);
+        
+        cudaMemcpy3DParms cpy_params = {0};
+        cpy_params.srcPos = make_cudaPos(0, 0, 0);
+        cpy_params.srcPtr = make_cudaPitchedPtr(&recv_ptr[recv_counts[p]], (Nz/2+1)*sizeof(C_t), Nz/2+1, osizey);
+        cpy_params.dstPos = make_cudaPos(0, ostarty[p], 0);
+        cpy_params.dstPtr = make_cudaPitchedPtr(res_d, (Nz/2+1)*sizeof(C_t), Nz/2+1, Ny);    
+        cpy_params.extent = make_cudaExtent((Nz/2+1)*sizeof(C_t), osizey, Nx);
+        cpy_params.kind   = CUDA_AWARE==1 ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;   
+        
+        CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
+    } while (p != MPI_UNDEFINED);
+    CUDA_CALL(cudaDeviceSynchronize());
 
     //compare difference
-    int N2_mod = Ny % world_size;
-    difference<<<(Nx*Ny*(Nz/2+1))/1024+1, 1024>>>(complex, res_d, Nx*Ny*(Nz/2+1), N2, N2_mod);
+    difference<<<(Nx*Ny*(Nz/2+1))/1024+1, 1024>>>(complex, res_d, Nx*Ny*(Nz/2+1));
 
     float sum = 0;
     CUBLAS_CALL(cublasScasum(handle, Nx*Ny*(Nz/2+1), complex, 1, &sum));
