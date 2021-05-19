@@ -25,6 +25,29 @@ public:
     inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = ostarty[pidx]; ostart[2] = 0; };
 
 protected:
+  template<typename S>
+  struct Callback_Params_Base {
+      S *send_ptr;
+      std::vector<size_t> &isizex;
+      std::vector<size_t> &osizey;
+      std::vector<MPI_Request> &send_req;
+
+      MPI_Comm &comm;
+
+      int pidx;
+      size_t osizez;
+  };
+
+  template<typename S>
+  struct TransposeParams {
+      Callback_Params_Base<S> *base_params;
+
+      size_t oslice;
+      int p;
+  };
+
+  static void CUDART_CB MPIsend_Callback(void *data);
+
   using MPIcuFFT<T>::Peer;
   using MPIcuFFT<T>::All2All;
   using MPIcuFFT<T>::comm_mode;
@@ -64,6 +87,8 @@ protected:
 
   std::vector<MPI_Request> send_req;
   std::vector<MPI_Request> recv_req;
+
+  std::vector<cudaStream_t> streams;
 
   size_t isizey, isizez;
   size_t osizex, osizez;    
