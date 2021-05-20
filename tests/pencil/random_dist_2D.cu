@@ -242,7 +242,6 @@ int compute(int rank, int distributor){
     size_t pidx_j = rank % P2;
 
     //initialize MPIcuFFT
-    printf("\nworld_size %d\n", distributor + (PartOfCluster==1 ? 1 : 0));
     MPIcuFFT_Pencil<double> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, distributor + (PartOfCluster==1 ? 1 : 0));
 
     Pencil_Partition partition(P1, P2);
@@ -254,8 +253,6 @@ int compute(int rank, int distributor){
     mpicuFFT.getPartitionDimensions(input_dim, transposed_dim, output_dim);
 
     size_t out_size = std::max(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1), transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]);
-
-    printf("(%d, %d) out_size: %d", pidx_i, pidx_j, out_size);
 
     //allocate memory (device)
     CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));

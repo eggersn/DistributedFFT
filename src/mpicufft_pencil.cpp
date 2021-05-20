@@ -272,27 +272,57 @@ void MPIcuFFT_Pencil<T>::setWorkArea(void *device, void *host){
     initialized = true;
 }
 
-
-template<typename T>
-void MPIcuFFT_Pencil<T>::MPIsend_Callback_FirstTranspose(void *data) {
-    using C_t = typename cuFFT<T>::C_t;
-    struct FirstTransposeParams<C_t> *params = (FirstTransposeParams<C_t> *) data;
-    struct Callback_Params_Base<C_t> *base_params = params->base_params;
-
-    MPI_Isend(&base_params->send_ptr[base_params->input_dim.size_x[base_params->pidx_i]*base_params->input_dim.size_y[base_params->pidx_j]*base_params->transposed_dim.start_z[params->p_j]],
-    sizeof(C_t)*base_params->input_dim.size_x[base_params->pidx_i]*base_params->input_dim.size_y[base_params->pidx_j]*base_params->transposed_dim.size_z[params->p_j], MPI_BYTE,
-    base_params->comm_order[params->i], base_params->pidx_j, base_params->comm, &(base_params->send_req[params->p_j]));
+template<typename T> 
+void MPIcuFFT_Pencil<T>::MPIsend_Callback(void *data) {
+  struct Callback_Params *params = (Callback_Params *)data;
+  struct Callback_Params_Base *base_params = params->base_params;
+  {
+    std::lock_guard<std::mutex> lk(base_params->mutex);
+    base_params->comm_ready.push_back(params->p);
+  }
+  base_params->cv.notify_one();
 }
 
 template<typename T>
-void MPIcuFFT_Pencil<T>::MPIsend_Callback_SecondTranspose(void *data) {
-    using C_t = typename cuFFT<T>::C_t;
-    struct SecondTransposeParams<C_t> *params = (SecondTransposeParams<C_t> *) data;
-    struct Callback_Params_Base<C_t> *base_params = params->base_params;
+void MPIcuFFT_Pencil<T>::MPIsend_Thread_FirstCallback(Callback_Params_Base &base_params, void *ptr) {
+  using C_t = typename cuFFT<T>::C_t;
+  C_t *send_ptr = (C_t *) ptr;
 
-    MPI_Isend(&base_params->send_ptr[base_params->transposed_dim.size_x[base_params->pidx_i]*base_params->transposed_dim.size_z[base_params->pidx_j]*base_params->output_dim.start_y[params->p_i]], 
-    sizeof(C_t)*base_params->transposed_dim.size_x[base_params->pidx_i]*base_params->output_dim.size_y[params->p_i]*base_params->transposed_dim.size_z[base_params->pidx_j], MPI_BYTE,
-    base_params->comm_order[params->i], base_params->pidx_i, base_params->comm, &(base_params->send_req[params->p_i]));
+  for (int i = 0; i < comm_order.size(); i++){
+    std::unique_lock<std::mutex> lk(base_params.mutex);
+    base_params.cv.wait(lk, [&base_params]{return !base_params.comm_ready.empty();});
+
+    int p_j = base_params.comm_ready.back();
+    base_params.comm_ready.pop_back();
+    int p = pidx_i * partition->P2 + p_j;
+
+    MPI_Isend(&send_ptr[input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.start_z[p_j]],
+    sizeof(C_t)*input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.size_z[p_j], MPI_BYTE,
+    p, pidx_j, comm, &(send_req[p_j]));
+
+    lk.unlock();
+  }
+}
+
+template<typename T>
+void MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback(Callback_Params_Base &base_params, void *ptr) {
+    using C_t = typename cuFFT<T>::C_t;
+    C_t *send_ptr = (C_t *) ptr;
+
+    for (int i = 0; i < comm_order.size(); i++){
+        std::unique_lock<std::mutex> lk(base_params.mutex);
+        base_params.cv.wait(lk, [&base_params]{return !base_params.comm_ready.empty();});
+
+        int p_i = base_params.comm_ready.back();
+        base_params.comm_ready.pop_back();
+        int p = p_i * partition->P2 + pidx_j;
+
+        MPI_Isend(&send_ptr[transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*output_dim.start_y[p_i]], 
+            sizeof(C_t)*transposed_dim.size_x[pidx_i]*output_dim.size_y[p_i]*transposed_dim.size_z[pidx_j], MPI_BYTE,
+            p, pidx_i, comm, &(send_req[p_i]));
+
+        lk.unlock();
+    }
 }
 
 template<typename T>
@@ -352,15 +382,13 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         // Wait for 1D FFT in z-direction
         CUDA_CALL(cudaDeviceSynchronize());
         
-        // Base callback parameters which can be used for both first and second callback
-        Callback_Params_Base<C_t> base_params = {send_ptr, input_dim, transposed_dim, output_dim, send_req, comm_order, comm, pidx_i, pidx_j};
+        Callback_Params_Base base_params;
+        std::vector<Callback_Params> params_array;
 
-        // Define structs which are used to pass data to the callback functions
-        std::vector<FirstTransposeParams<C_t>> param_array;
-        for (size_t i = 0; i < comm_order.size(); i++){
+        for (int i = 0; i < comm_order.size(); i++){
             size_t p_j = comm_order[i] % partition->P2;
-            FirstTransposeParams<C_t> params = {&base_params, i, p_j};
-            param_array.push_back(params);
+            Callback_Params params = {&base_params, p_j};
+            params_array.push_back(params);
         }
 
         for (size_t i = 0; i < comm_order.size(); i++){
@@ -387,9 +415,9 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_j]));
             // // After copy is complete, MPI starts a non-blocking send operation
-            CUDA_CALL(cudaLaunchHostFunc(streams[p_j], this->MPIsend_Callback_FirstTranspose, (void *)&param_array[i]));
+            CUDA_CALL(cudaLaunchHostFunc(streams[p_j], this->MPIsend_Callback, (void *)&params_array[i]));
         }
-
+        std::thread mpisend_thread1(&MPIcuFFT_Pencil<T>::MPIsend_Thread_FirstCallback, this, std::ref(base_params), send_ptr);
         // Transpose local block and copy it to the temp buffer
         // This is required, since otherwise the data layout is not consecutive
         {
@@ -426,7 +454,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[(pidx_j + partition->P2 - p) % partition->P2]));   // TODO: check if this is the best stream for selection!
         } while (p != MPI_UNDEFINED);
-
         // For the 1D FFT in y-direction, all data packages have to be received
         CUDA_CALL(cudaDeviceSynchronize());
 
@@ -443,8 +470,8 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
             CUFFT_CALL(cuFFT<T>::execC2C(planC2C_0[i], &temp_ptr[i*batches_offset], &complex[i*batches_offset], CUFFT_FORWARD));
         }
         CUDA_CALL(cudaDeviceSynchronize());
+        mpisend_thread1.join();
         MPI_Waitall(partition->P2, send_req.data(), MPI_STATUSES_IGNORE);
-
         // used for random_dist_2D test
         // return;
 
@@ -472,12 +499,11 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         send_req.resize(partition->P1, MPI_REQUEST_NULL);
         recv_req.resize(partition->P1, MPI_REQUEST_NULL);
 
-        // Define structs which are used to pass data to the callback functions
-        std::vector<SecondTransposeParams<C_t>> sec_param_array;
-        for (size_t i = 0; i < comm_order.size(); i++){
+        params_array.clear();
+        for (int i = 0; i < pcnt; i++){
             size_t p_i = (comm_order[i] - pidx_j) / partition->P2;
-            SecondTransposeParams<C_t> params = {&base_params, i, p_i};
-            sec_param_array.push_back(params);
+            Callback_Params params = {&base_params, p_i};
+            params_array.push_back(params);
         }
 
         for (size_t i = 0; i < comm_order.size(); i++){
@@ -503,11 +529,12 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
             cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_i]));
-
             // After copy is complete, MPI starts a non-blocking send operation
-            CUDA_CALL(cudaLaunchHostFunc(streams[p_i], this->MPIsend_Callback_SecondTranspose, (void *)&sec_param_array[i]));
+            // printf("DEBUG(%p): p=%d\n", &base_params.mutex, params_array[i].p);
+            CUDA_CALL(cudaLaunchHostFunc(streams[p_i], this->MPIsend_Callback, (void *)&params_array[i]));
         }
-
+        std::thread mpisend_thread2(&MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback, this, std::ref(base_params), send_ptr);
+        
         C_t *temp1_ptr = cuda_aware ? recv_ptr : temp_ptr;
         // Transpose local block and copy it to the recv buffer
         // Here, we use the recv buffer instead of the temp buffer, as the received data is already correctly aligned
@@ -519,6 +546,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
             cpy_params.dstPtr = make_cudaPitchedPtr(temp1_ptr, sizeof(C_t)*output_dim.size_z[pidx_j], output_dim.size_z[pidx_j], output_dim.size_y[pidx_i]);
             cpy_params.extent = make_cudaExtent(sizeof(C_t)*transposed_dim.size_z[pidx_j], output_dim.size_y[pidx_i], transposed_dim.size_x[pidx_i]);
             cpy_params.kind   = cudaMemcpyDeviceToDevice;
+
 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[pidx_i]));            
         }
@@ -548,6 +576,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         // Compute the 1D FFT in x-direction
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C_1, temp1_ptr, complex, CUFFT_FORWARD));
         CUDA_CALL(cudaDeviceSynchronize());
+        mpisend_thread2.join();
         MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
     }
 }

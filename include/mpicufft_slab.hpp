@@ -4,6 +4,9 @@
 #include <cufft.h>
 #include <cuda.h>
 #include <vector>
+#include <thread> 
+#include <mutex>
+#include <condition_variable>
 
 template<typename T> class MPIcuFFT_Slab : public MPIcuFFT<T> {
 public:
@@ -25,28 +28,20 @@ public:
     inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = ostarty[pidx]; ostart[2] = 0; };
 
 protected:
-  template<typename S>
+
   struct Callback_Params_Base {
-      S *send_ptr;
-      std::vector<size_t> &isizex;
-      std::vector<size_t> &osizey;
-      std::vector<MPI_Request> &send_req;
-
-      MPI_Comm &comm;
-
-      int pidx;
-      size_t osizez;
+    std::mutex mutex;
+    std::condition_variable cv;
+    std::vector<int> comm_ready;
   };
 
-  template<typename S>
-  struct TransposeParams {
-      Callback_Params_Base<S> *base_params;
-
-      size_t oslice;
-      int p;
+  struct Callback_Params {
+    Callback_Params_Base *base_params;
+    const int p;
   };
 
   static void CUDART_CB MPIsend_Callback(void *data);
+  void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
   using MPIcuFFT<T>::Peer;
   using MPIcuFFT<T>::All2All;

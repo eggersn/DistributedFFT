@@ -2,6 +2,7 @@
 #include "cufft.hpp"
 #include <cuda_runtime_api.h>
 
+
 #define CUDA_CALL(x) do { if((x)!=cudaSuccess) {        \
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);  \
     exit(EXIT_FAILURE); }} while(0)
@@ -209,13 +210,33 @@ void MPIcuFFT_Slab<T>::setWorkArea(void *device, void *host) {
 
 template<typename T> 
 void MPIcuFFT_Slab<T>::MPIsend_Callback(void *data) {
-    using C_t = typename cuFFT<T>::C_t;
-    struct TransposeParams<C_t> *params = (TransposeParams<C_t> *) data;
-    struct Callback_Params_Base<C_t> *base_params = params->base_params;
+  struct Callback_Params *params = (Callback_Params *)data;
+  struct Callback_Params_Base *base_params = params->base_params;
+  {
+    std::lock_guard<std::mutex> lk(base_params->mutex);
+    base_params->comm_ready.push_back(params->p);
+  }
+  base_params->cv.notify_one();
+}
 
-    MPI_Isend(&base_params->send_ptr[params->oslice], 
-            sizeof(C_t)*(base_params->isizex[base_params->pidx])*(base_params->osizez)*(base_params->osizey[params->p]), MPI_BYTE, 
-            params->p, base_params->pidx, base_params->comm, &(base_params->send_req[params->p]));
+template<typename T>
+void MPIcuFFT_Slab<T>::MPIsend_Thread(Callback_Params_Base &base_params, void *ptr) {
+  using C_t = typename cuFFT<T>::C_t;
+  C_t *send_ptr = (C_t *) ptr;
+
+  for (int i = 0; i < comm_order.size(); i++){
+    std::unique_lock<std::mutex> lk(base_params.mutex);
+    base_params.cv.wait(lk, [&base_params]{return !base_params.comm_ready.empty();});
+
+    int p = base_params.comm_ready.back();
+    base_params.comm_ready.pop_back();
+    size_t oslice = isizex[pidx]*osizez*ostarty[p];
+
+    MPI_Isend(&send_ptr[oslice], 
+              sizeof(C_t)*isizex[pidx]*osizez*osizey[p], MPI_BYTE, 
+              p, pidx, comm, &(send_req[p]));
+    lk.unlock();
+  }
 }
 
 template<typename T> 
@@ -247,13 +268,16 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
     CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
     CUDA_CALL(cudaDeviceSynchronize());
 
-    Callback_Params_Base<C_t> base_params = {send_ptr, isizex, osizey, send_req, comm, pidx, osizez};
-    std::vector<TransposeParams<C_t>> param_array;
-    param_array.resize(pcnt, {});
-    for (auto p : comm_order) {
-      size_t oslice = isizex[pidx]*osizez*ostarty[p];
-      TransposeParams<C_t> params = {&base_params, oslice, p};
-      param_array[p] = params;
+    /* We are interested in sending the block via MPI as soon as cudaMemcpy2DAsync is done.
+    *  Therefore, MPIsend_Callback simulates a producer and MPIsend_Thread a consumer of a 
+    *  channel with blocking receive (via conditional variable)
+    */
+    Callback_Params_Base base_params;
+    std::vector<Callback_Params> params_array;
+
+    for (int i = 0; i < pcnt; i++){
+      Callback_Params params = {&base_params, i};
+      params_array.push_back(params);
     }
   
     for (auto p : comm_order) { 
@@ -263,16 +287,17 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
         p, p, comm, &(recv_req[p]));
 
       size_t oslice = isizex[pidx]*osizez*ostarty[p];
-
+ 
       CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[oslice], sizeof(C_t)*osizey[p]*osizez,
                                   &complex[ostarty[p]*osizez], sizeof(C_t)*isizey*osizez,
                                   sizeof(C_t)*osizey[p]*osizez, isizex[pidx],
                                   cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost, streams[p]));
-      printf("test");
-      CUDA_CALL(cudaLaunchHostFunc(streams[p], this->MPIsend_Callback, (void *)&param_array[p]));
+
+      // Callback function for the specific stream
+      CUDA_CALL(cudaLaunchHostFunc(streams[p], this->MPIsend_Callback, (void *)&params_array[p]));
     }
-    CUDA_CALL(cudaDeviceSynchronize());
-    printf("test");
+    // Thread which is used to send the MPI messages
+    std::thread mpisend_thread(&MPIcuFFT_Slab<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
     { 
       // transpose local block
       size_t oslice = osizez*osizey[pidx]*istartx[pidx];
@@ -282,8 +307,6 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
                                   sizeof(C_t)*osizey[pidx]*osizez, isizex[pidx],
                                   cudaMemcpyDeviceToDevice, streams[pidx]));
     }
-    CUDA_CALL(cudaDeviceSynchronize());
-    printf("%d", cuda_aware);
     if (!cuda_aware) { // copy received blocks to device
       int p, i = 0;
       do {
@@ -298,12 +321,11 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
       MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
     }
     CUDA_CALL(cudaDeviceSynchronize());
-    printf("test");
     // compute remaining 1d FFT, for cuda-aware recv and temp buffer are identical
     CUFFT_CALL(cuFFT<T>::execC2C(planC2C, temp_ptr, complex, CUFFT_FORWARD));
     CUDA_CALL(cudaDeviceSynchronize());
     MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
-
+    mpisend_thread.join();
   }
 }
 
