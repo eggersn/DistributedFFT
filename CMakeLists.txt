@@ -3,6 +3,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(FFT LANGUAGES CUDA CXX)
 
+if(NOT DEFINED CMAKE_CUDA_STANDARD)
+    set(CMAKE_CUDA_STANDARD 11)
+    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+endif()
+
 include_directories(./include)
 
 find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cublas)
@@ -11,7 +16,8 @@ find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cu
 find_package(MPI REQUIRED)
 
 # create library and link them
-add_library(mpicufft SHARED src/mpicufft.cpp src/mpicufft_slab.cpp src/mpicufft_pencil.cpp)
+add_library(mpicufft SHARED src/mpicufft.cpp src/mpicufft_slab.cpp src/mpicufft_slab_1d2d.cpp src/mpicufft_pencil.cpp)
+add_library(timer SHARED src/timer.cpp)
 add_executable(slab_random tests/slab/random.cu)
 add_executable(slab_random_dist tests/slab/random_dist.cu)
 
@@ -20,13 +26,13 @@ add_executable(pencil_random_dist1 tests/pencil/random_dist_1D.cu)
 add_executable(pencil_random_dist2 tests/pencil/random_dist_2D.cu)
 add_executable(pencil_random_dist3 tests/pencil/random_dist_3D.cu)
 
-target_link_libraries(slab_random PUBLIC mpicufft)
-target_link_libraries(slab_random_dist PUBLIC mpicufft)
+target_link_libraries(slab_random PUBLIC mpicufft timer)
+target_link_libraries(slab_random_dist PUBLIC mpicufft timer)
 
-target_link_libraries(pencil_random PUBLIC mpicufft)
-target_link_libraries(pencil_random_dist1 PUBLIC mpicufft)
-target_link_libraries(pencil_random_dist2 PUBLIC mpicufft)
-target_link_libraries(pencil_random_dist3 PUBLIC mpicufft)
+target_link_libraries(pencil_random PUBLIC mpicufft timer)
+target_link_libraries(pencil_random_dist1 PUBLIC mpicufft timer)
+target_link_libraries(pencil_random_dist2 PUBLIC mpicufft timer)
+target_link_libraries(pencil_random_dist3 PUBLIC mpicufft timer)
 
 #CUDA 
 set_property(TARGET mpicufft slab_random slab_random_dist pencil_random pencil_random_dist1 pencil_random_dist2 pencil_random_dist3 PROPERTY CUDA_ARCHITECTURES 50 61)
