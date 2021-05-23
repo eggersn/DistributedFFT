@@ -169,16 +169,18 @@ void MPIcuFFT_Slab_1D2D<T>::initFFT(GlobalSize *global_size, bool allocate, sequ
             input_size_z, input_size_z * output_sizes_y[pidx]};
 
         for (int s = 0; s < num_of_streams; s++){
-            cufftHandle handle;
-            cudaStream_t stream;
-            CUDA_CALL(cudaStreamCreate(&stream));
-            streams.push_back(stream);
+            if (s >= pcnt) {
+                cufftHandle handle;
+                cudaStream_t stream;
+                CUDA_CALL(cudaStreamCreate(&stream));
+                streams.push_back(stream);
+            }
 
             CUFFT_CALL(cufftCreate(&handle));
             CUFFT_CALL(cufftSetAutoAllocation(handle, 0));
 
             CUFFT_CALL(cufftMakePlanMany64(handle, 1, &n[0], &inembed[0], input_size_z, inembed[0], &onembed[0], input_size_z, onembed[0], cuFFT<T>::R2Ctype, batch, &ws_r2c));
-            CUFFT_CALL(cufftSetStream(handle, stream));
+            CUFFT_CALL(cufftSetStream(handle, streams[s]));
 
             planR2C.push_back(handle);
         }
@@ -309,10 +311,38 @@ void MPIcuFFT_Slab_1D2D<T>::execR2C(void *out, const void *in) {
                 MPI_Irecv(&recv_ptr[output_sizes_z[pidx]*output_size_y*istart[p]], 
                     sizeof(C_t)*output_sizes_z[pidx]*output_size_y*input_sizes_x[p], MPI_BYTE, p, p, comm, &rev_req[p]);
 
-                // CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[]
+                size_t oslice = ostartz[p]*input_size_y*input_sizes_x[pidx];
+
+                CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[oslice], sizeof(C_t)*output_sizes_z[p],
+                    &complex[ostartz[p]], sizeof(C_t)*(input_size_z/2+1), sizeof(C_t)*output_sizes_z[p], input_size_y*input_sizes_x[pidx],
+                    cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost, streams[p]));
+
+                CUDA_CALL(cudaDeviceSynchronize());
+
+                MPI_Isend(&send_ptr[oslice], sizeof(C_t)*output_sizes_z[p]*input_size_y*input_sizes_x[pidx], 
+                    MPI_BYTE, p, pidx, comm, &send_req[p]);
             }
         } else {
+            for (auto p : comm_order) { 
+                // start non-blocking receive for rank p
+                MPI_Irecv(&recv_ptr[output_size_z*output_sizes_y[pidx]*istartx[p]],
+                    sizeof(C_t)*output_size_z*output_sizes_y[pidx]*input_sizes_x[p], MPI_BYTE,
+                    p, p, comm, &recv_req[p]);
 
+                size_t oslice = output_size_z*ostarty[p]*input_sizes_x[pidx];
+            
+                CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[oslice], sizeof(C_t)*output_size_z*output_sizes_y[p],
+                    &complex[output_size_z*ostarty[p]], sizeof(C_t)*output_size_z*input_size_y, sizeof(C_t)*output_size_z*output_sizes_y[p], input_sizes_x[pidx], 
+                    cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost, streams[p]));
+
+                CUDA_CALL(cudaDeviceSynchronize());
+
+                MPI_Isend(&send_ptr[oslice], 
+                    sizeof(C_t)*output_size_z*output_sizes_y[p]*input_sizes_x[pidx], 
+                    MPI_BYTE, p, pidx, comm, &send_req[p]);
+            }
         }
+
+        // Next up: Local Transpose
     }
 }
