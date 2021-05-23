@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mpicufft.hpp"
+#include "timer.hpp"
 #include <cufft.h>
 #include <cuda_runtime_api.h>
 #include <cuda.h>
@@ -99,4 +100,10 @@ protected:
     Partition_Dimensions input_dim;
     Partition_Dimensions transposed_dim;
     Partition_Dimensions output_dim;
+
+    Timer *timer;
+
+    std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "First Transpose (First Send)", "First Transpose (Packing)", "First Transpose (Start Local Transpose)", 
+        "First Transpose (Start Receive)", "First Transpose (Finished Receive)", "1D FFT Y-Direction", "Second Transpose (Preparation)",
+        "Second Transpose (First Send)", "Second Transpose (Packing)", "Second Transpose (Start Local Transpose)", "Second Transpose (Start Receive)", "Second Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
 };

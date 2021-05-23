@@ -1,5 +1,6 @@
 #include "mpicufft_pencil.hpp"
 #include "cufft.hpp"
+#include "cuda_profiler_api.h"
 #include <cuda_runtime.h>
 #include <charconv>
 
@@ -41,7 +42,9 @@
 }
 
 template<typename T>
-MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
+MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : 
+    MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
+    cudaProfilerStart();
     pidx_i = 0;
     pidx_j = 0;
 
@@ -49,6 +52,8 @@ MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(MPI_Comm comm, bool mpi_cuda_aware, int max_
 
     planR2C = 0;
     planC2C_1 = 0;
+
+    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions);
 }
 
 template<typename T> 
@@ -61,6 +66,8 @@ MPIcuFFT_Pencil<T>::~MPIcuFFT_Pencil() {
     }
     if (planC2C_1) 
         CUFFT_CALL(cufftDestroy(planC2C_1));
+
+    delete timer;
 }
 
 template<typename T>
@@ -81,6 +88,7 @@ void MPIcuFFT_Pencil<T>::commOrder_SecondTranspose() {
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::initFFT(GlobalSize *global_size_, Partition *partition_, bool allocate) {
+    timer->start();
     global_size = global_size_;
     partition = partition_;
 
@@ -210,6 +218,7 @@ void MPIcuFFT_Pencil<T>::initFFT(GlobalSize *global_size_, Partition *partition_
         this->setWorkArea();
 
     CUDA_CALL(cudaDeviceSynchronize());
+    timer->stop_store("init");
 }
 
 template<typename T>
@@ -296,12 +305,17 @@ void MPIcuFFT_Pencil<T>::MPIsend_Thread_FirstCallback(Callback_Params_Base &base
     base_params.comm_ready.pop_back();
     int p = pidx_i * partition->P2 + p_j;
 
+    if (i == 0)
+      timer->stop_store("First Transpose (First Send)");
+
     MPI_Isend(&send_ptr[input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.start_z[p_j]],
     sizeof(C_t)*input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.size_z[p_j], MPI_BYTE,
     p, pidx_j, comm, &(send_req[p_j]));
 
     lk.unlock();
   }
+
+  timer->stop_store("First Transpose (Packing)");
 }
 
 template<typename T>
@@ -317,12 +331,16 @@ void MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback(Callback_Params_Base &bas
         base_params.comm_ready.pop_back();
         int p = p_i * partition->P2 + pidx_j;
 
+        if (i == 0)
+            timer->stop_store("Second Transpose (First Send)");
+
         MPI_Isend(&send_ptr[transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*output_dim.start_y[p_i]], 
             sizeof(C_t)*transposed_dim.size_x[pidx_i]*output_dim.size_y[p_i]*transposed_dim.size_z[pidx_j], MPI_BYTE,
             p, pidx_i, comm, &(send_req[p_i]));
 
         lk.unlock();
     }
+    timer->stop_store("Second Transpose (Packing)");
 }
 
 template<typename T>
@@ -340,6 +358,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
         CUDA_CALL(cudaDeviceSynchronize());
     } else {
+        timer->start();
         // compute 1D FFT in z-direction
         CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
 
@@ -381,7 +400,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
 
         // Wait for 1D FFT in z-direction
         CUDA_CALL(cudaDeviceSynchronize());
-        
+        timer->stop_store("1D FFT Z-Direction");
         Callback_Params_Base base_params;
         std::vector<Callback_Params> params_array;
 
@@ -420,6 +439,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         std::thread mpisend_thread1(&MPIcuFFT_Pencil<T>::MPIsend_Thread_FirstCallback, this, std::ref(base_params), send_ptr);
         // Transpose local block and copy it to the temp buffer
         // This is required, since otherwise the data layout is not consecutive
+        timer->stop_store("First Transpose (Start Local Transpose)");
         {
             cudaMemcpy3DParms cpy_params = {0};
             cpy_params.srcPos = make_cudaPos(transposed_dim.start_z[pidx_j]*sizeof(C_t), 0, 0);
@@ -434,6 +454,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
 
         // Start copying the received blocks to the temp buffer, where the second 1D FFT (y-direction) can be computed
         // Since the received data has to be realigned (independent of cuda_aware), we use cudaMemcpy3D.
+        timer->stop_store("First Transpose (Start Receive)");
         int p;
         do {
             // recv_req contains one null handle (i.e. recv_req[pidx_j]) and P2-1 active handles
@@ -456,6 +477,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         } while (p != MPI_UNDEFINED);
         // For the 1D FFT in y-direction, all data packages have to be received
         CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("First Transpose (Finished Receive)");
 
         // If transposed_dim.size_x[pidx_i] <= transposed_dim.size_z[pidx_j] then:
         // We compute multiple 1D FFT batches, where each batch is a slice in y-z direction
@@ -470,6 +492,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
             CUFFT_CALL(cuFFT<T>::execC2C(planC2C_0[i], &temp_ptr[i*batches_offset], &complex[i*batches_offset], CUFFT_FORWARD));
         }
         CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("1D FFT Y-Direction");
         mpisend_thread1.join();
         MPI_Waitall(partition->P2, send_req.data(), MPI_STATUSES_IGNORE);
         // used for random_dist_2D test
@@ -506,6 +529,8 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
             params_array.push_back(params);
         }
 
+        timer->stop_store("Second Transpose (Preparation)");
+
         for (size_t i = 0; i < comm_order.size(); i++){
             size_t p_j = pidx_j;
             size_t p_i = (comm_order[i] - p_j) / partition->P2;
@@ -535,6 +560,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         }
         std::thread mpisend_thread2(&MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback, this, std::ref(base_params), send_ptr);
         
+        timer->stop_store("Second Transpose (Start Local Transpose)");
         C_t *temp1_ptr = cuda_aware ? recv_ptr : temp_ptr;
         // Transpose local block and copy it to the recv buffer
         // Here, we use the recv buffer instead of the temp buffer, as the received data is already correctly aligned
@@ -551,6 +577,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[pidx_i]));            
         }
 
+        timer->stop_store("Second Transpose (Start Receive)");
         // Start copying the received blocks to GPU memory (if !cuda_aware)
         // Otherwise the data is already correctly aligned. Therefore, we compute the last 1D FFT (x-direction) in the recv buffer (= temp1 buffer)
         if (!cuda_aware){
@@ -572,13 +599,18 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         }
         // Wait for memcpy to complete
         CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("Second Transpose (Finished Receive)");
 
         // Compute the 1D FFT in x-direction
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C_1, temp1_ptr, complex, CUFFT_FORWARD));
         CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("1D FFT X-Direction");
         mpisend_thread2.join();
         MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
+        timer->stop_store("Run complete");
     }
+    cudaProfilerStop();
+    timer->gather();
 }
 
 template class MPIcuFFT_Pencil<float>;

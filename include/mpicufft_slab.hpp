@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mpicufft.hpp"
+#include "timer.hpp"
 #include <cufft.h>
 #include <cuda.h>
 #include <vector>
@@ -13,18 +14,18 @@ public:
     MPIcuFFT_Slab (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
     ~MPIcuFFT_Slab ();
 
-    void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
+    virtual void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
     void initFFT(GlobalSize *global_size, bool allocate=true) {
       initFFT(global_size, nullptr, allocate);
     }
-    void setWorkArea(void *device=nullptr, void *host=nullptr);
+    virtual void setWorkArea(void *device=nullptr, void *host=nullptr);
 
-    void execR2C(void *out, const void *in);
+    virtual void execR2C(void *out, const void *in);
     // void execC2R(void *out, const void *in);
 
-    inline void getInSize(size_t *isize) { isize[0] = isizex[pidx]; isize[1] = isizey; isize[2] = isizez; };
+    inline void getInSize(size_t *isize) { isize[0] = input_sizes_x[pidx]; isize[1] = input_size_y; isize[2] = input_size_z; };
     inline void getInStart(size_t *istart) { istart[0] = istartx[pidx]; istart[1] = 0; istart[2] = 0; };
-    inline void getOutSize(size_t *osize) { osize[0] = osizex; osize[1] = osizey[pidx]; osize[2] = osizez; };
+    inline void getOutSize(size_t *osize) { osize[0] = output_size_x; osize[1] = output_sizes_y[pidx]; osize[2] = output_size_z; };
     inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = ostarty[pidx]; ostart[2] = 0; };
 
 protected:
@@ -75,9 +76,9 @@ protected:
   cufftHandle planR2C;
   cufftHandle planC2C;
 
-  std::vector<size_t> isizex;
+  std::vector<size_t> input_sizes_x;
   std::vector<size_t> istartx;
-  std::vector<size_t> osizey;
+  std::vector<size_t> output_sizes_y;
   std::vector<size_t> ostarty;
 
   std::vector<MPI_Request> send_req;
@@ -85,6 +86,11 @@ protected:
 
   std::vector<cudaStream_t> streams;
 
-  size_t isizey, isizez;
-  size_t osizex, osizez;    
+  size_t input_size_y, input_size_z;
+  size_t output_size_x, output_size_z;    
+
+  Timer *timer;
+
+  std::vector<std::string> section_descriptions = {"init", "2D FFT Y-Z-Direction", "Transpose (First Send)", "Transpose (Packing)", "Transpose (Start Local Transpose)", 
+    "Transpose (Start Receive)", "Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
 };

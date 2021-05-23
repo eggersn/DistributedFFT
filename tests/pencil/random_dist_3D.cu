@@ -34,7 +34,7 @@
 #define P2 2
 #define PartOfCluster 0
 
-#define ALLOW_CUDA_AWARE 0
+#define ALLOW_CUDA_AWARE 1
 #define CUDA_AWARE MPIX_Query_cuda_support() * ALLOW_CUDA_AWARE
 
 using R_t = typename cuFFT<double>::R_t;
