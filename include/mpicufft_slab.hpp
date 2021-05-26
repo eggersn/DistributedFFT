@@ -24,9 +24,9 @@ public:
     // void execC2R(void *out, const void *in);
 
     inline void getInSize(size_t *isize) { isize[0] = input_sizes_x[pidx]; isize[1] = input_size_y; isize[2] = input_size_z; };
-    inline void getInStart(size_t *istart) { istart[0] = istartx[pidx]; istart[1] = 0; istart[2] = 0; };
+    inline void getInStart(size_t *istart) { istart[0] = input_start_x[pidx]; istart[1] = 0; istart[2] = 0; };
     inline void getOutSize(size_t *osize) { osize[0] = output_size_x; osize[1] = output_sizes_y[pidx]; osize[2] = output_size_z; };
-    inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = ostarty[pidx]; ostart[2] = 0; };
+    inline void getOutStart(size_t *ostart) { ostart[0] = 0; ostart[1] = output_start_y[pidx]; ostart[2] = 0; };
 
 protected:
 
@@ -77,9 +77,9 @@ protected:
   cufftHandle planC2C;
 
   std::vector<size_t> input_sizes_x;
-  std::vector<size_t> istartx;
+  std::vector<size_t> input_start_x;
   std::vector<size_t> output_sizes_y;
-  std::vector<size_t> ostarty;
+  std::vector<size_t> output_start_y;
 
   std::vector<MPI_Request> send_req;
   std::vector<MPI_Request> recv_req;

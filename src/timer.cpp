@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <fstream>
 
-Timer::Timer(MPI_Comm comm, int p_gather, int pcnt, int pidx, std::vector<std::string> &descs) : 
-    comm(comm), p_gather(p_gather), pcnt(pcnt), pidx(pidx), descs(descs) {
+Timer::Timer(MPI_Comm comm, int p_gather, int pcnt, int pidx, std::vector<std::string> &descs, std::string filename) : 
+    comm(comm), p_gather(p_gather), pcnt(pcnt), pidx(pidx), descs(descs), filename(filename) {
     durations.resize(descs.size(), 0);
     tstop_points.resize(descs.size(), 0);
 }
@@ -63,7 +63,7 @@ void Timer::gather() {
 
     if (pidx == p_gather){
         std::ofstream myfile;
-        myfile.open ("benchmarks.csv");
+        myfile.open (filename);
         myfile << ",";
         for (int i = 0; i < pcnt; i++)
             myfile << i << ",";

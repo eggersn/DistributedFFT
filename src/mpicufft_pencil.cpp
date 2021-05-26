@@ -53,7 +53,7 @@ MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(MPI_Comm comm, bool mpi_cuda_aware, int max_
     planR2C = 0;
     planC2C_1 = 0;
 
-    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions);
+    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, "../benchmarks/pencil.csv");
 }
 
 template<typename T> 

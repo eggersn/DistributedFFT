@@ -26,9 +26,9 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);          \
     return EXIT_FAILURE;}} while(0)
 
-#define Nx 64
-#define Ny 64
-#define Nz 64
+#define Nx 128
+#define Ny 128
+#define Nz 128
 
 #define P1 2
 #define P2 2

@@ -12,38 +12,14 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);  \
     exit(EXIT_FAILURE); }} while(0)
 
-#define DEBUG 1
-#define debug(d, v) {                                                 \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d): %s: %s in %s:%d\n",pidx,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
-
-#define debug_h(v) {                                                  \
-  if (DEBUG == 1) {                                                   \
-    printf("%s",v);                \
-  }                                                                   \
-}
-
-#define debug_int(d, v) {                                             \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d): %s: %d in %s:%d\n",pidx,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
-
-#define debug_p(d, v) {                                                  \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d): %s: %p in %s:%d\n",pidx,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
 
 template<typename T> 
 MPIcuFFT_Slab<T>::MPIcuFFT_Slab(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
   cudaProfilerStart();
   input_sizes_x.resize(pcnt, 0);
-  istartx.resize(pcnt, 0);
+  input_start_x.resize(pcnt, 0);
   output_sizes_y.resize(pcnt, 0);
-  ostarty.resize(pcnt, 0);
+  output_start_y.resize(pcnt, 0);
 
   send_req.resize(pcnt, MPI_REQUEST_NULL);
   recv_req.resize(pcnt, MPI_REQUEST_NULL);
@@ -63,7 +39,7 @@ MPIcuFFT_Slab<T>::MPIcuFFT_Slab(MPI_Comm comm, bool mpi_cuda_aware, int max_worl
     streams.push_back(stream);
   }
 
-  timer = new Timer(comm, 0, pcnt, pidx, section_descriptions);
+  timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, "../benchmarks/slab.csv");
 }
 
 template<typename T> 
@@ -87,7 +63,7 @@ void MPIcuFFT_Slab<T>::initFFT(GlobalSize *global_size, Partition *partition, bo
   size_t N1mod = global_size->Nx % pcnt;
   for (int p = 0; p < pcnt; ++p) {
     input_sizes_x[p]  = N1 + ((static_cast<size_t>(p) < N1mod) ? 1 : 0);
-    istartx[p] = ((p==0) ? 0 : istartx[p-1]+input_sizes_x[p-1]);
+    input_start_x[p] = ((p==0) ? 0 : input_start_x[p-1]+input_sizes_x[p-1]);
   }
 
   //we only divide across the x-axis
@@ -98,7 +74,7 @@ void MPIcuFFT_Slab<T>::initFFT(GlobalSize *global_size, Partition *partition, bo
   size_t N2mod = global_size->Ny % pcnt;
   for (int p = 0; p < pcnt; ++p) {
     output_sizes_y[p]  = N2 + ((static_cast<size_t>(p) < N2mod) ? 1 : 0);
-    ostarty[p] = ((p==0) ? 0 : ostarty[p-1]+output_sizes_y[p-1]);
+    output_start_y[p] = ((p==0) ? 0 : output_start_y[p-1]+output_sizes_y[p-1]);
   }
   //for real input values, the second half (of the z-axis) is symmetric to the first half
   output_size_x = global_size->Nx; output_size_z = (global_size->Nz / 2) + 1;
@@ -222,7 +198,7 @@ void MPIcuFFT_Slab<T>::MPIsend_Thread(Callback_Params_Base &base_params, void *p
 
     int p = base_params.comm_ready.back();
     base_params.comm_ready.pop_back();
-    size_t oslice = input_sizes_x[pidx]*output_size_z*ostarty[p];
+    size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
 
     if (i == 0)
       timer->stop_store("Transpose (First Send)");
@@ -264,8 +240,6 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
 
     // compute 2d FFT 
     CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
-    CUDA_CALL(cudaDeviceSynchronize());
-    timer->stop_store("2D FFT Y-Z-Direction");
 
     /* We are interested in sending the block via MPI as soon as cudaMemcpy2DAsync is done.
     *  Therefore, MPIsend_Callback simulates a producer and MPIsend_Thread a consumer of a 
@@ -278,17 +252,20 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
       Callback_Params params = {&base_params, i};
       params_array.push_back(params);
     }
+
+    CUDA_CALL(cudaDeviceSynchronize());
+    timer->stop_store("2D FFT Y-Z-Direction");
   
     for (auto p : comm_order) { 
       // start non-blocking receive for rank p
-      MPI_Irecv((&recv_ptr[istartx[p]*output_size_z*output_sizes_y[pidx]]),
+      MPI_Irecv((&recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]]),
         sizeof(C_t)*input_sizes_x[p]*output_size_z*output_sizes_y[pidx], MPI_BYTE,
         p, p, comm, &(recv_req[p]));
 
-      size_t oslice = input_sizes_x[pidx]*output_size_z*ostarty[p];
+      size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
  
       CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[oslice], sizeof(C_t)*output_sizes_y[p]*output_size_z,
-                                  &complex[ostarty[p]*output_size_z], sizeof(C_t)*input_size_y*output_size_z,
+                                  &complex[output_start_y[p]*output_size_z], sizeof(C_t)*input_size_y*output_size_z,
                                   sizeof(C_t)*output_sizes_y[p]*output_size_z, input_sizes_x[pidx],
                                   cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost, streams[p]));
 
@@ -300,10 +277,10 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
     timer->stop_store("Transpose (Start Local Transpose)");
     { 
       // transpose local block
-      size_t oslice = output_size_z*output_sizes_y[pidx]*istartx[pidx];
+      size_t oslice = output_size_z*output_sizes_y[pidx]*input_start_x[pidx];
 
       CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[oslice], sizeof(C_t)*output_sizes_y[pidx]*output_size_z,
-                                  &complex[ostarty[pidx]*output_size_z], sizeof(C_t)*input_size_y*output_size_z, 
+                                  &complex[output_start_y[pidx]*output_size_z], sizeof(C_t)*input_size_y*output_size_z, 
                                   sizeof(C_t)*output_sizes_y[pidx]*output_size_z, input_sizes_x[pidx],
                                   cudaMemcpyDeviceToDevice, streams[pidx]));
     }
@@ -313,8 +290,8 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
       do {
         MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
         if (p == MPI_UNDEFINED) break;
-        CUDA_CALL(cudaMemcpyAsync(&temp_ptr[istartx[p]*output_size_z*output_sizes_y[pidx]],
-                                  &recv_ptr[istartx[p]*output_size_z*output_sizes_y[pidx]],
+        CUDA_CALL(cudaMemcpyAsync(&temp_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]],
+                                  &recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]],
                                   input_sizes_x[p]*output_size_z*output_sizes_y[pidx]*sizeof(C_t), cudaMemcpyHostToDevice, streams[comm_order[i]]));
         i++;
       } while(p != MPI_UNDEFINED);

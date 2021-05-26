@@ -7,7 +7,7 @@
 
 class Timer {
 public:
-    Timer(MPI_Comm comm, int p_gather, int pcnt, int pidx, std::vector<std::string> &descs);
+    Timer(MPI_Comm comm, int p_gather, int pcnt, int pidx, std::vector<std::string> &descs, std::string filename);
     void start();
     void stop(std::string desc);
     void store(std::string desc);
@@ -28,6 +28,7 @@ protected:
     std::vector<double> tstop_points;
     double tstart;
     std::vector<std::string> &descs;
+    std::string filename;
 
     std::mutex mutex;
 };
