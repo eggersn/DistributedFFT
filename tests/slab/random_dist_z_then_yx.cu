@@ -1,12 +1,5 @@
 #include "mpicufft_slab_z_then_yx.hpp"
-#include "cufft.hpp"
-#include "mpi.h"
-#include "mpi-ext.h"
-#include "device_launch_parameters.h"
-#include <cuda.h>
-#include <cuda_runtime.h>
-#include <curand.h>
-#include "cublas_v2.h"
+#include "tests_slab_random_z_then_yx.hpp"
 #include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,49 +19,40 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);          \
     return EXIT_FAILURE;}} while(0)
 
-#define Nx 128
-#define Ny 128
-#define Nz 128
-
-#define ALLOW_CUDA_AWARE 1
-#define CUDA_AWARE MPIX_Query_cuda_support() * ALLOW_CUDA_AWARE
-
-using R_t = typename cuFFT<double>::R_t;
-using C_t = typename cuFFT<double>::C_t;
-
-__global__ void scaleUniformArray(R_t* data_d, R_t factor, int n){
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if(i < n) {
-        data_d[i] *= factor;
+namespace Difference_Slab_Z_Then_YX {
+    __global__ void differenceFloat(cuFFT<float>::C_t* array1, cuFFT<float>::C_t* array2, int n){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i].x -= array2[i].x;
+            array1[i].y -= array2[i].y;
+        }
     }
-}
-
-__global__ void difference(C_t* array1, C_t* array2, int n){
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if(i < n) {
-        array1[i].x -= array2[i].x;
-        array1[i].y -= array2[i].y;
+    
+    __global__ void differenceDouble(cuFFT<double>::C_t* array1, cuFFT<double>::C_t* array2, int n){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i].x -= array2[i].x;
+            array1[i].y -= array2[i].y;
+        }
     }
+    
+    template<typename T> 
+    struct Difference { 
+        static decltype(differenceFloat)* difference;
+    };
+    template<typename T> decltype(differenceFloat)* Difference<T>::difference = differenceFloat;
+    
+    template<> struct Difference<double> { 
+        static decltype(differenceDouble)* difference;
+    };
+    decltype(differenceDouble)* Difference<double>::difference = differenceDouble;
 }
 
+template <typename T>
+int Tests_Slab_Random_Z_Then_YX<T>::coordinate(int world_size){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
 
-int initializeRandArray(void* in_d){
-    curandGenerator_t gen;
-    R_t *real = cuFFT<double>::real(in_d);
-
-    //create pseudo-random generator
-    CURAND_CALL(curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT));
-    //set seed of generator
-    CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, 1234ULL));
-    //get poisson samples
-    CURAND_CALL(curandGenerateUniformDouble(gen, real, Nx*Ny*Nz));
-
-    scaleUniformArray<<<(Nx*Ny*Nz)/1024+1, 1024>>>(real, 255, Nx*Ny*Nz);
-
-    return 0;
-}
-
-int coordinate(int world_size){
     std::vector<MPI_Request> send_req;
     std::vector<MPI_Request> recv_req;
 
@@ -88,7 +72,7 @@ int coordinate(int world_size){
     CUDA_CALL(cudaMalloc((void **)&out_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     CUDA_CALL(cudaMalloc((void **)&res_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     
-    if (CUDA_AWARE == 1){
+    if (cuda_aware == 1){
         CUDA_CALL(cudaMalloc((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
         CUDA_CALL(cudaMalloc((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     } else {
@@ -97,15 +81,15 @@ int coordinate(int world_size){
     }
 
     //random initialization of full Nx*Ny*Nz array
-    initializeRandArray(in_d);
+    this->initializeRandArray(in_d);
 
     //Copy input data to send-buffer and initialize cufft
     CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nx*Ny*Nz*sizeof(R_t), 
-        CUDA_AWARE==1?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost));
+        cuda_aware==1?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost));
 
     CUFFT_CALL(cufftCreate(&planR2C));
     CUFFT_CALL(cufftSetAutoAllocation(planR2C, 0));
-    CUFFT_CALL(cufftMakePlan3d(planR2C, Nx, Ny, Nz, cuFFT<double>::R2Ctype, &ws_r2c));
+    CUFFT_CALL(cufftMakePlan3d(planR2C, Nx, Ny, Nz, cuFFT<T>::R2Ctype, &ws_r2c));
     CUFFT_CALL(cufftSetWorkArea(planR2C, in_d));
 
     //Distribute input data
@@ -137,10 +121,10 @@ int coordinate(int world_size){
     MPI_Waitall(world_size, send_req.data(), MPI_STATUSES_IGNORE);
 
     //compute local fft
-    R_t *real    = cuFFT<double>::real(in_d);
-    C_t *complex = cuFFT<double>::complex(out_d);
+    R_t *real    = cuFFT<T>::real(in_d);
+    C_t *complex = cuFFT<T>::complex(out_d);
 
-    CUFFT_CALL(cuFFT<double>::execR2C(planR2C, real, complex));
+    CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
     CUDA_CALL(cudaDeviceSynchronize());
 
     CUBLAS_CALL(cublasCreate(&handle));
@@ -161,17 +145,17 @@ int coordinate(int world_size){
         cpy_params.dstPos = make_cudaPos(ostartz[p]*sizeof(C_t), 0, 0);
         cpy_params.dstPtr = make_cudaPitchedPtr(res_d, (Nz/2+1)*sizeof(C_t), Nz/2+1, Ny);    
         cpy_params.extent = make_cudaExtent(osizez*sizeof(C_t), Ny, Nx);
-        cpy_params.kind   = CUDA_AWARE==1 ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;   
+        cpy_params.kind   = cuda_aware==1 ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;   
         
         CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
     } while (p != MPI_UNDEFINED);
     CUDA_CALL(cudaDeviceSynchronize());
 
     //compare difference
-    difference<<<(Nx*Ny*(Nz/2+1))/1024+1, 1024>>>(complex, res_d, Nx*Ny*(Nz/2+1));
+    Difference_Slab_Z_Then_YX::Difference<T>::difference<<<(Nx*Ny*(Nz/2+1))/1024+1, 1024>>>(complex, res_d, Nx*Ny*(Nz/2+1));
 
-    double sum = 0;
-    CUBLAS_CALL(cublasDzasum(handle, Nx*Ny*(Nz/2+1), complex, 1, &sum));
+    T sum = 0;
+    CUBLAS_CALL(Random_Tests<T>::cublasSum(handle, Nx*Ny*(Nz/2+1), complex, 1, &sum));
     CUBLAS_CALL(cublasDestroy(handle));
 
     std::cout << "Result " << sum << std::endl;
@@ -180,14 +164,18 @@ int coordinate(int world_size){
 
     CUDA_CALL(cudaFree(in_d));
     CUDA_CALL(cudaFree(out_d));
-    if (CUDA_AWARE == 0){
+    if (cuda_aware == 0){
         CUDA_CALL(cudaFree(res_d));
     } 
 
     return 0;
 }
 
-int compute(int rank, int world_size){
+template <typename T>
+int Tests_Slab_Random_Z_Then_YX<T>::compute(int rank, int world_size, int opt){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+
     MPI_Request send_req;
     MPI_Request recv_req;
 
@@ -206,7 +194,7 @@ int compute(int rank, int world_size){
     CUDA_CALL(cudaMalloc((void **)&in_d, N1*Ny*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
     
-    if (CUDA_AWARE == 1){
+    if (cuda_aware == 1){
         recv_ptr = in_d;
         send_ptr = out_d;
     } else {
@@ -218,13 +206,13 @@ int compute(int rank, int world_size){
     MPI_Irecv(recv_ptr, N1*Ny*Nz*sizeof(R_t), MPI_BYTE, world_size, rank, MPI_COMM_WORLD, &recv_req);
     MPI_Wait(&recv_req, MPI_STATUSES_IGNORE);
 
-    if (CUDA_AWARE == 0){
+    if (cuda_aware == 0){
         CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, N1*Ny*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
         CUDA_CALL(cudaDeviceSynchronize());
     }
 
     //initialize MPIcuFFT
-    MPIcuFFT_Slab_Z_Then_YX<double> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, world_size);
+    MPIcuFFT_Slab_Z_Then_YX<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware==1, world_size);
     
     GlobalSize global_size(Nx, Ny, Nz);
     mpicuFFT.initFFT(&global_size, true);
@@ -232,7 +220,7 @@ int compute(int rank, int world_size){
     //execute
     mpicuFFT.execR2C(out_d, in_d);
 
-    if (CUDA_AWARE == 0){
+    if (cuda_aware == 0){
         CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, Nx*Ny*N2*sizeof(C_t), cudaMemcpyDeviceToHost));
         CUDA_CALL(cudaDeviceSynchronize());
     }
@@ -246,28 +234,7 @@ int compute(int rank, int world_size){
     return 0;
 }
 
-int main() {      
-    //initialize MPI
-    MPI_Init(NULL, NULL);
+template class Tests_Slab_Random_Z_Then_YX<float>;
+template class Tests_Slab_Random_Z_Then_YX<double>;
 
-    //number of processes
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-    world_size--;
-
-    //get global rank
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    if (rank == world_size){
-        coordinate(world_size);
-    } else{
-        compute(rank, world_size);
-    }
-    
-    //finalize
-    MPI_Finalize();
-
-    return 0;
-}
 

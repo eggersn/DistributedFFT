@@ -1,0 +1,14 @@
+{   
+    "Pencil": {
+        "P1": 4,
+        "P2": 4
+    },
+    "Slab": {
+        "P": 4
+    },
+    "allow_cuda_aware": true,
+    "Nx": 64,
+    "Ny": 64,
+    "Nz": 64,
+    "Precision": "double"
+}

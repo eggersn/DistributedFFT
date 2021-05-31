@@ -12,7 +12,7 @@ public:
     void stop(std::string desc);
     void store(std::string desc);
     void stop_store(std::string desc) {stop(desc); store(desc);}
-
+    void setFileName(std::string filename_) {filename=filename_;}
     void gather();
 
 protected:
