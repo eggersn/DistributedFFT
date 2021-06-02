@@ -17,11 +17,12 @@ find_package(MPI REQUIRED)
 
 # create library and link them
 
-add_library(mpicufft SHARED src/mpicufft.cpp src/slab/default/mpicufft_slab.cpp src/slab/default/mpicufft_slab_opt1.cpp src/slab/z_then_yx/mpicufft_slab_z_then_yx.cpp src/slab/y_then_zx/mpicufft_slab_y_then_zx.cpp src/pencil/mpicufft_pencil.cpp)
+add_library(mpicufft SHARED src/mpicufft.cpp src/slab/default/mpicufft_slab.cpp src/slab/default/mpicufft_slab_opt1.cpp src/slab/z_then_yx/mpicufft_slab_z_then_yx.cpp src/slab/z_then_yx/mpicufft_slab_z_then_yx_opt1.cpp src/slab/y_then_zx/mpicufft_slab_y_then_zx.cpp src/pencil/mpicufft_pencil.cpp)
 add_library(slab_tests SHARED tests/slab/base.cu tests/slab/random_dist.cu tests/slab/random_dist_y_then_zx.cu tests/slab/random_dist_z_then_yx.cu )
 add_library(timer SHARED src/timer.cpp)
 add_executable(tests_exec tests/main.cpp)
 
+set_property(TARGET timer PROPERTY CXX_STANDARD 20)
 target_link_libraries(tests_exec PUBLIC mpicufft slab_tests timer)
 
 #CUDA 

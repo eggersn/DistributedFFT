@@ -1,6 +1,7 @@
 #include "timer.hpp"
 #include <algorithm>
 #include <fstream>
+#include <filesystem>
 
 Timer::Timer(MPI_Comm comm, int p_gather, int pcnt, int pidx, std::vector<std::string> &descs, std::string filename) : 
     comm(comm), p_gather(p_gather), pcnt(pcnt), pidx(pidx), descs(descs), filename(filename) {
@@ -63,10 +64,14 @@ void Timer::gather() {
 
     if (pidx == p_gather){
         std::ofstream myfile;
-        myfile.open (filename);
-        myfile << ",";
-        for (int i = 0; i < pcnt; i++)
-            myfile << i << ",";
+        if (!std::filesystem::exists(filename)) {
+            myfile.open(filename);
+            myfile << ",";
+            for (int i = 0; i < pcnt; i++)
+                myfile << i << ",";
+        } else {
+            myfile.open(filename, std::ios_base::app);
+        }
         myfile << "\n";
         for (int i = 0; i < durations.size(); i++){
             myfile << descs[i] << ",";

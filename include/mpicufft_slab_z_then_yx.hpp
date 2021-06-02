@@ -14,11 +14,11 @@ public:
     MPIcuFFT_Slab_Z_Then_YX (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
     ~MPIcuFFT_Slab_Z_Then_YX ();
 
-    void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true) { initFFT(global_size, allocate); }
-    void initFFT(GlobalSize *global_size, bool allocate=true);
+    virtual void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true) { initFFT(global_size, allocate); }
+    virtual void initFFT(GlobalSize *global_size, bool allocate=true);
     void setWorkArea(void *device=nullptr, void *host=nullptr);
 
-    void execR2C(void *out, const void *in);
+    virtual void execR2C(void *out, const void *in);
 
     inline void getInSize(size_t *isize) { isize[0] = input_sizes_x[pidx]; isize[1] = input_size_y; isize[2] = input_size_z; };
     inline void getInStart(size_t *istart) { istart[0] = input_start_x[pidx]; istart[1] = 0; istart[2] = 0; };

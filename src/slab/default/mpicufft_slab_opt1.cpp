@@ -1,4 +1,4 @@
-#include "mpicufft_slab.hpp"
+#include "mpicufft_slab_opt1.hpp"
 #include "cuda_profiler_api.h"
 #include "cufft.hpp"
 #include <cuda_runtime_api.h>
@@ -150,7 +150,7 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
     C_t *recv_ptr, *send_ptr, *temp_ptr;
     temp_ptr = cuFFT<T>::complex(mem_d[0]);
     if (cuda_aware) {
-      recv_ptr = cuFFT<T>::complex(mem_d[1]); // = temp_ptr!
+      recv_ptr = cuFFT<T>::complex(mem_d[1]);
     } else {
       send_ptr = cuFFT<T>::complex(mem_h[0]);
       recv_ptr = cuFFT<T>::complex(mem_h[1]);
@@ -161,16 +161,18 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
     // compute 2d FFT 
     CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
 
-    /* We are interested in sending the block via MPI as soon as cudaMemcpy2DAsync is done.
-    *  Therefore, MPIsend_Callback simulates a producer and MPIsend_Thread a consumer of a 
-    *  channel with blocking receive (via conditional variable)
+    /* We are interested in sending the block via MPI as soon as possible.
+    *  If MPI is compiled with the cuda_aware flag, then we are able to send the block directly from device memory.
+    *  Otherwise, we need to copy the data to host memory first. Directly after the stream is done copying, a second
+    *  thread is notified (via cudaLauchHostFunc) which calls MPI_Isendv.
     */
     Callback_Params_Base base_params;
     std::vector<Callback_Params> params_array;
-
-    for (int i = 0; i < pcnt; i++){
-      Callback_Params params = {&base_params, i};
-      params_array.push_back(params);
+    if (!cuda_aware) {
+      for (int i = 0; i < pcnt; i++){
+        Callback_Params params = {&base_params, i};
+        params_array.push_back(params);
+      }
     }
 
     CUDA_CALL(cudaDeviceSynchronize());
@@ -230,7 +232,7 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
         CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x,
             &recv_ptr[oslice], sizeof(C_t)*input_sizes_x[p], 
             sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
-            cudaMemcpyDeviceToDevice, streams[p]));
+            cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
     } while(p != MPI_UNDEFINED);
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("Transpose (Finished Receive)");

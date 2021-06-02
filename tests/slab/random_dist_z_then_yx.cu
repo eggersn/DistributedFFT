@@ -1,4 +1,5 @@
 #include "mpicufft_slab_z_then_yx.hpp"
+#include "mpicufft_slab_z_then_yx_opt1.hpp"
 #include "tests_slab_random_z_then_yx.hpp"
 #include <cmath>
 #include <stdio.h>
@@ -211,14 +212,25 @@ int Tests_Slab_Random_Z_Then_YX<T>::compute(int rank, int world_size, int opt){
         CUDA_CALL(cudaDeviceSynchronize());
     }
 
-    //initialize MPIcuFFT
-    MPIcuFFT_Slab_Z_Then_YX<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware==1, world_size);
+    if (opt == 0){
+        //initialize MPIcuFFT
+        MPIcuFFT_Slab_Z_Then_YX<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware==1, world_size);
+        
+        GlobalSize global_size(Nx, Ny, Nz);
+        mpicuFFT.initFFT(&global_size, true);
     
-    GlobalSize global_size(Nx, Ny, Nz);
-    mpicuFFT.initFFT(&global_size, true);
+        //execute
+        mpicuFFT.execR2C(out_d, in_d);
+    } else if (opt == 1) {
+        //initialize MPIcuFFT
+        MPIcuFFT_Slab_Z_Then_YX_Opt1<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware==1, world_size);
 
-    //execute
-    mpicuFFT.execR2C(out_d, in_d);
+        GlobalSize global_size(Nx, Ny, Nz);
+        mpicuFFT.initFFT(&global_size, true);
+    
+        //execute
+        mpicuFFT.execR2C(out_d, in_d);
+    }
 
     if (cuda_aware == 0){
         CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, Nx*Ny*N2*sizeof(C_t), cudaMemcpyDeviceToHost));

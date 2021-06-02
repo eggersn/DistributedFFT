@@ -1,4 +1,5 @@
 #include "mpicufft_slab.hpp"
+#include "mpicufft_slab_opt1.hpp"
 #include "tests_slab_random_default.hpp"
 #include <cmath>
 #include <stdio.h>

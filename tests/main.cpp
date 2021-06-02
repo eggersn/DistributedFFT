@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
                     test.setParams(Nx, Ny, Nz, allow_cuda_aware);
                     test.run(opt);
                 }
-            } else if (option.compare("Slab_Y_Then_ZX")==0) {
+            } else if (option.compare(0, 14, "Slab_Y_Then_ZX")==0) {
                 int opt = 0;
                 if (std::string(argv[6]).compare("double")==0) {
                     Tests_Slab_Random_Y_Then_ZX<double> test;
@@ -56,8 +56,11 @@ int main(int argc, char* argv[]) {
                     test.setParams(Nx, Ny, Nz, allow_cuda_aware);
                     test.run(opt);
                 }                
-            } else if (option.compare("Slab_Z_Then_YX")==0) {
+            } else if (option.compare(0, 14, "Slab_Z_Then_YX")==0) {
                 int opt = 0;
+                if (option.compare("Slab_Z_Then_YX_Opt1")==0)
+                    opt = 1;
+                    
                 if (std::string(argv[6]).compare("double")==0) {
                     Tests_Slab_Random_Z_Then_YX<double> test;
                     test.setParams(Nx, Ny, Nz, allow_cuda_aware);
@@ -85,7 +88,8 @@ int main(int argc, char* argv[]) {
         }
 
     } catch (int e) {
-        printInvalidArgHelp();
+        printf("error %d\n", e);
+        // printInvalidArgHelp();
         return e;
     }
 
