@@ -44,7 +44,7 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
   domainsize = sizeof(C_t) * std::max(input_sizes_x[pidx]*input_size_y*((input_size_z/2) + 1), output_size_x*output_sizes_y[pidx]*output_size_z);
   
   //sizes of the different workspaces
-  size_t ws_r2c, ws_c2r, ws_c2c;
+  size_t ws_r2c, ws_c2c;
   
   CUFFT_CALL(cufftCreate(&planR2C));
   CUFFT_CALL(cufftSetAutoAllocation(planR2C, 0));
@@ -52,7 +52,7 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
   if (fft3d) { // combined 3d fft, in case only one mpi process is used
     CUFFT_CALL(cufftMakePlan3d(planR2C, global_size->Nx, global_size->Ny, global_size->Nz, cuFFT<T>::R2Ctype, &ws_r2c));
 
-    fft_worksize = std::max(ws_r2c, ws_c2r);
+    fft_worksize = ws_r2c;
   } else { // 2d slab decomposition fft
     size_t batch = input_sizes_x[pidx];
     
@@ -76,8 +76,7 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
     CUFFT_CALL(cufftMakePlanMany64(planC2C, 1, n, inembed, 1, output_size_x, 
         onembed, output_size_z*output_sizes_y[pidx], 1, cuFFT<T>::C2Ctype, output_sizes_y[pidx]*output_size_z, &ws_c2c));
     
-    fft_worksize = std::max(ws_r2c, ws_c2r);
-    fft_worksize = std::max(fft_worksize, ws_c2c);
+    fft_worksize = std::max(ws_r2c, ws_c2c);;
   }
   
   if (fft_worksize < domainsize) 
