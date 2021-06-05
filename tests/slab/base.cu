@@ -37,7 +37,7 @@ decltype(cublasDzasum)* Random_Tests<double>::cublasSum = cublasDzasum;
 decltype(scaleUniformArrayDouble)* Random_Tests<double>::scaleUniformArray = scaleUniformArrayDouble;
 
 template<typename T>
-int Tests_Slab_Random<T>::initializeRandArray(void* in_d){
+int Tests_Slab_Random<T>::initializeRandArray(void* in_d, size_t N1){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
@@ -49,35 +49,9 @@ int Tests_Slab_Random<T>::initializeRandArray(void* in_d){
     //set seed of generator
     CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, 1234ULL));
     //get poisson samples
-    CURAND_CALL(Random_Tests<T>::generateUniform(gen, real, Nx*Ny*Nz));
+    CURAND_CALL(Random_Tests<T>::generateUniform(gen, real, N1*Ny*Nz));
 
-    Random_Tests<T>::scaleUniformArray<<<(Nx*Ny*Nz)/1024+1, 1024>>>(real, 255, Nx*Ny*Nz);
-
-    return 0;
-}
-
-template<typename T>
-int Tests_Slab_Random<T>::run(int opt) {      
-    //initialize MPI
-    MPI_Init(NULL, NULL);
-
-    //number of processes
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-    world_size--;
-
-    //get global rank
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    if (rank == world_size){
-        this->coordinate(world_size);
-    } else{
-        this->compute(rank, world_size, opt);
-    }
-    
-    //finalize
-    MPI_Finalize();
+    Random_Tests<T>::scaleUniformArray<<<(N1*Ny*Nz)/1024+1, 1024>>>(real, 255, N1*Ny*Nz);
 
     return 0;
 }

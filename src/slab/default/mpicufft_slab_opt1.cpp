@@ -241,9 +241,9 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("1D FFT X-Direction");
 
-    MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
     if (!cuda_aware)
         mpisend_thread.join();
+    MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
     timer->stop_store("Run complete");
   }
   cudaProfilerStop();

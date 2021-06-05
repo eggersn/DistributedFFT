@@ -13,6 +13,7 @@ include_directories(./include ./tests/include)
 find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cublas)
 
 #MPI
+set(MPI_HOME ${MPI_HOME})
 find_package(MPI REQUIRED)
 
 # create library and link them
@@ -31,6 +32,7 @@ set_property(TARGET mpicufft slab_tests tests_exec PROPERTY CUDA_ARCHITECTURES 5
 #MPI
 target_link_libraries(mpicufft PUBLIC MPI::MPI_CXX)
 target_link_libraries(slab_tests PUBLIC MPI::MPI_CXX)
+target_link_libraries(timer PUBLIC MPI::MPI_CXX)
 
 #CUDA
 target_link_libraries(mpicufft PUBLIC CUDA::cudart CUDA::cufft)

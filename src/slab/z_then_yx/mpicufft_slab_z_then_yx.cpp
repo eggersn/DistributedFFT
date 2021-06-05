@@ -314,8 +314,8 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::execR2C(void *out, const void *in) {
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C, temp_ptr, complex, CUFFT_FORWARD));
         CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("2D FFT Y-X-Direction");
-        MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
         mpisend_thread.join();
+        MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
         timer->stop_store("Run complete");
     }
     timer->gather();

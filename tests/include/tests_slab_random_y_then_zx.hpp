@@ -4,9 +4,13 @@
 
 template<typename T> 
 class Tests_Slab_Random_Y_Then_ZX : public Tests_Slab_Random<T> {
+public:
+    int run(int testcase, int opt);
 protected:
-     int compute(int rank, int world_size, int opt);
-     int coordinate(int world_size);
+    int testcase0(int opt);
+    int testcase1(int opt);
+    int compute(int rank, int world_size, int opt);
+    int coordinate(int world_size);
 
     using Tests_Slab_Random<T>::Nx;
     using Tests_Slab_Random<T>::Ny;

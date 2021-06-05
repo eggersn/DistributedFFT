@@ -10,5 +10,7 @@
     "Nx": 64,
     "Ny": 64,
     "Nz": 64,
-    "Precision": "double"
+    "Precision": "double",
+
+    "OMPI-Prefix": "/opt/openmpi-4.1.1"
 }

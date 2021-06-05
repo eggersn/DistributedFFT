@@ -32,16 +32,16 @@ template<> struct Random_Tests<double> {
 template<typename T> 
 class Tests_Slab_Random {
 public:
-     int run(int opt);
-     void setParams(size_t Nx_, size_t Ny_, size_t Nz_, bool allow_cuda_aware) {
-        Nx = Nx_;
-        Ny = Ny_;
-        Nz = Nz_;
-        cuda_aware = allow_cuda_aware * MPIX_Query_cuda_support();
-    }
+      virtual int run(int testcase, int opt) = 0;
+      void setParams(size_t Nx_, size_t Ny_, size_t Nz_, bool allow_cuda_aware) {
+         Nx = Nx_;
+         Ny = Ny_;
+         Nz = Nz_;
+         cuda_aware = allow_cuda_aware * MPIX_Query_cuda_support();
+      }
 
 protected:
-      int initializeRandArray(void* in_d);
+      int initializeRandArray(void* in_d, size_t N1);
       virtual  int compute(int rank, int world_size, int opt) = 0;
       virtual  int coordinate(int world_size) = 0;
 

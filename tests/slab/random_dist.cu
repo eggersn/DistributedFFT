@@ -8,7 +8,7 @@
 #include <iostream>
 
 #define CUDA_CALL(x) do { if((x)!=cudaSuccess) { \
-    printf("Error at %s:%d\n",__FILE__,__LINE__);\
+    printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);\
     return EXIT_FAILURE;}} while(0) 
 #define CURAND_CALL(x) do { if((x)!=CURAND_STATUS_SUCCESS) {    \
     printf("Error at %s:%d\n",__FILE__,__LINE__);               \
@@ -50,6 +50,111 @@ namespace Difference_Slab_Default {
 }
 
 template<typename T> 
+int Tests_Slab_Random_Default<T>::run(int testcase, int opt){
+    if (testcase == 0)
+        return this->testcase0(opt);
+    else if (testcase == 1)
+        return this->testcase1(opt);
+    return -1;
+}
+
+template<typename T> 
+int Tests_Slab_Random_Default<T>::testcase0(int opt){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+    //initialize MPI
+    MPI_Init(NULL, NULL);
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    size_t N1=Nx/world_size;
+    size_t N2=Ny/world_size;
+    if (rank < Nx%world_size)
+        N1++;
+    if (rank < Ny%world_size)
+        N2++;
+
+    R_t *in_d;
+    C_t *out_d;
+    C_t *out_h;
+    size_t out_size = std::max(N1*Ny*(Nz/2+1), Nx*N2*(Nz/2+1));
+
+    //allocate memory (device)
+    CUDA_CALL(cudaMalloc((void **)&in_d, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+    //allocate memory (host)
+    out_h = (C_t *)calloc(out_size, sizeof(C_t));
+    
+    //random input
+    this->initializeRandArray(in_d, N1);
+    
+    if (opt == 0) {
+        //initialize MPIcuFFT
+        MPIcuFFT_Slab<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
+        
+        GlobalSize global_size(Nx, Ny, Nz);
+        mpicuFFT.initFFT(&global_size, true);
+    
+        //execute
+        mpicuFFT.execR2C(out_d, in_d);
+    } else if (opt == 1) {
+        //initialize MPIcuFFT
+        MPIcuFFT_Slab_Opt1<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
+
+        GlobalSize global_size(Nx, Ny, Nz);
+        mpicuFFT.initFFT(&global_size, true);
+    
+        //execute
+        mpicuFFT.execR2C(out_d, in_d);
+    }
+
+    CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
+
+    //do stuff
+
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(in_d));
+    CUDA_CALL(cudaFree(out_d));
+    // free(out_h);
+
+    return 0;
+}
+
+template<typename T>
+int Tests_Slab_Random_Default<T>::testcase1(int opt) {      
+    //initialize MPI
+    MPI_Init(NULL, NULL);
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    world_size--;
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    if (rank == world_size){
+        this->coordinate(world_size);
+    } else{
+        this->compute(rank, world_size, opt);
+    }
+    
+    //finalize
+    MPI_Finalize();
+
+    return 0;
+}
+
+template<typename T> 
 int Tests_Slab_Random_Default<T>::coordinate(int world_size){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
@@ -82,7 +187,7 @@ int Tests_Slab_Random_Default<T>::coordinate(int world_size){
     }
 
     //random initialization of full Nx*Ny*Nz array
-    this->initializeRandArray(in_d);
+    this->initializeRandArray(in_d, Nx);
 
     //Copy input data to send-buffer and initialize cufft
     CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nx*Ny*Nz*sizeof(R_t), 
