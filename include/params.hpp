@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cstddef>
 
 struct GlobalSize{
     GlobalSize(size_t Nx_, size_t Ny_, size_t Nz_){

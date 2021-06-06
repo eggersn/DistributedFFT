@@ -82,14 +82,14 @@ int Tests_Slab_Random_Default<T>::testcase0(int opt){
 
     R_t *in_d;
     C_t *out_d;
-    C_t *out_h;
+    // C_t *out_h;
     size_t out_size = std::max(N1*Ny*(Nz/2+1), Nx*N2*(Nz/2+1));
 
     //allocate memory (device)
     CUDA_CALL(cudaMalloc((void **)&in_d, N1*Ny*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
     //allocate memory (host)
-    out_h = (C_t *)calloc(out_size, sizeof(C_t));
+    // out_h = (C_t *)calloc(out_size, sizeof(C_t));
     
     //random input
     this->initializeRandArray(in_d, N1);
@@ -114,7 +114,7 @@ int Tests_Slab_Random_Default<T>::testcase0(int opt){
         mpicuFFT.execR2C(out_d, in_d);
     }
 
-    CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
+    // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
 
     //do stuff
 

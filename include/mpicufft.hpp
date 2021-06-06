@@ -2,6 +2,7 @@
 
 #include "params.hpp"
 #include <iostream>
+#include <cstddef>
 #include <vector>
 #include <mpi.h>
 
