@@ -146,6 +146,9 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
   } else {
     timer->start();
 
+    // compute 2d FFT 
+    CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
+
     C_t *recv_ptr, *send_ptr, *temp_ptr;
     temp_ptr = cuFFT<T>::complex(mem_d[0]);
     if (cuda_aware) {
@@ -156,9 +159,6 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
     }
     recv_req[pidx] = MPI_REQUEST_NULL;
     send_req[pidx] = MPI_REQUEST_NULL;
-
-    // compute 2d FFT 
-    CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
 
     /* We are interested in sending the block via MPI as soon as possible.
     *  If MPI is compiled with the cuda_aware flag, then we are able to send the block directly from device memory.

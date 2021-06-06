@@ -224,6 +224,9 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
     CUDA_CALL(cudaDeviceSynchronize());
   } else {
     timer->start();
+    
+    // compute 2d FFT 
+    CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
 
     C_t *recv_ptr, *send_ptr, *temp_ptr;
     temp_ptr = cuFFT<T>::complex(mem_d[0]);
@@ -237,9 +240,6 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
     recv_req[pidx] = MPI_REQUEST_NULL;
     send_req[pidx] = MPI_REQUEST_NULL;
 
-    // compute 2d FFT 
-    CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
-
     /* We are interested in sending the block via MPI as soon as cudaMemcpy2DAsync is done.
     *  Therefore, MPIsend_Callback simulates a producer and MPIsend_Thread a consumer of a 
     *  channel with blocking receive (via conditional variable)
@@ -252,6 +252,7 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
       params_array.push_back(params);
     }
 
+    timer->stop_store("2D FFT (Sync)");
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("2D FFT Y-Z-Direction");
   

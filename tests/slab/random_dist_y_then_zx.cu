@@ -120,7 +120,7 @@ int Tests_Slab_Random_Y_Then_ZX<T>::testcase0(int opt){
         
         GlobalSize global_size(Nx, Ny, Nz);
         mpicuFFT.initFFT(&global_size, true);
-    
+        MPI_Barrier(MPI_COMM_WORLD);
         //execute
         mpicuFFT.execR2C(out_d, in_d);
     } else if (opt == 1) {
@@ -129,7 +129,7 @@ int Tests_Slab_Random_Y_Then_ZX<T>::testcase0(int opt){
 
         GlobalSize global_size(Nx, Ny, Nz);
         mpicuFFT.initFFT(&global_size, true);
-    
+        MPI_Barrier(MPI_COMM_WORLD);
         //execute
         mpicuFFT.execR2C(out_d, in_d);
     }
@@ -340,7 +340,7 @@ int Tests_Slab_Random_Y_Then_ZX<T>::compute(int rank, int world_size, int opt){
     
     GlobalSize global_size(Nx, Ny, Nz);
     mpicuFFT.initFFT(&global_size, true);
-
+    MPI_Barrier(MPI_COMM_WORLD);
     //execute
     mpicuFFT.execR2C(out_d, in_d);
 

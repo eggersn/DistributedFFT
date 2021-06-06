@@ -91,6 +91,6 @@ protected:
 
   Timer *timer;
 
-  std::vector<std::string> section_descriptions = {"init", "2D FFT Y-Z-Direction", "Transpose (First Send)", "Transpose (Packing)", "Transpose (Start Local Transpose)", 
+  std::vector<std::string> section_descriptions = {"init", "2D FFT (Sync)", "2D FFT Y-Z-Direction", "Transpose (First Send)", "Transpose (Packing)", "Transpose (Start Local Transpose)", 
     "Transpose (Start Receive)", "Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
 };
