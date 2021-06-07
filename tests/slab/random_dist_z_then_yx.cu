@@ -50,16 +50,16 @@ namespace Difference_Slab_Z_Then_YX {
 }
 
 template<typename T> 
-int Tests_Slab_Random_Z_Then_YX<T>::run(int testcase, int opt){
+int Tests_Slab_Random_Z_Then_YX<T>::run(int testcase, int opt, int runs){
     if (testcase == 0)
-        return this->testcase0(opt);
+        return this->testcase0(opt, runs);
     else if (testcase == 1)
-        return this->testcase1(opt);
+        return this->testcase1(opt, runs);
     return -1;
 }
 
 template<typename T> 
-int Tests_Slab_Random_Z_Then_YX<T>::testcase0(int opt){
+int Tests_Slab_Random_Z_Then_YX<T>::testcase0(int opt, int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
     //initialize MPI
@@ -129,7 +129,7 @@ int Tests_Slab_Random_Z_Then_YX<T>::testcase0(int opt){
 }
 
 template<typename T>
-int Tests_Slab_Random_Z_Then_YX<T>::testcase1(int opt) {      
+int Tests_Slab_Random_Z_Then_YX<T>::testcase1(int opt, int runs) {      
     //initialize MPI
     MPI_Init(NULL, NULL);
 
@@ -143,9 +143,9 @@ int Tests_Slab_Random_Z_Then_YX<T>::testcase1(int opt) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     if (rank == world_size){
-        this->coordinate(world_size);
+        this->coordinate(world_size, runs);
     } else{
-        this->compute(rank, world_size, opt);
+        this->compute(rank, world_size, opt, runs);
     }
     
     //finalize
@@ -155,7 +155,7 @@ int Tests_Slab_Random_Z_Then_YX<T>::testcase1(int opt) {
 }
 
 template <typename T>
-int Tests_Slab_Random_Z_Then_YX<T>::coordinate(int world_size){
+int Tests_Slab_Random_Z_Then_YX<T>::coordinate(int world_size, int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
@@ -229,7 +229,7 @@ int Tests_Slab_Random_Z_Then_YX<T>::coordinate(int world_size){
     //compute local fft
     R_t *real    = cuFFT<T>::real(in_d);
     C_t *complex = cuFFT<T>::complex(out_d);
-
+    MPI_Barrier(MPI_COMM_WORLD);
     CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
     CUDA_CALL(cudaDeviceSynchronize());
 
@@ -278,7 +278,7 @@ int Tests_Slab_Random_Z_Then_YX<T>::coordinate(int world_size){
 }
 
 template <typename T>
-int Tests_Slab_Random_Z_Then_YX<T>::compute(int rank, int world_size, int opt){
+int Tests_Slab_Random_Z_Then_YX<T>::compute(int rank, int world_size, int opt, int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 

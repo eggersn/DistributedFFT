@@ -71,16 +71,16 @@ namespace Difference_Slab_Y_Then_ZX {
 }
 
 template<typename T> 
-int Tests_Slab_Random_Y_Then_ZX<T>::run(int testcase, int opt){
+int Tests_Slab_Random_Y_Then_ZX<T>::run(int testcase, int opt, int runs){
     if (testcase == 0)
-        return this->testcase0(opt);
+        return this->testcase0(opt, runs);
     else if (testcase == 1)
-        return this->testcase1(opt);
+        return this->testcase1(opt, runs);
     return -1;
 }
 
 template<typename T> 
-int Tests_Slab_Random_Y_Then_ZX<T>::testcase0(int opt){
+int Tests_Slab_Random_Y_Then_ZX<T>::testcase0(int opt, int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
     //initialize MPI
@@ -150,7 +150,7 @@ int Tests_Slab_Random_Y_Then_ZX<T>::testcase0(int opt){
 }
 
 template<typename T>
-int Tests_Slab_Random_Y_Then_ZX<T>::testcase1(int opt) {      
+int Tests_Slab_Random_Y_Then_ZX<T>::testcase1(int opt, int runs) {      
     //initialize MPI
     MPI_Init(NULL, NULL);
 
@@ -164,9 +164,9 @@ int Tests_Slab_Random_Y_Then_ZX<T>::testcase1(int opt) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     if (rank == world_size){
-        this->coordinate(world_size);
+        this->coordinate(world_size, runs);
     } else{
-        this->compute(rank, world_size, opt);
+        this->compute(rank, world_size, opt, runs);
     }
     
     //finalize
@@ -176,7 +176,7 @@ int Tests_Slab_Random_Y_Then_ZX<T>::testcase1(int opt) {
 }
 
 template<typename T>
-int Tests_Slab_Random_Y_Then_ZX<T>::coordinate(int world_size){
+int Tests_Slab_Random_Y_Then_ZX<T>::coordinate(int world_size, int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
@@ -296,7 +296,7 @@ int Tests_Slab_Random_Y_Then_ZX<T>::coordinate(int world_size){
 }
 
 template<typename T>
-int Tests_Slab_Random_Y_Then_ZX<T>::compute(int rank, int world_size, int opt){
+int Tests_Slab_Random_Y_Then_ZX<T>::compute(int rank, int world_size, int opt, int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
