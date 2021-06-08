@@ -1,6 +1,7 @@
 #include "tests_slab_random_default.hpp"
 #include "tests_slab_random_z_then_yx.hpp"
 #include "tests_slab_random_y_then_zx.hpp"
+#include "tests_pencil_random_3d.hpp"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -43,7 +44,6 @@ int main(int argc, char* argv[]) {
                     test.run(testcase, opt, runs);
                 }
             } else if (option.compare(0, 14, "Slab_Y_Then_ZX")==0) {
-                int opt = 0;
                 if (std::string(argv[9]).compare("double")==0) {
                     Tests_Slab_Random_Y_Then_ZX<double> test;
                     test.setParams(Nx, Ny, Nz, allow_cuda_aware);
@@ -53,11 +53,7 @@ int main(int argc, char* argv[]) {
                     test.setParams(Nx, Ny, Nz, allow_cuda_aware);
                     test.run(testcase, opt, runs);
                 }                
-            } else if (option.compare(0, 14, "Slab_Z_Then_YX")==0) {
-                int opt = 0;
-                if (option.compare("Slab_Z_Then_YX_Opt1")==0)
-                    opt = 1;
-                    
+            } else if (option.compare(0, 14, "Slab_Z_Then_YX")==0) {                   
                 if (std::string(argv[9]).compare("double")==0) {
                     Tests_Slab_Random_Z_Then_YX<double> test;
                     test.setParams(Nx, Ny, Nz, allow_cuda_aware);
@@ -77,7 +73,15 @@ int main(int argc, char* argv[]) {
             sstream = std::stringstream(std::string(argv[11]));
             sstream >> P2;
 
-            // TODO Select Testcase
+            if (std::string(argv[9]).compare("double")==0) {
+                Tests_Pencil_Random_3D<double> test;
+                test.setParams(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
+                test.run(testcase, opt, runs);
+            } else {
+                Tests_Pencil_Random_3D<float> test;
+                test.setParams(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
+                test.run(testcase, opt, runs);
+            }   
             
         } else {
             printInvalidArgHelp();

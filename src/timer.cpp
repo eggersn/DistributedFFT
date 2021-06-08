@@ -3,7 +3,7 @@
 #include <fstream>
 #include <filesystem>
 
-Timer::Timer(MPI_Comm comm, int p_gather, int pcnt, int pidx, std::vector<std::string> &descs, std::string filename) : 
+Timer::Timer(MPI_Comm comm, int p_gather, int pcnt, int pidx, std::vector<std::string> descs, std::string filename) : 
     comm(comm), p_gather(p_gather), pcnt(pcnt), pidx(pidx), descs(descs), filename(filename) {
     durations.resize(descs.size(), 0);
     tstop_points.resize(descs.size(), 0);

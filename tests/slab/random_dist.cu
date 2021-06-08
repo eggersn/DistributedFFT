@@ -50,7 +50,7 @@ namespace Difference_Slab_Default {
 }
 
 template<typename T> 
-int Tests_Slab_Random_Default<T>::run(int testcase, int opt, int runs){
+int Tests_Slab_Random_Default<T>::run(const int testcase, const int opt, const int runs){
     if (testcase == 0)
         return this->testcase0(opt, runs);
     else if (testcase == 1)
@@ -59,7 +59,7 @@ int Tests_Slab_Random_Default<T>::run(int testcase, int opt, int runs){
 }
 
 template<typename T> 
-int Tests_Slab_Random_Default<T>::testcase0(int opt, int runs){
+int Tests_Slab_Random_Default<T>::testcase0(const int opt, const int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
     //initialize MPI
@@ -91,36 +91,22 @@ int Tests_Slab_Random_Default<T>::testcase0(int opt, int runs){
     //allocate memory (host)
     // out_h = (C_t *)calloc(out_size, sizeof(C_t));
     
-    //random input
-    
-    if (opt == 0) {
-        //initialize MPIcuFFT
-        MPIcuFFT_Slab<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
+    MPIcuFFT_Slab<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Slab_Opt1<T>(MPI_COMM_WORLD, cuda_aware, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Slab<T>(MPI_COMM_WORLD, cuda_aware, world_size);
         
-        GlobalSize global_size(Nx, Ny, Nz);
-        mpicuFFT.initFFT(&global_size, true);
-        
-        //execute
-        for (int i = 0; i < runs; i++){
-            this->initializeRandArray(in_d, N1);
-            MPI_Barrier(MPI_COMM_WORLD);
-            mpicuFFT.execR2C(out_d, in_d);
-            MPI_Barrier(MPI_COMM_WORLD);
-        }
-    } else if (opt == 1) {
-        //initialize MPIcuFFT
-        MPIcuFFT_Slab_Opt1<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
 
-        GlobalSize global_size(Nx, Ny, Nz);
-        mpicuFFT.initFFT(&global_size, true);
-        
-        //execute
-        for (int i = 0; i < runs; i++){
-            this->initializeRandArray(in_d, N1);
-            MPI_Barrier(MPI_COMM_WORLD);
-            mpicuFFT.execR2C(out_d, in_d);
-            MPI_Barrier(MPI_COMM_WORLD);
-        }
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, true);
+    
+    //execute
+    for (int i = 0; i < runs; i++){
+        this->initializeRandArray(in_d, N1);
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execR2C(out_d, in_d);
+        MPI_Barrier(MPI_COMM_WORLD);
     }
 
     // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
@@ -134,11 +120,12 @@ int Tests_Slab_Random_Default<T>::testcase0(int opt, int runs){
     CUDA_CALL(cudaFree(out_d));
     // free(out_h);
 
+    delete mpicuFFT;
     return 0;
 }
 
 template<typename T>
-int Tests_Slab_Random_Default<T>::testcase1(int opt, int runs) {      
+int Tests_Slab_Random_Default<T>::testcase1(const int opt, const int runs) {      
     //initialize MPI
     MPI_Init(NULL, NULL);
 
@@ -164,7 +151,7 @@ int Tests_Slab_Random_Default<T>::testcase1(int opt, int runs) {
 }
 
 template<typename T> 
-int Tests_Slab_Random_Default<T>::coordinate(int world_size, int runs){
+int Tests_Slab_Random_Default<T>::coordinate(const int world_size, const int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
@@ -194,19 +181,19 @@ int Tests_Slab_Random_Default<T>::coordinate(int world_size, int runs){
         CUDA_CALL(cudaMallocHost((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
         CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     }
-    
-    CUFFT_CALL(cufftCreate(&planR2C));
-    CUFFT_CALL(cufftSetAutoAllocation(planR2C, 0));
-    CUFFT_CALL(cufftMakePlan3d(planR2C, Nx, Ny, Nz, cuFFT<T>::R2Ctype, &ws_r2c));
-    CUFFT_CALL(cufftSetWorkArea(planR2C, in_d));
 
-    for (int i = 0; i < runs; i++){
+    for (int i = 0; i < runs; i++) {
         //random initialization of full Nx*Ny*Nz array
         this->initializeRandArray(in_d, Nx);
-
+    
         //Copy input data to send-buffer and initialize cufft
         CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nx*Ny*Nz*sizeof(R_t), 
-        cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost));
+            cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost));
+    
+        CUFFT_CALL(cufftCreate(&planR2C));
+        CUFFT_CALL(cufftSetAutoAllocation(planR2C, 0));
+        CUFFT_CALL(cufftMakePlan3d(planR2C, Nx, Ny, Nz, cuFFT<T>::R2Ctype, &ws_r2c));
+        CUFFT_CALL(cufftSetWorkArea(planR2C, in_d));
     
         //Distribute input data
         size_t N1 = Nx/world_size;
@@ -239,7 +226,6 @@ int Tests_Slab_Random_Default<T>::coordinate(int world_size, int runs){
         //compute local fft
         R_t *real    = cuFFT<T>::real(in_d);
         C_t *complex = cuFFT<T>::complex(out_d);
-    
         MPI_Barrier(MPI_COMM_WORLD);
         CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
         CUDA_CALL(cudaDeviceSynchronize());
@@ -276,10 +262,11 @@ int Tests_Slab_Random_Default<T>::coordinate(int world_size, int runs){
         CUBLAS_CALL(cublasDestroy(handle));
     
         std::cout << "Result " << sum << std::endl;
+    
+        CUFFT_CALL(cufftDestroy(planR2C));
         MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    CUFFT_CALL(cufftDestroy(planR2C));
 
     CUDA_CALL(cudaFree(in_d));
     CUDA_CALL(cudaFree(out_d));
@@ -291,7 +278,7 @@ int Tests_Slab_Random_Default<T>::coordinate(int world_size, int runs){
 }
 
 template<typename T> 
-int Tests_Slab_Random_Default<T>::compute(int rank, int world_size, int opt, int runs){
+int Tests_Slab_Random_Default<T>::compute(const int rank, const int world_size, const int opt, const int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
@@ -304,9 +291,6 @@ int Tests_Slab_Random_Default<T>::compute(int rank, int world_size, int opt, int
         N1++;
     if (rank < Ny%world_size)
         N2++;
-
-    send_req.resize(1, MPI_REQUEST_NULL);
-    recv_req.resize(1, MPI_REQUEST_NULL);
 
     R_t *in_d, *recv_ptr;
     C_t *out_d, *send_ptr;
@@ -324,71 +308,46 @@ int Tests_Slab_Random_Default<T>::compute(int rank, int world_size, int opt, int
         CUDA_CALL(cudaMallocHost((void **)&send_ptr, Nx*N2*(Nz/2+1)*sizeof(C_t)));
     }
 
-    if (opt == 0){
-        //initialize MPIcuFFT
-        MPIcuFFT_Slab<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
-
-        GlobalSize global_size(Nx, Ny, Nz);
-        mpicuFFT.initFFT(&global_size, true);
-        for (int i = 0; i < runs; i++) {            
-            //receive input data via MPI
-            MPI_Irecv(recv_ptr, N1*Ny*Nz*sizeof(R_t), MPI_BYTE, world_size, rank, MPI_COMM_WORLD, &recv_req[0]);
-            MPI_Wait(&recv_req[0], MPI_STATUSES_IGNORE);
-            
-            if (!cuda_aware){
-                CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, N1*Ny*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
-                CUDA_CALL(cudaDeviceSynchronize());
-            }
+    MPIcuFFT_Slab<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Slab_Opt1<T>(MPI_COMM_WORLD, cuda_aware, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Slab<T>(MPI_COMM_WORLD, cuda_aware, world_size);
         
-            MPI_Barrier(MPI_COMM_WORLD);
-            //execute
-            mpicuFFT.execR2C(out_d, in_d);
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, true);
 
-            if (!cuda_aware){
-                CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, Nx*N2*(Nz/2+1)*sizeof(C_t), cudaMemcpyDeviceToHost));
-                CUDA_CALL(cudaDeviceSynchronize());
-            }
-        
-            MPI_Isend(send_ptr, Nx*N2*(Nz/2+1)*sizeof(C_t), MPI_BYTE, world_size, rank, MPI_COMM_WORLD, &send_req[0]);
-            MPI_Wait(&send_req[0], MPI_STATUSES_IGNORE);
-
-            MPI_Barrier(MPI_COMM_WORLD);
+    for (int i = 0; i < runs; i++) {
+        send_req.resize(1, MPI_REQUEST_NULL);
+        recv_req.resize(1, MPI_REQUEST_NULL);
+    
+        //receive input data via MPI
+        MPI_Irecv(recv_ptr, N1*Ny*Nz*sizeof(R_t), MPI_BYTE, world_size, rank, MPI_COMM_WORLD, &recv_req[0]);
+        MPI_Wait(&recv_req[0], MPI_STATUSES_IGNORE);
+    
+        if (!cuda_aware){
+            CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, N1*Ny*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
+            CUDA_CALL(cudaDeviceSynchronize());
         }
-    } else if (opt == 1) {
-        //initialize MPIcuFFT
-        MPIcuFFT_Slab_Opt1<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
 
-        GlobalSize global_size(Nx, Ny, Nz);
-        mpicuFFT.initFFT(&global_size, true);
-        for (int i = 0; i < runs; i++) {            
-            //receive input data via MPI
-            MPI_Irecv(recv_ptr, N1*Ny*Nz*sizeof(R_t), MPI_BYTE, world_size, rank, MPI_COMM_WORLD, &recv_req[0]);
-            MPI_Wait(&recv_req[0], MPI_STATUSES_IGNORE);
-            
-            if (!cuda_aware){
-                CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, N1*Ny*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
-                CUDA_CALL(cudaDeviceSynchronize());
-            }
-        
-            MPI_Barrier(MPI_COMM_WORLD);
-            //execute
-            mpicuFFT.execR2C(out_d, in_d);
+        MPI_Barrier(MPI_COMM_WORLD);
+        //execute
+        mpicuFFT->execR2C(out_d, in_d);
 
-            if (!cuda_aware){
-                CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, Nx*N2*(Nz/2+1)*sizeof(C_t), cudaMemcpyDeviceToHost));
-                CUDA_CALL(cudaDeviceSynchronize());
-            }
-        
-            MPI_Isend(send_ptr, Nx*N2*(Nz/2+1)*sizeof(C_t), MPI_BYTE, world_size, rank, MPI_COMM_WORLD, &send_req[0]);
-            MPI_Wait(&send_req[0], MPI_STATUSES_IGNORE);
-
-            MPI_Barrier(MPI_COMM_WORLD);
+        if (!cuda_aware){
+            CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, Nx*N2*(Nz/2+1)*sizeof(C_t), cudaMemcpyDeviceToHost));
+            CUDA_CALL(cudaDeviceSynchronize());
         }
+    
+        MPI_Isend(send_ptr, Nx*N2*(Nz/2+1)*sizeof(C_t), MPI_BYTE, world_size, rank, MPI_COMM_WORLD, &send_req[0]);
+        MPI_Wait(&send_req[0], MPI_STATUSES_IGNORE);
+        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     CUDA_CALL(cudaFree(in_d));
     CUDA_CALL(cudaFree(out_d));
 
+    delete mpicuFFT;
     return 0;
 }
 
