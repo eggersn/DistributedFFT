@@ -18,7 +18,8 @@ public:
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
     void setWorkArea(void *device=nullptr, void *host=nullptr);
 
-    void execR2C(void *out, const void *in);
+    void execR2C(void *out, const void *in) { this->execR2C(out, in, 3);}
+    void execR2C(void *out, const void *in, int d);
     void getPartitionDimensions(Partition_Dimensions &input_dim_, Partition_Dimensions &transposed_dim_, Partition_Dimensions &output_dim_) {
         input_dim_ = input_dim;
         transposed_dim_ = transposed_dim;

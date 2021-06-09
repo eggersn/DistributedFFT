@@ -127,9 +127,6 @@ void MPIcuFFT_Pencil<T>::initFFT(GlobalSize *global_size_, Partition *partition_
     output_dim.size_z = transposed_dim.size_z;
     output_dim.computeOffsets();
 
-    // Determine comm_order of first transpose
-    this->commOrder_FirstTranspose();
-
     // Make FFT plan
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
@@ -344,7 +341,7 @@ void MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback(Callback_Params_Base &bas
 }
 
 template<typename T>
-void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
+void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
     if (!initialized)
         error("cuFFT plans are not yet initialized!");
 
@@ -363,8 +360,10 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
 
         // Used to random_dist_1D test
-        // CUDA_CALL(cudaDeviceSynchronize());
-        // return; 
+        if (d == 1) {
+            CUDA_CALL(cudaDeviceSynchronize());
+            return; 
+        }
 
         C_t *recv_ptr, *send_ptr, *temp_ptr; 
   
@@ -398,9 +397,9 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         send_req.resize(partition->P2, MPI_REQUEST_NULL);
         recv_req.resize(partition->P2, MPI_REQUEST_NULL);
 
-        // Wait for 1D FFT in z-direction
-        CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("1D FFT Z-Direction");
+        // Determine comm_order of first transpose
+        this->commOrder_FirstTranspose();
+
         Callback_Params_Base base_params;
         std::vector<Callback_Params> params_array;
 
@@ -409,6 +408,10 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
             Callback_Params params = {&base_params, p_j};
             params_array.push_back(params);
         }
+
+        // Wait for 1D FFT in z-direction
+        CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("1D FFT Z-Direction");
 
         for (size_t i = 0; i < comm_order.size(); i++){
             size_t p_i = pidx_i;
@@ -496,7 +499,8 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in) {
         mpisend_thread1.join();
         MPI_Waitall(partition->P2, send_req.data(), MPI_STATUSES_IGNORE);
         // used for random_dist_2D test
-        // return;
+        if (d == 2)
+            return;
 
         /* ***********************************************************************************************************************
         *                                                     Second Global Transpose

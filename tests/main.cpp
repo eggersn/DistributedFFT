@@ -1,6 +1,8 @@
 #include "tests_slab_random_default.hpp"
 #include "tests_slab_random_z_then_yx.hpp"
 #include "tests_slab_random_y_then_zx.hpp"
+#include "tests_pencil_random_1d.hpp"
+#include "tests_pencil_random_2d.hpp"
 #include "tests_pencil_random_3d.hpp"
 #include <iostream>
 #include <sstream>
@@ -74,13 +76,31 @@ int main(int argc, char* argv[]) {
             sstream >> P2;
 
             if (std::string(argv[9]).compare("double")==0) {
-                Tests_Pencil_Random_3D<double> test;
-                test.setParams(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
-                test.run(testcase, opt, runs);
+                Tests_Pencil_Random<double> *test;
+
+                if (option.compare("Pencil_1D") == 0)
+                    test = new Tests_Pencil_Random_1D<double>();
+                else if (option.compare("Pencil_2D") == 0)
+                    test = new Tests_Pencil_Random_2D<double>();
+                else 
+                    test = new Tests_Pencil_Random_3D<double>();
+
+                test->setParams(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
+                test->run(testcase, opt, runs);
+                delete test;
             } else {
-                Tests_Pencil_Random_3D<float> test;
-                test.setParams(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
-                test.run(testcase, opt, runs);
+                Tests_Pencil_Random<float> *test;
+
+                if (option.compare("Pencil_1D") == 0)
+                    test = new Tests_Pencil_Random_1D<float>();
+                else if (option.compare("Pencil_2D") == 0)
+                    test = new Tests_Pencil_Random_2D<float>();
+                else 
+                    test = new Tests_Pencil_Random_3D<float>();
+                    
+                test->setParams(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
+                test->run(testcase, opt, runs);
+                delete test;
             }   
             
         } else {

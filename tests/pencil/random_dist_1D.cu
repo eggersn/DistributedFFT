@@ -1,12 +1,5 @@
+#include "tests_pencil_random_1d.hpp"
 #include "mpicufft_pencil.hpp"
-#include "cufft.hpp"
-#include "mpi.h"
-#include "mpi-ext.h"
-#include "device_launch_parameters.h"
-#include <cuda.h>
-#include <cuda_runtime.h>
-#include <curand.h>
-#include "cublas_v2.h"
 #include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,53 +19,138 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);          \
     return EXIT_FAILURE;}} while(0)
 
-#define Nx 32
-#define Ny 32
-#define Nz 32
-
-#define P1 3
-#define P2 3
-#define PartOfCluster 0
-
-#define ALLOW_CUDA_AWARE 1
-#define CUDA_AWARE MPIX_Query_cuda_support() * ALLOW_CUDA_AWARE
-
-using R_t = typename cuFFT<float>::R_t;
-using C_t = typename cuFFT<float>::C_t;
-
-__global__ void scaleUniformArray(R_t* data_d, R_t factor, int n){
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if(i < n) {
-        data_d[i] *= factor;
+namespace Difference_Pencil_1D {
+    // Difference
+    // Definition in tests/pencil/base.cu
+    __global__ void differenceFloat(cuFFT<float>::C_t* array1, cuFFT<float>::C_t* array2, int n){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i].x -= array2[i].x;
+            array1[i].y -= array2[i].y;
+        }
     }
+    
+    __global__ void differenceDouble(cuFFT<double>::C_t* array1, cuFFT<double>::C_t* array2, int n){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i].x -= array2[i].x;
+            array1[i].y -= array2[i].y;
+        }
+    }
+    
+    template<typename T> 
+    struct Difference { 
+        static decltype(differenceFloat)* difference;
+    };
+    template<typename T> decltype(differenceFloat)* Difference<T>::difference = differenceFloat;
+    
+    template<> struct Difference<double> { 
+        static decltype(differenceDouble)* difference;
+    };
+    decltype(differenceDouble)* Difference<double>::difference = differenceDouble;
 }
 
-__global__ void difference(C_t* array1, C_t* array2, int n){
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i < n) {
-        array1[i].x -= array2[i].x;
-        array1[i].y -= array2[i].y;
-    }
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::run(const int testcase, const int opt, const int runs){
+    if (testcase == 0)
+        return this->testcase0(opt, runs);
+    else if (testcase == 1)
+        return this->testcase1(opt, runs);
+    return -1;
 }
 
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::testcase0(const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
 
-int initializeRandArray(void* in_d){
-    curandGenerator_t gen;
-    R_t *real = cuFFT<float>::real(in_d);
+    //initialize MPI
+    MPI_Init(NULL, NULL);
 
-    //create pseudo-random generator
-    CURAND_CALL(curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT));
-    //set seed of generator
-    CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, 1234ULL));
-    //get poisson samples
-    CURAND_CALL(curandGenerateUniform(gen, real, Nx*Ny*Nz));
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-    scaleUniformArray<<<(Nx*Ny*Nz)/1024+1, 1024>>>(real, 255, Nx*Ny*Nz);
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    size_t pidx_i = rank / P2;
+    size_t pidx_j = rank % P2;
+        
+    //initialize MPIcuFFT
+    MPIcuFFT_Pencil<T> mpicuFFT(MPI_COMM_WORLD, true);
+
+    Pencil_Partition partition(P1, P2);
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT.initFFT(&global_size, &partition, true);
+
+    // Allocate Memory
+    Partition_Dimensions input_dim, transposed_dim, output_dim;
+    mpicuFFT.getPartitionDimensions(input_dim, transposed_dim, output_dim);
+
+    size_t out_size = input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1);
+
+    R_t *in_d;
+    C_t *out_d;
+    // C_t *out_h;
+
+    CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+    //allocate memory (host)
+    // out_h = (T *)calloc(out_size, sizeof(C_t));
+
+    for (int i = 0; i < runs; i++) {
+        this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT.execR2C(out_d, in_d, 1);
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+    // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
+
+    //do stuff with out_h / out_d
+
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(in_d));
+    CUDA_CALL(cudaFree(out_d));
+    // free(out_h);
 
     return 0;
 }
 
-int coordinate(int world_size) {
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::testcase1(const int opt, const int runs) {      
+    //initialize MPI
+    MPI_Init(NULL, NULL);
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    if (rank == world_size-1){
+        this->coordinate(world_size, runs);
+    } else{
+        this->compute(rank, world_size-1, opt, runs);
+    }
+    
+    //finalize
+    MPI_Finalize();
+
+    return 0;
+}
+
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::coordinate(const int world_size, const int runs) {
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+
     std::vector<MPI_Request> send_req;
     std::vector<MPI_Request> recv_req;
     
@@ -117,7 +195,7 @@ int coordinate(int world_size) {
     CUDA_CALL(cudaMalloc((void **)&out_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     CUDA_CALL(cudaMalloc((void **)&res_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     
-    if (CUDA_AWARE == 1){
+    if (cuda_aware == 1){
         CUDA_CALL(cudaMalloc((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
         CUDA_CALL(cudaMalloc((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     } else {
@@ -125,101 +203,103 @@ int coordinate(int world_size) {
         CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     }
 
-    //random initialization of full Nx*Ny*Nz array
-    initializeRandArray(in_d);
-
-    std::vector<size_t> recv_counts;
-    size_t recv_count = 0;
-    size_t send_count = 0;
-    for (size_t p_i = 0; p_i < P1; p_i++){
-        for (size_t p_j = 0; p_j < P2; p_j++){
+    for (int i = 0; i < runs; i++) {
+        //random initialization of full Nx*Ny*Nz array
+        this->initializeRandArray(in_d, Nx, Ny);
+    
+        std::vector<size_t> recv_counts;
+        size_t recv_count = 0;
+        size_t send_count = 0;
+        for (size_t p_i = 0; p_i < P1; p_i++){
+            for (size_t p_j = 0; p_j < P2; p_j++){
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(0, input_dim.start_y[p_j], input_dim.start_x[p_i]);
+                cpy_params.srcPtr = make_cudaPitchedPtr(in_d, Nz*sizeof(R_t), Nz, Ny);
+                cpy_params.dstPos = make_cudaPos(0, 0, 0);
+                cpy_params.dstPtr = make_cudaPitchedPtr(&send_ptr[send_count], Nz*sizeof(R_t), Nz, input_dim.size_y[p_j]);
+                cpy_params.extent = make_cudaExtent(Nz*sizeof(R_t), input_dim.size_y[p_j], input_dim.size_x[p_i]);
+                cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
+                
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
+                CUDA_CALL(cudaDeviceSynchronize());
+    
+                recv_counts.push_back(recv_count);
+    
+                //start non-blocking receive for distributed results (asynch to local fft computation)
+                MPI_Irecv(&recv_ptr[recv_count], (Nz/2+1)*input_dim.size_y[p_j]*input_dim.size_x[p_i]*sizeof(C_t), 
+                    MPI_BYTE, p_i*P2+p_j, world_size, MPI_COMM_WORLD, &recv_req[p_i*P2+p_j]);
+                recv_count += (Nz/2+1)*input_dim.size_y[p_j]*input_dim.size_x[p_i];
+    
+                //start non-blocking send for input data
+                MPI_Isend(&send_ptr[send_count], input_dim.size_x[p_i]*input_dim.size_y[p_j]*Nz*sizeof(R_t), 
+                    MPI_BYTE, p_i*P2+p_j, world_size, MPI_COMM_WORLD, &send_req[p_i*P2+p_j]);
+    
+                send_count += input_dim.size_x[p_i] * input_dim.size_y[p_j] * Nz;
+            }
+        }
+    
+        MPI_Waitall(world_size-1, send_req.data(), MPI_STATUSES_IGNORE);
+        MPI_Barrier(MPI_COMM_WORLD);
+        
+        // compute full fft locally
+        size_t ws_r2c;
+        
+        cufftHandle planR2C;
+        cublasHandle_t handle;
+        
+        R_t *real    = cuFFT<T>::real(in_d);
+        C_t *complex = cuFFT<T>::complex(out_d);
+        
+        CUFFT_CALL(cufftCreate(&planR2C));
+        long long int n[1] = {static_cast<long long int>(input_dim.size_z[0])};
+        
+        CUFFT_CALL(cufftMakePlanMany64(planR2C, 1, n, nullptr, 0, 0, nullptr, 0, 0, cuFFT<T>::R2Ctype, static_cast<long long int>(Nx*Ny), &ws_r2c));
+        
+        CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
+        CUDA_CALL(cudaDeviceSynchronize());
+    
+        CUBLAS_CALL(cublasCreate(&handle));
+    
+        int p;
+        do {
+            // recv_req contains one null handle (i.e. recv_req[pidx_i]) and P1-1 active handles
+            // If all active handles are processed, Waitany will return MPI_UNDEFINED
+            MPI_Waitany(world_size-1, recv_req.data(), &p, MPI_STATUSES_IGNORE);
+            if (p == MPI_UNDEFINED)
+                break;
+            
+            size_t p_i = p / P2;
+            size_t p_j = p % P2;
+    
             cudaMemcpy3DParms cpy_params = {0};
-            cpy_params.srcPos = make_cudaPos(0, input_dim.start_y[p_j], input_dim.start_x[p_i]);
-            cpy_params.srcPtr = make_cudaPitchedPtr(in_d, Nz*sizeof(R_t), Nz, Ny);
-            cpy_params.dstPos = make_cudaPos(0, 0, 0);
-            cpy_params.dstPtr = make_cudaPitchedPtr(&send_ptr[send_count], Nz*sizeof(R_t), Nz, input_dim.size_y[p_j]);
-            cpy_params.extent = make_cudaExtent(Nz*sizeof(R_t), input_dim.size_y[p_j], input_dim.size_x[p_i]);
-            cpy_params.kind   = CUDA_AWARE ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
+            cpy_params.srcPos = make_cudaPos(0, 0, 0);
+            cpy_params.srcPtr = make_cudaPitchedPtr(&recv_ptr[recv_counts[p]], (Nz/2+1)*sizeof(C_t), Nz/2+1, input_dim.size_y[p_j]);
+            cpy_params.dstPos = make_cudaPos(0, input_dim.start_y[p_j], input_dim.start_x[p_i]);
+            cpy_params.dstPtr = make_cudaPitchedPtr(res_d, (Nz/2+1)*sizeof(C_t), Nz/2+1, Ny);    
+            cpy_params.extent = make_cudaExtent((Nz/2+1)*sizeof(C_t), input_dim.size_y[p_j], input_dim.size_x[p_i]);
+            cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;   
             
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
-            CUDA_CALL(cudaDeviceSynchronize());
-
-            recv_counts.push_back(recv_count);
-
-            //start non-blocking receive for distributed results (asynch to local fft computation)
-            MPI_Irecv(&recv_ptr[recv_count], (Nz/2+1)*input_dim.size_y[p_j]*input_dim.size_x[p_i]*sizeof(C_t), 
-                MPI_BYTE, p_i*P2+p_j, world_size, MPI_COMM_WORLD, &recv_req[p_i*P2+p_j]);
-            recv_count += (Nz/2+1)*input_dim.size_y[p_j]*input_dim.size_x[p_i];
-
-            //start non-blocking send for input data
-            MPI_Isend(&send_ptr[send_count], input_dim.size_x[p_i]*input_dim.size_y[p_j]*Nz*sizeof(R_t), 
-                MPI_BYTE, p_i*P2+p_j, world_size, MPI_COMM_WORLD, &send_req[p_i*P2+p_j]);
-
-            send_count += input_dim.size_x[p_i] * input_dim.size_y[p_j] * Nz;
-        }
-    }
-
-    MPI_Waitall(world_size-1, send_req.data(), MPI_STATUSES_IGNORE);
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    // compute full fft locally
-    size_t ws_r2c;
-
-    cufftHandle planR2C;
-    cublasHandle_t handle;
-
-    R_t *real    = cuFFT<float>::real(in_d);
-    C_t *complex = cuFFT<float>::complex(out_d);
-
-    CUFFT_CALL(cufftCreate(&planR2C));
-    long long int n[1] = {static_cast<long long int>(input_dim.size_z[0])};
-
-    CUFFT_CALL(cufftMakePlanMany64(planR2C, 1, n, nullptr, 0, 0, nullptr, 0, 0, cuFFT<float>::R2Ctype, static_cast<long long int>(Nx*Ny), &ws_r2c));
-
-    CUFFT_CALL(cuFFT<float>::execR2C(planR2C, real, complex));
-    CUDA_CALL(cudaDeviceSynchronize());
-
-    CUBLAS_CALL(cublasCreate(&handle));
-
-    int p;
-    do {
-        // recv_req contains one null handle (i.e. recv_req[pidx_i]) and P1-1 active handles
-        // If all active handles are processed, Waitany will return MPI_UNDEFINED
-        MPI_Waitany(world_size-1, recv_req.data(), &p, MPI_STATUSES_IGNORE);
-        if (p == MPI_UNDEFINED)
-            break;
+        } while (p != MPI_UNDEFINED);
         
-        size_t p_i = p / P2;
-        size_t p_j = p % P2;
-
-        cudaMemcpy3DParms cpy_params = {0};
-        cpy_params.srcPos = make_cudaPos(0, 0, 0);
-        cpy_params.srcPtr = make_cudaPitchedPtr(&recv_ptr[recv_counts[p]], (Nz/2+1)*sizeof(C_t), Nz/2+1, input_dim.size_y[p_j]);
-        cpy_params.dstPos = make_cudaPos(0, input_dim.start_y[p_j], input_dim.start_x[p_i]);
-        cpy_params.dstPtr = make_cudaPitchedPtr(res_d, (Nz/2+1)*sizeof(C_t), Nz/2+1, Ny);    
-        cpy_params.extent = make_cudaExtent((Nz/2+1)*sizeof(C_t), input_dim.size_y[p_j], input_dim.size_x[p_i]);
-        cpy_params.kind   = CUDA_AWARE ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;   
-        
-        CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
-    } while (p != MPI_UNDEFINED);
+        CUDA_CALL(cudaDeviceSynchronize());
     
-    CUDA_CALL(cudaDeviceSynchronize());
-
-    difference<<<(Nx*Ny*(Nz/2+1))/1024+1, 1024>>>(complex, res_d, Nx*Ny*(Nz/2+1));
-    CUDA_CALL(cudaDeviceSynchronize());
-
-    float sum = 0;
-    CUBLAS_CALL(cublasScasum(handle, Nx*Ny*(Nz/2+1), complex, 1, &sum));
-    CUBLAS_CALL(cublasDestroy(handle));
-
-    printf("\nResults: %f", sum);
-
-    CUFFT_CALL(cufftDestroy(planR2C));
+        Difference_Pencil_1D::Difference<T>::difference<<<(Nx*Ny*(Nz/2+1))/1024+1, 1024>>>(complex, res_d, Nx*Ny*(Nz/2+1));
+        CUDA_CALL(cudaDeviceSynchronize());
+    
+        T sum = 0;
+        CUBLAS_CALL(Random_Tests<T>::cublasSum(handle, Nx*Ny*(Nz/2+1), complex, 1, &sum));
+        CUBLAS_CALL(cublasDestroy(handle));
+    
+        printf("\nResults: %f", sum);
+        CUFFT_CALL(cufftDestroy(planR2C));
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
 
     CUDA_CALL(cudaFree(in_d));
     CUDA_CALL(cudaFree(out_d));
     CUDA_CALL(cudaFree(res_d));
-    if (CUDA_AWARE == 1){
+    if (cuda_aware){
         CUDA_CALL(cudaFree(send_ptr));
         CUDA_CALL(cudaFree(recv_ptr));
     } else {
@@ -230,7 +310,11 @@ int coordinate(int world_size) {
     return 0;    
 }
 
-int compute(int rank, int distributor){
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::compute(const int rank, const int world_size, const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+
     MPI_Request send_req;
     MPI_Request recv_req;
 
@@ -241,8 +325,7 @@ int compute(int rank, int distributor){
     size_t pidx_j = rank % P2;
 
     //initialize MPIcuFFT
-    printf("\nworld_size %d\n", distributor + (PartOfCluster==1 ? 1 : 0));
-    MPIcuFFT_Pencil<float> mpicuFFT(MPI_COMM_WORLD, CUDA_AWARE==1, distributor + (PartOfCluster==1 ? 1 : 0));
+    MPIcuFFT_Pencil<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
 
     Pencil_Partition partition(P1, P2);
     GlobalSize global_size(Nx, Ny, Nz);
@@ -258,7 +341,7 @@ int compute(int rank, int distributor){
     CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
     
-    if (CUDA_AWARE == 1){
+    if (cuda_aware){
         recv_ptr = in_d;
         send_ptr = out_d;
     } else {
@@ -266,32 +349,35 @@ int compute(int rank, int distributor){
         CUDA_CALL(cudaMallocHost((void **)&send_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1)*sizeof(C_t)));
     }
 
-    //receive input data via MPI
-    MPI_Irecv(recv_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), MPI_BYTE, distributor, distributor+1, MPI_COMM_WORLD, &recv_req);
-    MPI_Wait(&recv_req, MPI_STATUSES_IGNORE);
-
-    if (CUDA_AWARE == 0){
-        CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
-        CUDA_CALL(cudaDeviceSynchronize());
+    for (int i = 0; i < runs; i++) {
+        //receive input data via MPI
+        MPI_Irecv(recv_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), MPI_BYTE, world_size, world_size+1, MPI_COMM_WORLD, &recv_req);
+        MPI_Wait(&recv_req, MPI_STATUSES_IGNORE);
+    
+        if (!cuda_aware){
+            CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
+            CUDA_CALL(cudaDeviceSynchronize());
+        }
+    
+        MPI_Barrier(MPI_COMM_WORLD);
+    
+        //execute
+        mpicuFFT.execR2C(out_d, in_d, 1);
+    
+        if (!cuda_aware){
+            CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1)*sizeof(C_t), cudaMemcpyDeviceToHost));
+            CUDA_CALL(cudaDeviceSynchronize());
+        }
+    
+        MPI_Isend(send_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1)*sizeof(C_t), MPI_BYTE, world_size, world_size+1, MPI_COMM_WORLD, &send_req);
+        MPI_Wait(&send_req, MPI_STATUSES_IGNORE);
+        MPI_Barrier(MPI_COMM_WORLD);
     }
-
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    //execute
-    mpicuFFT.execR2C(out_d, in_d);
-
-    if (CUDA_AWARE == 0){
-        CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1)*sizeof(C_t), cudaMemcpyDeviceToHost));
-        CUDA_CALL(cudaDeviceSynchronize());
-    }
-
-    MPI_Isend(send_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1)*sizeof(C_t), MPI_BYTE, distributor, distributor+1, MPI_COMM_WORLD, &send_req);
-    MPI_Wait(&send_req, MPI_STATUSES_IGNORE);
     
     CUDA_CALL(cudaFree(in_d));
     CUDA_CALL(cudaFree(out_d));
 
-    if (CUDA_AWARE == 0) {
+    if (!cuda_aware) {
         CUDA_CALL(cudaFreeHost(recv_ptr));
         CUDA_CALL(cudaFreeHost(send_ptr));
     }
@@ -299,27 +385,5 @@ int compute(int rank, int distributor){
     return 0;
 }
 
-int main() {      
-    //initialize MPI
-    MPI_Init(NULL, NULL);
-
-    //number of processes
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-
-    //get global rank
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    if (rank == world_size-1){
-        coordinate(world_size);
-    } else{
-        compute(rank, world_size-1);
-    }
-    
-    //finalize
-    MPI_Finalize();
-
-    return 0;
-}
-
+template class Tests_Pencil_Random_1D<float>;
+template class Tests_Pencil_Random_1D<double>;
