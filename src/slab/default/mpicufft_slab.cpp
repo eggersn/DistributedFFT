@@ -204,7 +204,6 @@ void MPIcuFFT_Slab<T>::MPIsend_Thread(Callback_Params_Base &base_params, void *p
   using C_t = typename cuFFT<T>::C_t;
   C_t *send_ptr = (C_t *) ptr;
 
-  send_complete = false;
   for (int i = 0; i < comm_order.size(); i++){
     std::unique_lock<std::mutex> lk(base_params.mutex);
     base_params.cv.wait(lk, [&base_params]{return !base_params.comm_ready.empty();});
@@ -223,10 +222,7 @@ void MPIcuFFT_Slab<T>::MPIsend_Thread(Callback_Params_Base &base_params, void *p
     lk.unlock();
   }
   timer->stop_store("Transpose (Packing)");
-  debug_int("send complete", 0);
-  send_complete = true;
-  this->send_lk->unlock();
-  this->send_cv.notify_one();
+  debug_int("thread done", pidx);
 }
 
 template<typename T> 
@@ -275,7 +271,6 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("2D FFT Y-Z-Direction");
   
-    this->send_lk = new std::unique_lock<std::mutex>(this->send_mutex);
     for (auto p : comm_order) { 
       // start non-blocking receive for rank p
       MPI_Irecv((&recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]]),
@@ -305,6 +300,9 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
                                   cudaMemcpyDeviceToDevice, streams[pidx]));
     }
     timer->stop_store("Transpose (Start Receive)");
+    debug_p("temp_ptr", temp_ptr);
+    debug_p("send_ptr", send_ptr);
+    debug_p("recv_ptr", recv_ptr);
     if (!cuda_aware) { // copy received blocks to device
       int p, i = 0;
       do {
@@ -321,16 +319,16 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
     }
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("Transpose (Finished Receive)");
+
     // compute remaining 1d FFT, for cuda-aware recv and temp buffer are identical
     CUFFT_CALL(cuFFT<T>::execC2C(planC2C, temp_ptr, complex, CUFFT_FORWARD));
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("1D FFT X-Direction");
-    std::unique_lock<std::mutex> lk(this->send_mutex);
-    this->send_cv.wait(lk, [this]{return send_complete;});
+
     mpisend_thread.join();
     MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
-    lk.unlock();
-    delete(this->send_lk);
+    debug_int("send complete", pidx);
+
     timer->stop_store("Run complete");
   }
   cudaProfilerStop();

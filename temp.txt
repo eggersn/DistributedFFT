@@ -1,0 +1,1382 @@
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (2): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (3): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (2): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+Result 0
+DEBUG (2): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (2): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): recv: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (0): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (0): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (1): recv: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (1): send start: 3 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (1): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
+DEBUG (0): recv: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:313
+DEBUG (3): send start: 1 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send start: 2 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:222
+DEBUG (3): send complete: 0 in /home/eggersn/DistributedFFT/src/slab/default/mpicufft_slab.cpp:226
