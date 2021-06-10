@@ -1,0 +1,26 @@
+{
+    "size": [32, 64, 128, 256],
+    "warmup-rounds": 10,
+    "additional-flags": "--oversubscribe",
+    "tests": [
+        {
+            "name": "Pencil_3D",
+            "repetitions": 10,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P1": 2,
+            "P2": 2
+        }, 
+        {
+            "name": "Slab_Default",
+            "repetitions": 42,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 1,
+            "option": 1,
+            "P": 4
+        }
+    ]
+}

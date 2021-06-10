@@ -287,6 +287,8 @@ int Tests_Pencil_Random_3D<T>::coordinate(const int world_size, const int runs) 
     
         T sum = 0;
         CUBLAS_CALL(Random_Tests<T>::cublasSum(handle, Nx*Ny*(Nz/2+1), complex, 1, &sum));
+
+        printf("\nResults: %f\n", sum);
     
         CUBLAS_CALL(cublasDestroy(handle));
         
