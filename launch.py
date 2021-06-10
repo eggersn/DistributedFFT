@@ -28,7 +28,7 @@ def menu_main():
     return 0
 
 opt = menu_main()
-# os.chdir("build")
+os.chdir("build")
 print()
 if opt == 0:
     for s in data["size"]:
@@ -43,7 +43,7 @@ if opt == 0:
             # One additional process for coordination
             if test["testcase"] == 1:
                 ranks += 1
-            command = "mpiexec -n " + str(ranks) + " " + data["additional-flags"] + " " + "launch_modules.sh " + str(test["name"]) + " " + str(test["testcase"]) + " " 
+            command = "mpiexec -n " + str(ranks) + " " + data["additional-flags"] + " " + "tests_exec " + str(test["name"]) + " " + str(test["testcase"]) + " " 
             command += str(test["option"]) + " " + str(data["warmup-rounds"] + test["repetitions"]) + " " + str(s) + " " + str(s) + " " + str(s) + " " + str(test["cuda_aware"]) + " " + test["precision"]
                 
             if test["name"][0:6] == "Pencil":
