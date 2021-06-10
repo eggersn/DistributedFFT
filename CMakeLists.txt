@@ -14,6 +14,7 @@ find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cu
 
 #MPI
 set(MPI_HOME ${MPI_HOME})
+set(MPI_CXX_COMPILER_FLAGS "-g")
 find_package(MPI REQUIRED)
 
 # create library and link them

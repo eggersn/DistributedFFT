@@ -84,6 +84,11 @@ protected:
   std::vector<MPI_Request> send_req;
   std::vector<MPI_Request> recv_req;
 
+  std::mutex send_mutex;
+  std::condition_variable send_cv;
+  std::unique_lock<std::mutex> *send_lk;
+  bool send_complete;
+
   std::vector<cudaStream_t> streams;
 
   size_t input_size_y, input_size_z;

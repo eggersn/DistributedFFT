@@ -497,7 +497,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
         CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("1D FFT Y-Direction");
         mpisend_thread1.join();
-        debug("waitall1", "");
         MPI_Waitall(partition->P2, send_req.data(), MPI_STATUSES_IGNORE);
         // used for random_dist_2D test
         if (d == 2)
@@ -611,7 +610,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
         CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("1D FFT X-Direction");
         mpisend_thread2.join();
-        debug("waitall2", "");
         MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
         timer->stop_store("Run complete");
     }
