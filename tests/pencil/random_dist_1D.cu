@@ -64,8 +64,13 @@ int Tests_Pencil_Random_1D<T>::testcase0(const int opt, const int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
+    int provided; 
     //initialize MPI
-    MPI_Init(NULL, NULL);
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
 
     //number of processes
     int world_size;
@@ -123,8 +128,13 @@ int Tests_Pencil_Random_1D<T>::testcase0(const int opt, const int runs){
 
 template<typename T> 
 int Tests_Pencil_Random_1D<T>::testcase1(const int opt, const int runs) {      
+    int provided; 
     //initialize MPI
-    MPI_Init(NULL, NULL);
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
 
     //number of processes
     int world_size;
