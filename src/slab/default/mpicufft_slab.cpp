@@ -12,20 +12,6 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);  \
     exit(EXIT_FAILURE); }} while(0)
 
-#define DEBUG 1
-#define debug_int(d, v) {                                             \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d): %s: %d in %s:%d\n",pidx,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
-
-#define debug_p(d, v) {                                                  \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d): %s: %p in %s:%d\n",pidx,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
-
-
 template<typename T> 
 MPIcuFFT_Slab<T>::MPIcuFFT_Slab(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
   cudaProfilerStart();
@@ -218,11 +204,9 @@ void MPIcuFFT_Slab<T>::MPIsend_Thread(Callback_Params_Base &base_params, void *p
     MPI_Isend(&send_ptr[oslice], 
               sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
               p, pidx, comm, &(send_req[p]));
-    debug_int("send start", p);
     lk.unlock();
   }
   timer->stop_store("Transpose (Packing)");
-  debug_int("thread done", pidx);
 }
 
 template<typename T> 
@@ -300,15 +284,11 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
                                   cudaMemcpyDeviceToDevice, streams[pidx]));
     }
     timer->stop_store("Transpose (Start Receive)");
-    debug_p("temp_ptr", temp_ptr);
-    debug_p("send_ptr", send_ptr);
-    debug_p("recv_ptr", recv_ptr);
     if (!cuda_aware) { // copy received blocks to device
       int p, i = 0;
       do {
         MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
         if (p == MPI_UNDEFINED) break;
-        debug_int("recv", p);
         CUDA_CALL(cudaMemcpyAsync(&temp_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]],
                                   &recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]],
                                   input_sizes_x[p]*output_size_z*output_sizes_y[pidx]*sizeof(C_t), cudaMemcpyHostToDevice, streams[comm_order[i]]));
@@ -327,7 +307,6 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
 
     mpisend_thread.join();
     MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
-    debug_int("send complete", pidx);
 
     timer->stop_store("Run complete");
   }
