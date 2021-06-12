@@ -1,11 +1,11 @@
 {
-    "size": [32, 64, 128, 256],
+    "size": [32, 64, 128, 256, 512],
     "warmup-rounds": 10,
-    "additional-flags": "--oversubscribe",
+    "additional-flags": "--hostfile ../hostfile",
     "tests": [
         {
             "name": "Pencil_3D",
-            "repetitions": 10,
+            "repetitions": 100,
             "cuda_aware": false,
             "precision": "double",
             "testcase": 0,
@@ -14,13 +14,169 @@
             "P2": 2
         }, 
         {
-            "name": "Slab_Default",
-            "repetitions": 42,
+            "name": "Pencil_3D",
+            "repetitions": 100,
             "cuda_aware": false,
             "precision": "double",
-            "testcase": 1,
+            "testcase": 0,
+            "option": 0,
+            "P1": 3,
+            "P2": 3
+        }, 
+        {
+            "name": "Pencil_3D",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P1": 4,
+            "P2": 4
+        }, 
+        {
+            "name": "Pencil_3D",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P1": 5,
+            "P2": 4
+        }, 
+        {
+            "name": "Slab_Default",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 4
+        }, 
+        {
+            "name": "Slab_Default",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 8
+        }, 
+        {
+            "name": "Slab_Default",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 16
+        }, 
+        {
+            "name": "Slab_Default",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
             "option": 1,
             "P": 4
+        }, 
+        {
+            "name": "Slab_Default",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 1,
+            "P": 8
+        }, 
+        {
+            "name": "Slab_Default",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 1,
+            "P": 16
+        }, 
+        {
+            "name": "Slab_Z_Then_YX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 4
+        }, 
+        {
+            "name": "Slab_Z_Then_YX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 8
+        }, 
+        {
+            "name": "Slab_Z_Then_YX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 16
+        }, 
+        {
+            "name": "Slab_Z_Then_YX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 1,
+            "P": 4
+        }, 
+        {
+            "name": "Slab_Z_Then_YX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 1,
+            "P": 8
+        }, 
+        {
+            "name": "Slab_Y_Then_ZX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 1,
+            "P": 16
+        }, 
+        {
+            "name": "Slab_Y_Then_ZX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 4
+        }, 
+        {
+            "name": "Slab_Y_Then_ZX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 8
+        }, 
+        {
+            "name": "Slab_Y_Then_ZX",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 0,
+            "option": 0,
+            "P": 16
         }
     ]
 }
