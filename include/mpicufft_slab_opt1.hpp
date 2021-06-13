@@ -5,7 +5,7 @@
 template<typename T> class MPIcuFFT_Slab_Opt1 : public MPIcuFFT_Slab<T> {
 public: 
     MPIcuFFT_Slab_Opt1 (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1) :
-      MPIcuFFT_Slab<T>(comm, mpi_cuda_aware, max_world_size) {timer->setFileName("../benchmarks/slab_opt1.csv");}
+      MPIcuFFT_Slab<T>(comm, mpi_cuda_aware, max_world_size) {timer->setFileName("../benchmarks/slab_default_opt1.csv");}
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
     void initFFT(GlobalSize *global_size, bool allocate=true) {
       this->initFFT(global_size, nullptr, allocate);

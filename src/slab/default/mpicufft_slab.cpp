@@ -38,7 +38,7 @@ MPIcuFFT_Slab<T>::MPIcuFFT_Slab(MPI_Comm comm, bool mpi_cuda_aware, int max_worl
     streams.push_back(stream);
   }
 
-  timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, "../benchmarks/slab.csv");
+  timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, "../benchmarks/slab_default.csv");
 }
 
 template<typename T> 
@@ -311,7 +311,7 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
     timer->stop_store("Run complete");
   }
   cudaProfilerStop();
-  // timer->gather();
+  timer->gather();
 }
 
 template class MPIcuFFT_Slab<float>;

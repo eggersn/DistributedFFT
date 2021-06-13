@@ -64,15 +64,15 @@ if opt == 0:
                 f_data = f_in.read().splitlines(True)
                 index = [i for i, n in enumerate(f_data) if n == "\n"][data["warmup-rounds"]-1]
             if test["name"][0:6] == "Pencil":
-                os.system("mv ../benchmarks/" + benchmarkfile + ".csv ../benchmarks/" + benchmarkfile + "/test_" + str(s) + "_" + str(test["P1"]) + "_" + str(test["P2"]) + "_" + str(test["cuda_aware"]).lower() + "_" + test["precision"])
-                with open("../benchmarks/" + benchmarkfile + "/test_" + str(s) + "_" + str(test["P1"]) + "_" + str(test["P2"]) + "_" + str(test["cuda_aware"]).lower() + "_" + test["precision"], 'w') as f_out:
+                with open("../benchmarks/" + benchmarkfile + "/test_" + str(s) + "_" + str(test["P1"]) + "_" + str(test["P2"]) + "_" + str(test["cuda_aware"]).lower() + "_" + test["precision"]  + ".csv", 'w') as f_out:
                     f_out.writelines(f_data[0])
                     f_out.writelines(f_data[index+1:])
+                os.system("rm ../benchmarks/" + benchmarkfile + ".csv")
             else:
-                os.system("mv ../benchmarks/" + benchmarkfile + ".csv ../benchmarks/" + benchmarkfile + "/test_" + str(s) + "_" + str(test["P"]) + "_" + str(test["cuda_aware"]).lower() + "_" + test["precision"])
-                with open("../benchmarks/" + benchmarkfile + "/test_" + str(s) + "_" + str(test["P"]) + "_" + str(test["cuda_aware"]).lower() + "_" + test["precision"], 'w') as f_out:
+                with open("../benchmarks/" + benchmarkfile + "/test_" + str(s) + "_" + str(test["P"]) + "_" + str(test["cuda_aware"]).lower() + "_" + test["precision"] + ".csv", 'w') as f_out:
                     f_out.writelines(f_data[0])
                     f_out.writelines(f_data[index+1:])
+                os.system("rm ../benchmarks/" + benchmarkfile + ".csv")
             
         print()
 elif opt == 1:
