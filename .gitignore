@@ -1,3 +1,4 @@
 build/*
 benchmarks/*
 commands.txt
+test.py
