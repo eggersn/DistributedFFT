@@ -1,0 +1,127 @@
+\hypertarget{classMPIcuFFT}{}\doxysection{MPIcu\+FFT$<$ T $>$ Class Template Reference}
+\label{classMPIcuFFT}\index{MPIcuFFT$<$ T $>$@{MPIcuFFT$<$ T $>$}}
+Inheritance diagram for MPIcu\+FFT$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.666667cm]{classMPIcuFFT}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a06f696519916b40c2c9e51cbe3661d23}\label{classMPIcuFFT_a06f696519916b40c2c9e51cbe3661d23}} 
+{\bfseries MPIcu\+FFT} (MPI\+\_\+\+Comm comm=MPI\+\_\+\+COMM\+\_\+\+WORLD, bool mpi\+\_\+cuda\+\_\+aware=false, int max\+\_\+world\+\_\+size=-\/1)
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a34af4d1b581dc7c93d475e74b8744b77}\label{classMPIcuFFT_a34af4d1b581dc7c93d475e74b8744b77}} 
+virtual void {\bfseries init\+FFT} (\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$global\+\_\+size, \mbox{\hyperlink{structPartition}{Partition}} $\ast$partition, bool allocate=true)=0
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ab08e9a53deb2380c9e452d839822bdea}\label{classMPIcuFFT_ab08e9a53deb2380c9e452d839822bdea}} 
+virtual void {\bfseries set\+Work\+Area} (void $\ast$device=nullptr, void $\ast$host=nullptr)=0
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ad9fe6b02263fd2cc6daee3ff0609aff6}\label{classMPIcuFFT_ad9fe6b02263fd2cc6daee3ff0609aff6}} 
+virtual void {\bfseries exec\+R2C} (void $\ast$out, const void $\ast$in)=0
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a2e05125049fa615e75d37ebedcde3f8a}\label{classMPIcuFFT_a2e05125049fa615e75d37ebedcde3f8a}} 
+virtual void {\bfseries get\+In\+Size} (size\+\_\+t $\ast$isize)=0
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a24fecd4dd7c5f17aec2683fefe163f1a}\label{classMPIcuFFT_a24fecd4dd7c5f17aec2683fefe163f1a}} 
+virtual void {\bfseries get\+In\+Start} (size\+\_\+t $\ast$istart)=0
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ae8f848cc4d709f5652f5658063d0cd13}\label{classMPIcuFFT_ae8f848cc4d709f5652f5658063d0cd13}} 
+virtual void {\bfseries get\+Out\+Size} (size\+\_\+t $\ast$osize)=0
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ab1cf6b3a76fa9ead4a175ba7b188b479}\label{classMPIcuFFT_ab1cf6b3a76fa9ead4a175ba7b188b479}} 
+virtual void {\bfseries get\+Out\+Start} (size\+\_\+t $\ast$ostart)=0
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_aaff43325533dd0388ed4b9fa9dacfa02}\label{classMPIcuFFT_aaff43325533dd0388ed4b9fa9dacfa02}} 
+size\+\_\+t {\bfseries get\+Domain\+Size} () const
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a27c43258e224a0c446119226b4c3aad1}\label{classMPIcuFFT_a27c43258e224a0c446119226b4c3aad1}} 
+size\+\_\+t {\bfseries get\+Work\+Size\+Device} () const
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ae861a5c2ed3fcef69c40109000de1685}\label{classMPIcuFFT_ae861a5c2ed3fcef69c40109000de1685}} 
+size\+\_\+t {\bfseries get\+Work\+Size\+Host} () const
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a7fec4352c49380d98980b7d4a8c7847b}\label{classMPIcuFFT_a7fec4352c49380d98980b7d4a8c7847b}} 
+void $\ast$ {\bfseries get\+Work\+Area\+Device} () const
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_aa4d9aedc46c21153a6df6fda57709ae2}\label{classMPIcuFFT_aa4d9aedc46c21153a6df6fda57709ae2}} 
+void $\ast$ {\bfseries get\+Work\+Area\+Host} () const
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a48a363f503be0edf84045ec72ecda742}\label{classMPIcuFFT_a48a363f503be0edf84045ec72ecda742}} 
+int {\bfseries get\+Rank} () const
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ab2910f3d2d3e85c3ec0f5993ac2ffc25}\label{classMPIcuFFT_ab2910f3d2d3e85c3ec0f5993ac2ffc25}} 
+int {\bfseries get\+World\+Size} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ad31035b3745ae041dc5d374789f8b960}\label{classMPIcuFFT_ad31035b3745ae041dc5d374789f8b960}} 
+enum {\bfseries comm\+Mode\+\_\+e} \{ {\bfseries Peer}
+, {\bfseries All2\+All}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_abe4c6fcccdda2d6722ad06576c6b813b}\label{classMPIcuFFT_abe4c6fcccdda2d6722ad06576c6b813b}} 
+enum MPIcu\+FFT\+::comm\+Mode\+\_\+e {\bfseries comm\+\_\+mode}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ac5f8dcacd309830bfd1c488a31042481}\label{classMPIcuFFT_ac5f8dcacd309830bfd1c488a31042481}} 
+MPI\+\_\+\+Comm {\bfseries comm}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a3aa54d0593c6350348d80f414bf8cbe0}\label{classMPIcuFFT_a3aa54d0593c6350348d80f414bf8cbe0}} 
+int {\bfseries pidx}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a610789c19bd7cb07ffd41437e984ff9c}\label{classMPIcuFFT_a610789c19bd7cb07ffd41437e984ff9c}} 
+int {\bfseries pcnt}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a17bece9ba4ddf8aff524baa1029323cb}\label{classMPIcuFFT_a17bece9ba4ddf8aff524baa1029323cb}} 
+std\+::vector$<$ int $>$ {\bfseries comm\+\_\+order}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_afbb8c8ad14740139790f96e1c8baee1c}\label{classMPIcuFFT_afbb8c8ad14740139790f96e1c8baee1c}} 
+size\+\_\+t {\bfseries domainsize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a15fbf82245adeeaa671e8e14123bdb37}\label{classMPIcuFFT_a15fbf82245adeeaa671e8e14123bdb37}} 
+size\+\_\+t {\bfseries fft\+\_\+worksize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a7781c4926127b88fa2a2d5fb94fe1f13}\label{classMPIcuFFT_a7781c4926127b88fa2a2d5fb94fe1f13}} 
+size\+\_\+t {\bfseries worksize\+\_\+d}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ad1bcd48715c09cb8fa85c20337cbf8c2}\label{classMPIcuFFT_ad1bcd48715c09cb8fa85c20337cbf8c2}} 
+size\+\_\+t {\bfseries worksize\+\_\+h}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a545e537047eeb8dc44e74f3c1b255c33}\label{classMPIcuFFT_a545e537047eeb8dc44e74f3c1b255c33}} 
+void $\ast$ {\bfseries workarea\+\_\+d}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a79bfcc70b3fc343645a800dd0d853df1}\label{classMPIcuFFT_a79bfcc70b3fc343645a800dd0d853df1}} 
+void $\ast$ {\bfseries workarea\+\_\+h}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a1f03096ecdb79c34973d81685b170a45}\label{classMPIcuFFT_a1f03096ecdb79c34973d81685b170a45}} 
+std\+::vector$<$ void $\ast$ $>$ {\bfseries mem\+\_\+d}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ac6189e6b6fb56cef6fb698165e6490e3}\label{classMPIcuFFT_ac6189e6b6fb56cef6fb698165e6490e3}} 
+std\+::vector$<$ void $\ast$ $>$ {\bfseries mem\+\_\+h}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a079a5f07b97fe0ab570c6d58773b869f}\label{classMPIcuFFT_a079a5f07b97fe0ab570c6d58773b869f}} 
+bool {\bfseries allocated\+\_\+d}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_a0eaaf1663e940cda245be8608ae29f91}\label{classMPIcuFFT_a0eaaf1663e940cda245be8608ae29f91}} 
+bool {\bfseries allocated\+\_\+h}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ad7c45e511c2ec9cd13769d036561b433}\label{classMPIcuFFT_ad7c45e511c2ec9cd13769d036561b433}} 
+bool {\bfseries cuda\+\_\+aware}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ade89b7aa2778e8cb1d2b0975e7e9c37b}\label{classMPIcuFFT_ade89b7aa2778e8cb1d2b0975e7e9c37b}} 
+bool {\bfseries initialized}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT_ad75dc94cb43dcdb0993962910c4863e8}\label{classMPIcuFFT_ad75dc94cb43dcdb0993962910c4863e8}} 
+bool {\bfseries fft3d}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/mpicufft.\+hpp\item 
+src/mpicufft.\+cpp\end{DoxyCompactItemize}

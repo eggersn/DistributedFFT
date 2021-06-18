@@ -1,0 +1,5 @@
+\_form#0=41x13:$P_1 \times P_1$
+\_form#1=65x20:$\frac{N_x}{P_1} \cdot \frac{N_y}{P_2} \cdot N_z$
+\_form#2=98x20:$\frac{N_x}{P_1} \cdot \frac{N_y}{P_2} \cdot \lfloor \frac{N_z}{2}+1 \rfloor$
+\_form#3=91x11:$0 \leq testcase \leq 0$
+\_form#4=70x14:$N_x*N_y*N_z$

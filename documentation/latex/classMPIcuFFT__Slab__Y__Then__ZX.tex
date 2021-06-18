@@ -1,0 +1,207 @@
+\hypertarget{classMPIcuFFT__Slab__Y__Then__ZX}{}\doxysection{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX$<$ T $>$ Class Template Reference}
+\label{classMPIcuFFT__Slab__Y__Then__ZX}\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+Inheritance diagram for MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classMPIcuFFT__Slab__Y__Then__ZX}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structMPIcuFFT__Slab__Y__Then__ZX_1_1Callback__Params}{Callback\+\_\+\+Params}}
+\item 
+struct \mbox{\hyperlink{structMPIcuFFT__Slab__Y__Then__ZX_1_1Callback__Params__Base}{Callback\+\_\+\+Params\+\_\+\+Base}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a1a1ede3e709087170fbda8dccc91a0ca}\label{classMPIcuFFT__Slab__Y__Then__ZX_a1a1ede3e709087170fbda8dccc91a0ca}} 
+{\bfseries MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX} (MPI\+\_\+\+Comm comm=MPI\+\_\+\+COMM\+\_\+\+WORLD, bool mpi\+\_\+cuda\+\_\+aware=false, int max\+\_\+world\+\_\+size=-\/1)
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_a6a49100f3dab94d5a794322842b64cca}{init\+FFT}} (\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$global\+\_\+size, \mbox{\hyperlink{structPartition}{Partition}} $\ast$partition, bool allocate=true)
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a958aa44b8f1670a226bb43828d4c4bbf}\label{classMPIcuFFT__Slab__Y__Then__ZX_a958aa44b8f1670a226bb43828d4c4bbf}} 
+void {\bfseries init\+FFT} (\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$global\+\_\+size, bool allocate=true)
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_a64cdb4d883a886df5c3190044bf5c693}{set\+Work\+Area}} (void $\ast$device=nullptr, void $\ast$host=nullptr)
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_a846734f26dc1055a27b474f9b8432eb0}{exec\+R2C}} (void $\ast$out, const void $\ast$in)
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_a1f59d5a63b2f090fccf7c8e3fd3873f0}{get\+In\+Size}} (size\+\_\+t $\ast$isize)
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_a512e3a78d8966ae4366f752223d2dfec}{get\+In\+Start}} (size\+\_\+t $\ast$istart)
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_af2b48a0108bf89c19b30f7e489d9053c}{get\+Out\+Size}} (size\+\_\+t $\ast$osize)
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_a990e6ac9b37fbc30f294b71d058f9f14}{get\+Out\+Start}} (size\+\_\+t $\ast$ostart)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_aaae66d9e8f5d4e2e87ca9beb9e7019c6}\label{classMPIcuFFT__Slab__Y__Then__ZX_aaae66d9e8f5d4e2e87ca9beb9e7019c6}} 
+void {\bfseries MPIsend\+\_\+\+Thread} (\mbox{\hyperlink{structMPIcuFFT__Slab__Y__Then__ZX_1_1Callback__Params__Base}{Callback\+\_\+\+Params\+\_\+\+Base}} \&params, void $\ast$ptr)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a413ae7633d8f3a3e21661858196da8cf}\label{classMPIcuFFT__Slab__Y__Then__ZX_a413ae7633d8f3a3e21661858196da8cf}} 
+static void CUDART\+\_\+\+CB {\bfseries MPIsend\+\_\+\+Callback} (void $\ast$data)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_af09093e4ae9933323681a55835b842aa}\label{classMPIcuFFT__Slab__Y__Then__ZX_af09093e4ae9933323681a55835b842aa}} 
+std\+::vector$<$ cufft\+Handle $>$ {\bfseries plan\+R2C}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a8d1a1378f0680e9a0f738f92403d3b07}\label{classMPIcuFFT__Slab__Y__Then__ZX_a8d1a1378f0680e9a0f738f92403d3b07}} 
+cufft\+Handle {\bfseries plan\+C2C}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a250cce3ce54fd65fd848a77e688863a0}\label{classMPIcuFFT__Slab__Y__Then__ZX_a250cce3ce54fd65fd848a77e688863a0}} 
+std\+::vector$<$ size\+\_\+t $>$ {\bfseries input\+\_\+sizes\+\_\+x}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a5b7232fe55553a3ac2496467e1cd34e9}\label{classMPIcuFFT__Slab__Y__Then__ZX_a5b7232fe55553a3ac2496467e1cd34e9}} 
+std\+::vector$<$ size\+\_\+t $>$ {\bfseries input\+\_\+start\+\_\+x}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a6ff288fc1721346de83187451354a09c}\label{classMPIcuFFT__Slab__Y__Then__ZX_a6ff288fc1721346de83187451354a09c}} 
+std\+::vector$<$ size\+\_\+t $>$ {\bfseries output\+\_\+sizes\+\_\+y}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a08a8b263076635891a47da474bc6c0ab}\label{classMPIcuFFT__Slab__Y__Then__ZX_a08a8b263076635891a47da474bc6c0ab}} 
+std\+::vector$<$ size\+\_\+t $>$ {\bfseries output\+\_\+start\+\_\+y}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_ad7100e5f4f3364705283da38f4fbd8a0}\label{classMPIcuFFT__Slab__Y__Then__ZX_ad7100e5f4f3364705283da38f4fbd8a0}} 
+std\+::vector$<$ MPI\+\_\+\+Request $>$ {\bfseries send\+\_\+req}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a1e53af869f9e4781799762663ec1a6d2}\label{classMPIcuFFT__Slab__Y__Then__ZX_a1e53af869f9e4781799762663ec1a6d2}} 
+std\+::vector$<$ MPI\+\_\+\+Request $>$ {\bfseries recv\+\_\+req}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_ad4f361581746e45853e2ffc44fdd0b31}\label{classMPIcuFFT__Slab__Y__Then__ZX_ad4f361581746e45853e2ffc44fdd0b31}} 
+std\+::vector$<$ cuda\+Stream\+\_\+t $>$ {\bfseries streams}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_aa2bf0d664dc07b7a718ead9b0d46aad1}\label{classMPIcuFFT__Slab__Y__Then__ZX_aa2bf0d664dc07b7a718ead9b0d46aad1}} 
+size\+\_\+t {\bfseries input\+\_\+size\+\_\+y}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_ad09b41a1c36a7b0c7c9b8619e838ab9f}\label{classMPIcuFFT__Slab__Y__Then__ZX_ad09b41a1c36a7b0c7c9b8619e838ab9f}} 
+size\+\_\+t {\bfseries input\+\_\+size\+\_\+z}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_ac1f54784db00c9a67f64639a2934db66}\label{classMPIcuFFT__Slab__Y__Then__ZX_ac1f54784db00c9a67f64639a2934db66}} 
+size\+\_\+t {\bfseries output\+\_\+size\+\_\+x}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a19c643a82de5184d6aaaec63218b8fd5}\label{classMPIcuFFT__Slab__Y__Then__ZX_a19c643a82de5184d6aaaec63218b8fd5}} 
+size\+\_\+t {\bfseries output\+\_\+size\+\_\+z}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a5abcfb21eef5d62158bf30c361aa2bdd}\label{classMPIcuFFT__Slab__Y__Then__ZX_a5abcfb21eef5d62158bf30c361aa2bdd}} 
+size\+\_\+t {\bfseries ws\+\_\+r2c}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_afdc73feb7fd012f67ae67e8d972165cc}\label{classMPIcuFFT__Slab__Y__Then__ZX_afdc73feb7fd012f67ae67e8d972165cc}} 
+size\+\_\+t {\bfseries num\+\_\+of\+\_\+streams}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a56a0bd07ef7d3262229dbfc3455b64d6}\label{classMPIcuFFT__Slab__Y__Then__ZX_a56a0bd07ef7d3262229dbfc3455b64d6}} 
+\mbox{\hyperlink{classTimer}{Timer}} $\ast$ {\bfseries timer}
+\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX_a68ff83099fae56e27806182686f9d14d}{section\+\_\+descriptions}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a846734f26dc1055a27b474f9b8432eb0}\label{classMPIcuFFT__Slab__Y__Then__ZX_a846734f26dc1055a27b474f9b8432eb0}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!execR2C@{execR2C}}
+\index{execR2C@{execR2C}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{execR2C()}{execR2C()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::exec\+R2C (\begin{DoxyParamCaption}\item[{void $\ast$}]{out,  }\item[{const void $\ast$}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a1f59d5a63b2f090fccf7c8e3fd3873f0}\label{classMPIcuFFT__Slab__Y__Then__ZX_a1f59d5a63b2f090fccf7c8e3fd3873f0}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!getInSize@{getInSize}}
+\index{getInSize@{getInSize}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getInSize()}{getInSize()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::get\+In\+Size (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{isize }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a512e3a78d8966ae4366f752223d2dfec}\label{classMPIcuFFT__Slab__Y__Then__ZX_a512e3a78d8966ae4366f752223d2dfec}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!getInStart@{getInStart}}
+\index{getInStart@{getInStart}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getInStart()}{getInStart()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::get\+In\+Start (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{istart }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_af2b48a0108bf89c19b30f7e489d9053c}\label{classMPIcuFFT__Slab__Y__Then__ZX_af2b48a0108bf89c19b30f7e489d9053c}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!getOutSize@{getOutSize}}
+\index{getOutSize@{getOutSize}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getOutSize()}{getOutSize()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::get\+Out\+Size (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{osize }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a990e6ac9b37fbc30f294b71d058f9f14}\label{classMPIcuFFT__Slab__Y__Then__ZX_a990e6ac9b37fbc30f294b71d058f9f14}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!getOutStart@{getOutStart}}
+\index{getOutStart@{getOutStart}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getOutStart()}{getOutStart()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::get\+Out\+Start (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{ostart }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a6a49100f3dab94d5a794322842b64cca}\label{classMPIcuFFT__Slab__Y__Then__ZX_a6a49100f3dab94d5a794322842b64cca}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!initFFT@{initFFT}}
+\index{initFFT@{initFFT}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{initFFT()}{initFFT()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::init\+FFT (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$}]{global\+\_\+size,  }\item[{\mbox{\hyperlink{structPartition}{Partition}} $\ast$}]{partition,  }\item[{bool}]{allocate = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a64cdb4d883a886df5c3190044bf5c693}\label{classMPIcuFFT__Slab__Y__Then__ZX_a64cdb4d883a886df5c3190044bf5c693}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!setWorkArea@{setWorkArea}}
+\index{setWorkArea@{setWorkArea}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{setWorkArea()}{setWorkArea()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::set\+Work\+Area (\begin{DoxyParamCaption}\item[{void $\ast$}]{device = {\ttfamily nullptr},  }\item[{void $\ast$}]{host = {\ttfamily nullptr} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Y__Then__ZX_a68ff83099fae56e27806182686f9d14d}\label{classMPIcuFFT__Slab__Y__Then__ZX_a68ff83099fae56e27806182686f9d14d}} 
+\index{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}!section\_descriptions@{section\_descriptions}}
+\index{section\_descriptions@{section\_descriptions}!MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$@{MPIcuFFT\_Slab\_Y\_Then\_ZX$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{section\_descriptions}{section\_descriptions}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::vector$<$std\+::string$>$ \mbox{\hyperlink{classMPIcuFFT__Slab__Y__Then__ZX}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Y\+\_\+\+Then\+\_\+\+ZX}}$<$ T $>$\+::section\+\_\+descriptions\hspace{0.3cm}{\ttfamily [protected]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{\textcolor{stringliteral}{"{}init"{}}, \textcolor{stringliteral}{"{}1D FFT Y-\/Direction"{}}, \textcolor{stringliteral}{"{}Transpose (First Send)"{}}, }
+\DoxyCodeLine{        \textcolor{stringliteral}{"{}Transpose (Packing)"{}}, \textcolor{stringliteral}{"{}Transpose (Start Local Transpose)"{}}, \textcolor{stringliteral}{"{}Transpose (Start Receive)"{}}, }
+\DoxyCodeLine{        \textcolor{stringliteral}{"{}Transpose (Finished Receive)"{}}, \textcolor{stringliteral}{"{}2D FFT Z-\/X-\/Direction"{}}, \textcolor{stringliteral}{"{}Run complete"{}}\}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/mpicufft\+\_\+slab\+\_\+y\+\_\+then\+\_\+zx.\+hpp\item 
+src/slab/y\+\_\+then\+\_\+zx/mpicufft\+\_\+slab\+\_\+y\+\_\+then\+\_\+zx.\+cpp\end{DoxyCompactItemize}
