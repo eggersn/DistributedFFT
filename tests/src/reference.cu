@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cufft.h>
 #include <vector>
+#include <thread> 
+#include <mutex>
+#include <condition_variable>
 
 #define CUDA_CALL(x) do { if((x)!=cudaSuccess) { \
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);\
@@ -375,6 +378,63 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
     return 0;
 }
 
+struct Callback_Params_Base {
+    std::mutex mutex;
+    std::condition_variable cv;
+    std::vector<int> comm_ready;
+};
+
+struct Callback_Params {
+    Callback_Params_Base *base_params;
+
+    int p;
+};
+
+struct Thread_Params {
+    Callback_Params_Base *base_params;
+
+    void* send_ptr;
+    int world_size;
+    int rank;
+    size_t Nx, Ny, Nz;
+    std::vector<int> &sizes_x;
+    std::vector<int> &sizes_y;
+    std::vector<int> &start_y;
+};
+
+static void MPIsend_Callback(void *data) {
+  struct Callback_Params *params = (Callback_Params *)data;
+  struct Callback_Params_Base *base_params = params->base_params;
+  {
+    std::lock_guard<std::mutex> lk(base_params->mutex);
+    base_params->comm_ready.push_back(params->p);
+  }
+  base_params->cv.notify_one();
+}
+
+template <typename T>
+static void MPIsend_Thread(Thread_Params &params, std::vector<MPI_Request> &send_req) {
+  using R_t = typename cuFFT<T>::R_t;
+  struct Callback_Params_Base *base_params = params.base_params;
+
+  R_t *send_ptr = (R_t *) params.send_ptr;
+
+  for (int i = 0; i <params.world_size-1; i++){
+    std::unique_lock<std::mutex> lk(base_params->mutex);
+    base_params->cv.wait(lk, [base_params]{return !base_params->comm_ready.empty();});
+
+    int p = base_params->comm_ready.back();
+    base_params->comm_ready.pop_back();
+    size_t oslice = params.Nz*params.start_y[p]*params.sizes_x[params.rank];
+
+    MPI_Isend(&send_ptr[params.Nz*params.start_y[p]*params.sizes_x[params.rank]], 
+        params.Nz*params.sizes_y[p]*params.sizes_x[params.rank]*sizeof(R_t), 
+        MPI_BYTE, p, p, MPI_COMM_WORLD, &send_req[p]);
+
+    lk.unlock();
+  }
+}
+
 template<typename T>
 int Tests_Reference<T>::testcase2(const int opt, const int runs) {
     using R_t = typename cuFFT<T>::R_t;
@@ -454,6 +514,50 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
         }
         t2 = MPI_Wtime();
     } else if (opt == 1) {
+
+        std::vector<cudaStream_t> streams(world_size);
+        CUDA_CALL(cudaStreamCreate(&streams[0]));
+
+        Callback_Params_Base base_params;
+        std::vector<Callback_Params> params_array;
+
+        for (int i = 1; i < world_size; i++){
+            CUDA_CALL(cudaStreamCreate(&streams[1]));
+            int p = (rank+i)%world_size;
+            Callback_Params params = {&base_params, p};
+            params_array.push_back(params);
+        }
+
+        Thread_Params thread_params = {&base_params, send_ptr, world_size, rank, Nx, Ny, Nz, sizes_x, sizes_y, start_y};
+
+        for (int i = 0; i < runs+10; i++) {   
+            if (i == 10)
+                t1 = MPI_Wtime();
+    
+            for (int j = 1; j < world_size; j++) {
+                int p = (rank+j)%world_size;
+                
+                MPI_Irecv(&recv_ptr[Nz*sizes_y[rank]*start_x[p]], Nz*sizes_y[rank]*sizes_x[p]*sizeof(R_t), MPI_BYTE, p, rank, MPI_COMM_WORLD, &recv_req[p]);
+    
+                CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[Nz*start_y[p]*sizes_x[rank]], Nz*sizes_y[p]*sizeof(R_t), 
+                    &in_d[Nz*start_y[p]], Nz*Ny*sizeof(R_t), Nz*sizes_y[p]*sizeof(R_t), sizes_x[rank], cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost, streams[p]));
+                CUDA_CALL(cudaDeviceSynchronize());
+    
+                CUDA_CALL(cudaLaunchHostFunc(streams[p], MPIsend_Callback, (void *)&params_array[j-1]));
+            }
+            std::thread mpisend_thread(&MPIsend_Thread<T>, std::ref(thread_params), std::ref(send_req));
+            MPI_Waitall(world_size, recv_req.data(), MPI_STATUS_IGNORE);
+    
+            mpisend_thread.join();
+            MPI_Waitall(world_size, send_req.data(), MPI_STATUS_IGNORE);
+            if (!cuda_aware) {
+                CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, Nz*sizes_y[rank]*Nx*sizeof(R_t), cudaMemcpyHostToDevice));
+                CUDA_CALL(cudaDeviceSynchronize());
+            }
+    
+        }
+        t2 = MPI_Wtime();
+    } else if (opt == 2) {
         std::vector<MPI_Datatype> MPI_PENCILS(world_size);
         for (int i = 0; i < world_size; i++) {
             MPI_Type_vector(sizes_x[rank], Nz*sizes_y[i]*sizeof(R_t), Nz*Ny*sizeof(R_t), MPI_BYTE, &MPI_PENCILS[i]);

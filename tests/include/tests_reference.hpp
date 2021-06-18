@@ -47,9 +47,9 @@ protected:
       */
       int testcase1(const int opt, const int runs);
       /**
-      *  \brief A simple reference testcase which measures the bandwidth with cudaMemcpy2D (for sender only) in MB/s for each rank.
+      *  \brief A simple reference testcase which measures the bandwidth with cudaMemcpy2D (for sender only) in MB/s for each rank. This testcase is mostly relevant for the slab decomposition (2D->1D).
       * 
-      *  Each process generates a random input of size \f$N_x*N_y*N_z\f$. Afterwards the region is split into multiple parts of size \f$(N_x/world_size)*N_y*N_z\f$, where the i'th region is send to rank i.
+      *  Each process generates a random input of size \f$N_{p_x}*N_y*N_z\f$. Afterwards the region is split into multiple parts across the y-axis, where the i'th region is send to rank i.
       *  Therefore the sending process has to perform a 2D-Memcpy to the send buffer. The receiving process simply gathers all arriving messages (with an 1D-Memcpy for non CUDA-aware MPI versions).
       *  There are multiple options to consider:
       *  - opt=0: Sender performs cudaMemcpy2D from device to pinned memory, such that the relevant data is continuous. Afterwards the data is send as MPI_BYTE.
@@ -61,7 +61,7 @@ protected:
       */
       int testcase2(const int opt, const int runs);
       /**
-      *  \brief Similar to testcase1, except that the receiving process performs an additional 2D-Memcpy.
+      *  \brief Similar to testcase2, except that the receiving process performs an additional 2D-Memcpy.
       * 
       *  Each process generates a random input of size \f$N_x*N_y*N_z\f$. Afterwards the region is split into multiple parts of size \f$(N_x/world_size)*N_y*N_z\f$, where the i'th region is send to rank i.
       *  Therefore the sending process has to perform a 2D-Memcpy to the send buffer. The receiving process simply gathers all arriving messages (with an 1D-Memcpy for non CUDA-aware MPI versions).
