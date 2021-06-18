@@ -217,7 +217,7 @@ int Tests_Reference<T>::testcase0(const int runs) {
             *
             *************************************************************************************/            
 
-            MPI_Waitall(world_size-1, send_req.data(), MPI_STATUSES_IGNORE);
+            MPI_Waitall(world_size, send_req.data(), MPI_STATUSES_IGNORE);
             timer->stop_store("Finished Send");
             timer->stop_store("Run complete");
             timer->gather();
@@ -329,8 +329,8 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
                 MPI_Isend(send_ptr, Nx*Ny*Nz*sizeof(R_t), MPI_BYTE, (rank+p)%world_size, (rank+p)%world_size, MPI_COMM_WORLD, &send_req[p]);
                 MPI_Irecv(&recv_ptr[(p-1)*Nx*Ny*Nz], Nx*Ny*Nz*sizeof(R_t), MPI_BYTE, (rank+p)%world_size, rank, MPI_COMM_WORLD, &recv_req[p]);
             }
-            MPI_Waitall(world_size-1, send_req.data(), MPI_STATUS_IGNORE);
-            MPI_Waitall(world_size-1, recv_req.data(), MPI_STATUS_IGNORE);
+            MPI_Waitall(world_size, send_req.data(), MPI_STATUS_IGNORE);
+            MPI_Waitall(world_size, recv_req.data(), MPI_STATUS_IGNORE);
             if (!cuda_aware){
                 CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, (world_size-1)*Nx*Ny*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
                 CUDA_CALL(cudaDeviceSynchronize());
@@ -391,26 +391,35 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
 
     R_t *in_d, *send_ptr, *recv_ptr, *out_d;
 
-    std::vector<int> sizes_z(world_size, Nz/world_size);
-    std::vector<int> start_z(world_size, 0);
+    std::vector<int> sizes_x(world_size, Nx/world_size);
+    std::vector<int> start_x(world_size, 0);
     for (int i = 0; i < world_size; i++) {
-        if (i < Nz % world_size)
-            sizes_z[i]++;
+        if (i < Nx % world_size)
+            sizes_x[i]++;
         if (i > 0)
-            start_z[i] = start_z[i-1] + sizes_z[i-1];
+            start_x[i] = start_x[i-1] + sizes_x[i-1];
     }
 
-    CUDA_CALL(cudaMalloc((void **)&in_d, Nx*Ny*Nz*sizeof(R_t)));
-    CUDA_CALL(cudaMalloc((void **)&out_d, Nx*Ny*sizes_z[rank]*world_size*sizeof(R_t)));
+    std::vector<int> sizes_y(world_size, Ny/world_size);
+    std::vector<int> start_y(world_size, 0);
+    for (int i = 0; i < world_size; i++) {
+        if (i < Ny % world_size)
+            sizes_y[i]++;
+        if (i > 0)
+            start_y[i] = start_y[i-1] + sizes_y[i-1];
+    }
+
+    CUDA_CALL(cudaMalloc((void **)&in_d, sizes_x[rank]*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, Nz*sizes_y[rank]*Nx*sizeof(R_t)));
 
     if (!cuda_aware) {
-        CUDA_CALL(cudaMallocHost((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
-        CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nx*Ny*sizes_z[rank]*world_size*sizeof(R_t)));
+        CUDA_CALL(cudaMallocHost((void **)&send_ptr, sizes_x[rank]*Ny*Nz*sizeof(R_t)));
+        CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nz*sizes_y[rank]*Nx*sizeof(R_t)));
     } else {
-        CUDA_CALL(cudaMalloc((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
+        CUDA_CALL(cudaMalloc((void **)&send_ptr, sizes_x[rank]*Ny*Nz*sizeof(R_t)));
         recv_ptr = out_d;
     }
-    this->initializeRandArray(in_d, Nx, Ny);
+    this->initializeRandArray(in_d, sizes_x[rank], Ny);
     CUDA_CALL(cudaDeviceSynchronize());
     MPI_Barrier(MPI_COMM_WORLD);
 
@@ -426,48 +435,50 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
             for (int j = 1; j < world_size; j++) {
                 int p = (rank+j)%world_size;
                 
-                MPI_Irecv(&recv_ptr[p*sizes_z[rank]*Ny*Nx], sizes_z[rank]*Ny*Nx*sizeof(R_t), MPI_BYTE, p, rank, MPI_COMM_WORLD, &recv_req[p]);
+                MPI_Irecv(&recv_ptr[Nz*sizes_y[rank]*start_x[p]], Nz*sizes_y[rank]*sizes_x[p]*sizeof(R_t), MPI_BYTE, p, rank, MPI_COMM_WORLD, &recv_req[p]);
     
-                CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[start_z[p]*Ny*Nx], sizes_z[p]*sizeof(R_t), 
-                    &in_d[start_z[p]], Nz*sizeof(R_t), sizes_z[p]*sizeof(R_t), Ny*Nx, cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost));
+                CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[Nz*start_y[p]*sizes_x[rank]], Nz*sizes_y[p]*sizeof(R_t), 
+                    &in_d[Nz*start_y[p]], Nz*Ny*sizeof(R_t), Nz*sizes_y[p]*sizeof(R_t), sizes_x[rank], cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost));
                 CUDA_CALL(cudaDeviceSynchronize());
     
-                MPI_Isend(&send_ptr[start_z[p]*Ny*Nx], sizes_z[p]*Ny*Nx*sizeof(R_t), MPI_BYTE, p, p, MPI_COMM_WORLD, &send_req[p]);
+                MPI_Isend(&send_ptr[Nz*start_y[p]*sizes_x[rank]], Nz*sizes_y[p]*sizes_x[rank]*sizeof(R_t), MPI_BYTE, p, p, MPI_COMM_WORLD, &send_req[p]);
             }
     
-            MPI_Waitall(world_size-1, send_req.data(), MPI_STATUS_IGNORE);
-            MPI_Waitall(world_size-1, recv_req.data(), MPI_STATUS_IGNORE);
+            MPI_Waitall(world_size, send_req.data(), MPI_STATUS_IGNORE);
+            MPI_Waitall(world_size, recv_req.data(), MPI_STATUS_IGNORE);
             if (!cuda_aware) {
-                CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, Nx*Ny*sizes_z[rank]*world_size*sizeof(R_t), cudaMemcpyHostToDevice));
+                CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, Nz*sizes_y[rank]*Nx*sizeof(R_t), cudaMemcpyHostToDevice));
                 CUDA_CALL(cudaDeviceSynchronize());
             }
     
         }
         t2 = MPI_Wtime();
     } else if (opt == 1) {
-        MPI_Datatype MPI_CUBE;
-        MPI_Type_vector(Ny*Nx, sizes_z[rank]*sizeof(R_t), Nz*sizeof(R_t), MPI_BYTE, &MPI_CUBE);
-        MPI_Type_commit(&MPI_CUBE);
+        std::vector<MPI_Datatype> MPI_PENCILS(world_size);
+        for (int i = 0; i < world_size; i++) {
+            MPI_Type_vector(sizes_x[rank], Nz*sizes_y[i]*sizeof(R_t), Nz*Ny*sizeof(R_t), MPI_BYTE, &MPI_PENCILS[i]);
+            MPI_Type_commit(&MPI_PENCILS[i]);
+        }
 
         for (int i = 0; i < runs+10; i++) {   
             if (i == 10)
                 t1 = MPI_Wtime();
     
             if (!cuda_aware) {
-                CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nx*Ny*Nz*sizeof(R_t), cudaMemcpyDeviceToHost));
+                CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nz*Ny*sizes_x[rank]*sizeof(R_t), cudaMemcpyDeviceToHost));
                 CUDA_CALL(cudaDeviceSynchronize());
             }
 
             for (int j = 1; j < world_size; j++) {
                 int p = (rank+j)%world_size;
-                MPI_Irecv(&recv_ptr[p*sizes_z[rank]*Ny*Nx], sizes_z[rank]*Ny*Nx*sizeof(R_t), MPI_BYTE, p, rank, MPI_COMM_WORLD, &recv_req[p]);
-                MPI_Isend(&send_ptr[start_z[p]], 1, MPI_CUBE, p, p, MPI_COMM_WORLD, &send_req[p]);
+                MPI_Irecv(&recv_ptr[Nz*sizes_y[rank]*start_x[p]], Nz*sizes_y[rank]*sizes_x[p]*sizeof(R_t), MPI_BYTE, p, rank, MPI_COMM_WORLD, &recv_req[p]);
+                MPI_Isend(&send_ptr[Nz*start_y[p]], 1, MPI_PENCILS[p], p, p, MPI_COMM_WORLD, &send_req[p]);
             }
-            MPI_Waitall(world_size-1, send_req.data(), MPI_STATUS_IGNORE);
-            MPI_Waitall(world_size-1, recv_req.data(), MPI_STATUS_IGNORE);
+            MPI_Waitall(world_size, send_req.data(), MPI_STATUS_IGNORE);
+            MPI_Waitall(world_size, recv_req.data(), MPI_STATUS_IGNORE);
 
             if (!cuda_aware) {
-                CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, Nx*Ny*sizes_z[rank]*world_size*sizeof(R_t), cudaMemcpyHostToDevice));
+                CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, Nz*sizes_y[rank]*Nx*sizeof(R_t), cudaMemcpyHostToDevice));
                 CUDA_CALL(cudaDeviceSynchronize());
             }
     
@@ -475,8 +486,8 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
         t2 = MPI_Wtime();
     }
 
-    double size_in = Nx*Ny*sizes_z[rank]*(world_size-1)*sizeof(R_t)*1.0e-6;
-    double size_out = Nx*Ny*(Nz-sizes_z[rank])*sizeof(R_t)*1.0e-6;
+    double size_in = Nz*sizes_y[rank]*(Nx-sizes_x[rank])*sizeof(R_t)*1.0e-6;
+    double size_out = Nz*(Ny-sizes_y[rank])*sizes_x[rank]*sizeof(R_t)*1.0e-6;
     // bandwidth in MB/s
     double bandwidth_in = size_in*runs/(t2-t1);
     double bandwidth_out = size_in*runs/(t2-t1);

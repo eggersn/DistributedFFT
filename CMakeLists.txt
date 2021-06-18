@@ -29,7 +29,7 @@ set_property(TARGET timer PROPERTY CXX_STANDARD 20)
 target_link_libraries(tests_exec PUBLIC mpicufft slab_tests pencil_tests timer)
 
 #CUDA 
-set_property(TARGET mpicufft slab_tests pencil_tests tests_exec PROPERTY CUDA_ARCHITECTURES 50 61)
+set_property(TARGET mpicufft slab_tests pencil_tests tests_exec PROPERTY CUDA_ARCHITECTURES 50 61 80 86)
 
 #MPI
 target_link_libraries(mpicufft PUBLIC MPI::MPI_CXX)
