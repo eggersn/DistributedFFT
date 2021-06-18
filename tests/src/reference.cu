@@ -51,6 +51,8 @@ int Tests_Reference<T>::run(const int testcase, const int opt, const int runs) {
         return this->testcase1(opt, runs);
     else if (testcase == 2)
         return this->testcase2(opt, runs);
+    else if (testcase == 3)
+        return this->testcase3(opt, runs);
     throw std::runtime_error("Invalid Testcase!");
 }
 
@@ -378,61 +380,63 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
     return 0;
 }
 
-struct Callback_Params_Base {
-    std::mutex mutex;
-    std::condition_variable cv;
-    std::vector<int> comm_ready;
-};
-
-struct Callback_Params {
-    Callback_Params_Base *base_params;
-
-    int p;
-};
-
-struct Thread_Params {
-    Callback_Params_Base *base_params;
-
-    void* send_ptr;
-    int world_size;
-    int rank;
-    size_t Nx, Ny, Nz;
-    std::vector<int> &sizes_x;
-    std::vector<int> &sizes_y;
-    std::vector<int> &start_y;
-};
-
-static void MPIsend_Callback(void *data) {
-  struct Callback_Params *params = (Callback_Params *)data;
-  struct Callback_Params_Base *base_params = params->base_params;
-  {
-    std::lock_guard<std::mutex> lk(base_params->mutex);
-    base_params->comm_ready.push_back(params->p);
-  }
-  base_params->cv.notify_one();
-}
-
-template <typename T>
-static void MPIsend_Thread(Thread_Params &params, std::vector<MPI_Request> &send_req) {
-  using R_t = typename cuFFT<T>::R_t;
-  struct Callback_Params_Base *base_params = params.base_params;
-
-  R_t *send_ptr = (R_t *) params.send_ptr;
-
-  for (int i = 0; i <params.world_size-1; i++){
-    std::unique_lock<std::mutex> lk(base_params->mutex);
-    base_params->cv.wait(lk, [base_params]{return !base_params->comm_ready.empty();});
-
-    int p = base_params->comm_ready.back();
-    base_params->comm_ready.pop_back();
-    size_t oslice = params.Nz*params.start_y[p]*params.sizes_x[params.rank];
-
-    MPI_Isend(&send_ptr[params.Nz*params.start_y[p]*params.sizes_x[params.rank]], 
-        params.Nz*params.sizes_y[p]*params.sizes_x[params.rank]*sizeof(R_t), 
-        MPI_BYTE, p, p, MPI_COMM_WORLD, &send_req[p]);
-
-    lk.unlock();
-  }
+namespace Testcase2 {
+    struct Callback_Params_Base {
+        std::mutex mutex;
+        std::condition_variable cv;
+        std::vector<int> comm_ready;
+    };
+    
+    struct Callback_Params {
+        Callback_Params_Base *base_params;
+    
+        int p;
+    };
+    
+    struct Thread_Params {
+        Callback_Params_Base *base_params;
+    
+        void* send_ptr;
+        int world_size;
+        int rank;
+        size_t Nx, Ny, Nz;
+        std::vector<int> &sizes_x;
+        std::vector<int> &sizes_y;
+        std::vector<int> &start_y;
+    };
+    
+    static void MPIsend_Callback(void *data) {
+      struct Callback_Params *params = (Callback_Params *)data;
+      struct Callback_Params_Base *base_params = params->base_params;
+      {
+        std::lock_guard<std::mutex> lk(base_params->mutex);
+        base_params->comm_ready.push_back(params->p);
+      }
+      base_params->cv.notify_one();
+    }
+    
+    template <typename T>
+    static void MPIsend_Thread(Thread_Params &params, std::vector<MPI_Request> &send_req) {
+      using R_t = typename cuFFT<T>::R_t;
+      struct Callback_Params_Base *base_params = params.base_params;
+    
+      R_t *send_ptr = (R_t *) params.send_ptr;
+    
+      for (int i = 0; i <params.world_size-1; i++){
+        std::unique_lock<std::mutex> lk(base_params->mutex);
+        base_params->cv.wait(lk, [base_params]{return !base_params->comm_ready.empty();});
+    
+        int p = base_params->comm_ready.back();
+        base_params->comm_ready.pop_back();
+        size_t oslice = params.Nz*params.start_y[p]*params.sizes_x[params.rank];
+    
+        MPI_Isend(&send_ptr[params.Nz*params.start_y[p]*params.sizes_x[params.rank]], 
+            params.Nz*params.sizes_y[p]*params.sizes_x[params.rank]*sizeof(R_t), 
+            MPI_BYTE, p, p, MPI_COMM_WORLD, &send_req[p]);
+    
+        lk.unlock();
+      }
+    }
 }
 
 template<typename T>
@@ -518,17 +522,17 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
         std::vector<cudaStream_t> streams(world_size);
         CUDA_CALL(cudaStreamCreate(&streams[0]));
 
-        Callback_Params_Base base_params;
-        std::vector<Callback_Params> params_array;
+        Testcase2::Callback_Params_Base base_params;
+        std::vector<Testcase2::Callback_Params> params_array;
 
         for (int i = 1; i < world_size; i++){
             CUDA_CALL(cudaStreamCreate(&streams[1]));
             int p = (rank+i)%world_size;
-            Callback_Params params = {&base_params, p};
+            Testcase2::Callback_Params params = {&base_params, p};
             params_array.push_back(params);
         }
 
-        Thread_Params thread_params = {&base_params, send_ptr, world_size, rank, Nx, Ny, Nz, sizes_x, sizes_y, start_y};
+        Testcase2::Thread_Params thread_params = {&base_params, send_ptr, world_size, rank, Nx, Ny, Nz, sizes_x, sizes_y, start_y};
 
         for (int i = 0; i < runs+10; i++) {   
             if (i == 10)
@@ -541,11 +545,10 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
     
                 CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[Nz*start_y[p]*sizes_x[rank]], Nz*sizes_y[p]*sizeof(R_t), 
                     &in_d[Nz*start_y[p]], Nz*Ny*sizeof(R_t), Nz*sizes_y[p]*sizeof(R_t), sizes_x[rank], cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost, streams[p]));
-                CUDA_CALL(cudaDeviceSynchronize());
-    
-                CUDA_CALL(cudaLaunchHostFunc(streams[p], MPIsend_Callback, (void *)&params_array[j-1]));
+                    
+                CUDA_CALL(cudaLaunchHostFunc(streams[p], Testcase2::MPIsend_Callback, (void *)&params_array[j-1]));
             }
-            std::thread mpisend_thread(&MPIsend_Thread<T>, std::ref(thread_params), std::ref(send_req));
+            std::thread mpisend_thread(&Testcase2::MPIsend_Thread<T>, std::ref(thread_params), std::ref(send_req));
             MPI_Waitall(world_size, recv_req.data(), MPI_STATUS_IGNORE);
     
             mpisend_thread.join();
@@ -597,6 +600,365 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
     double bandwidth_out = size_in*runs/(t2-t1);
     printf("Incoming Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", rank, runs, size_in, bandwidth_in);
     printf("Outgoing Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", rank, runs, size_out, bandwidth_out);
+
+    MPI_Finalize();
+    return 0;
+}
+
+namespace Testcase3 {
+    struct Callback_Params_Base {
+        std::mutex mutex;
+        std::condition_variable cv;
+        std::vector<int> comm_ready;
+    };
+    
+    struct Callback_Params {
+        Testcase3::Callback_Params_Base *base_params;
+    
+        int p;
+    };
+    
+    struct Thread_Params {
+        Callback_Params_Base *base_params;
+    
+        void* send_ptr;
+        size_t P2;
+        size_t pidx_i, pidx_j;
+        Partition_Dimensions &input_dim;
+        Partition_Dimensions &transposed_dim;
+        Partition_Dimensions &output_dim;
+    };
+    
+    static void MPIsend_Callback(void *data) {
+      struct Callback_Params *params = (Callback_Params *)data;
+      struct Callback_Params_Base *base_params = params->base_params;
+      {
+        std::lock_guard<std::mutex> lk(base_params->mutex);
+        base_params->comm_ready.push_back(params->p);
+      }
+      base_params->cv.notify_one();
+    }
+    
+    template <typename T>
+    static void MPIsend_Thread(Thread_Params &params, std::vector<MPI_Request> &send_req) {
+      using R_t = typename cuFFT<T>::R_t;
+      struct Callback_Params_Base *base_params = params.base_params;
+    
+      R_t *send_ptr = (R_t *) params.send_ptr;
+    
+      for (int i = 0; i < params.P2-1; i++){
+        std::unique_lock<std::mutex> lk(base_params->mutex);
+        base_params->cv.wait(lk, [base_params]{return !base_params->comm_ready.empty();});
+    
+        int p_j = base_params->comm_ready.back();
+        base_params->comm_ready.pop_back();
+        int p = params.pidx_i * params.P2 + p_j;
+    
+        MPI_Isend(&send_ptr[params.input_dim.size_x[params.pidx_i]*params.input_dim.size_y[params.pidx_j]*params.transposed_dim.start_z[p_j]],
+            sizeof(R_t)*params.input_dim.size_x[params.pidx_i]*params.input_dim.size_y[params.pidx_j]*params.transposed_dim.size_z[p_j], MPI_BYTE,
+            p, params.pidx_j, MPI_COMM_WORLD, &(send_req[p_j]));
+    
+        lk.unlock();
+      }
+    }
+}
+
+
+template<typename T>
+int Tests_Reference<T>::testcase3(const int opt, const int runs) {
+    using R_t = typename cuFFT<T>::R_t;
+
+    MPI_Init(NULL, NULL);
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int pidx;
+    MPI_Comm_rank(MPI_COMM_WORLD, &pidx);
+
+    size_t pidx_i = pidx/P2;
+    size_t pidx_j = pidx%P2;
+
+    R_t *in_d, *send_ptr, *recv_ptr, *out_d;
+
+    Partition_Dimensions input_dim;
+    Partition_Dimensions transposed_dim;
+    Partition_Dimensions output_dim;
+    // Determine all Partition_Dimensions
+    // input_dim:
+    input_dim.size_x.resize(P1, Nx/P1);
+    for (int i = 0; i < Nx%P1; i++)
+        input_dim.size_x[i]++;
+    input_dim.size_y.resize(P2, Ny/P2);
+    for (int j = 0; j < Ny%P2; j++)
+        input_dim.size_y[j]++;
+    input_dim.size_z.resize(1, Nz);
+    input_dim.computeOffsets();
+    // transposed_dim:
+    transposed_dim.size_x = input_dim.size_x;
+    transposed_dim.size_y.resize(1, Ny);
+    transposed_dim.size_z.resize(P2, Nz/P2);
+    for (int k = 0; k < Nz%P2; k++)
+        transposed_dim.size_z[k]++;
+    transposed_dim.computeOffsets();
+    // output_dim:
+    output_dim.size_x.resize(1, Nx);
+    output_dim.size_y.resize(P1, Ny/P1);
+    for (int j = 0; j < Ny%P1; j++)
+        output_dim.size_y[j]++;
+    output_dim.size_z = transposed_dim.size_z;
+    output_dim.computeOffsets();
+
+    // Allocate memory
+    CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]*sizeof(R_t)));
+
+    if (!cuda_aware) {
+        CUDA_CALL(cudaMallocHost((void **)&send_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+        CUDA_CALL(cudaMallocHost((void **)&recv_ptr, transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]*sizeof(R_t)));
+    } else {
+        if (opt < 2) {
+            CUDA_CALL(cudaMalloc((void **)&send_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+            CUDA_CALL(cudaMalloc((void **)&recv_ptr, transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]*sizeof(R_t)));
+        } else {
+            send_ptr = in_d;
+            recv_ptr = out_d;
+        }
+    }
+    this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+    CUDA_CALL(cudaDeviceSynchronize());
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    std::vector<MPI_Request> send_req(P2, MPI_REQUEST_NULL);
+    std::vector<MPI_Request> recv_req(P2, MPI_REQUEST_NULL);
+
+    std::vector<int> comm_order;
+    for (int j = 1; j < P2; j++){
+        comm_order.push_back(pidx_i*P2 + (pidx_j+j)%P2);
+    }
+
+    double t1, t2;
+    if (opt == 0) {
+        for (int i = 0; i < runs+10; i++) {   
+            if (i == 10)
+                t1 = MPI_Wtime();
+    
+            // Same as the First-Transpose routine for pencil decomposition
+            for (size_t j = 0; j < comm_order.size(); j++){
+                size_t p_j = comm_order[j] % P2;
+    
+                // Start non-blocking MPI recv
+                MPI_Irecv(&recv_ptr[transposed_dim.size_x[pidx_i]*input_dim.start_y[p_j]*transposed_dim.size_z[pidx_j]],
+                    sizeof(R_t)*transposed_dim.size_x[pidx_i]*input_dim.size_y[p_j]*transposed_dim.size_z[pidx_j], MPI_BYTE,
+                    comm_order[j], p_j, MPI_COMM_WORLD, &recv_req[p_j]);
+    
+                // Copy 1D FFT results (z-direction) to the send buffer
+                // cudaPos = {z (bytes), y (elements), x (elements)}
+                // cudaPitchedPtr = {pointer, pitch (byte), allocation width, allocation height}
+                // cudaExtend = {width, height, depth}
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(transposed_dim.start_z[p_j]*sizeof(R_t), 0, 0);
+                cpy_params.srcPtr = make_cudaPitchedPtr(in_d, Nz*sizeof(R_t), Nz, input_dim.size_y[pidx_j]);
+                cpy_params.dstPos = make_cudaPos(0,0,0); // offset cannot be specified by cuda position allow ~> use pointer instead
+                cpy_params.dstPtr = make_cudaPitchedPtr(&send_ptr[input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.start_z[p_j]],
+                    transposed_dim.size_z[p_j]*sizeof(R_t), transposed_dim.size_z[p_j], input_dim.size_y[pidx_j]);
+                cpy_params.extent = make_cudaExtent(transposed_dim.size_z[p_j]*sizeof(R_t), input_dim.size_y[pidx_j], input_dim.size_x[pidx_i]);
+                cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
+    
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
+                CUDA_CALL(cudaDeviceSynchronize());
+
+                // // After copy is complete, MPI starts a non-blocking send operation                
+                MPI_Isend(&send_ptr[input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.start_z[p_j]],
+                    sizeof(R_t)*input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.size_z[p_j], MPI_BYTE,
+                    comm_order[j], pidx_j, MPI_COMM_WORLD, &(send_req[p_j]));
+            }
+            {
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(transposed_dim.start_z[pidx_j]*sizeof(R_t), 0, 0);
+                cpy_params.srcPtr = make_cudaPitchedPtr(in_d, Nz*sizeof(R_t), Nz, input_dim.size_y[pidx_j]);
+                cpy_params.dstPos = make_cudaPos(0, input_dim.start_y[pidx_j], 0);
+                cpy_params.dstPtr = make_cudaPitchedPtr(out_d, transposed_dim.size_z[pidx_j]*sizeof(R_t), transposed_dim.size_z[pidx_j], transposed_dim.size_y[0]);
+                cpy_params.extent = make_cudaExtent(transposed_dim.size_z[pidx_j]*sizeof(R_t), input_dim.size_y[pidx_j], input_dim.size_x[pidx_i]);
+                cpy_params.kind   = cudaMemcpyDeviceToDevice;
+    
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
+            }
+    
+            // Start copying the received blocks to the temp buffer, where the second 1D FFT (y-direction) can be computed
+            // Since the received data has to be realigned (independent of cuda_aware), we use cudaMemcpy3D.
+            int p;
+            do {
+                // recv_req contains one null handle (i.e. recv_req[pidx_j]) and P2-1 active handles
+                // If all active handles are processed, Waitany will return MPI_UNDEFINED
+                MPI_Waitany(P2, recv_req.data(), &p, MPI_STATUSES_IGNORE);
+                if (p == MPI_UNDEFINED)
+                    break;
+    
+                // At this point, we received data of one of the P2-1 other relevant processes
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(0, 0, 0);
+                cpy_params.srcPtr = make_cudaPitchedPtr(&recv_ptr[transposed_dim.size_x[pidx_i]*input_dim.start_y[p]*transposed_dim.size_z[pidx_j]],
+                    transposed_dim.size_z[pidx_j]*sizeof(R_t), transposed_dim.size_z[pidx_j], input_dim.size_y[p]);
+                cpy_params.dstPos = make_cudaPos(0, input_dim.start_y[p], 0);
+                cpy_params.dstPtr = make_cudaPitchedPtr(out_d, transposed_dim.size_z[pidx_j]*sizeof(R_t), transposed_dim.size_z[pidx_j], transposed_dim.size_y[0]);
+                cpy_params.extent = make_cudaExtent(transposed_dim.size_z[pidx_j]*sizeof(R_t), input_dim.size_y[p], input_dim.size_x[pidx_i]);
+                cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;
+    
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
+            } while (p != MPI_UNDEFINED);
+            // For the 1D FFT in y-direction, all data packages have to be received
+            CUDA_CALL(cudaDeviceSynchronize());
+            MPI_Waitall(P2, send_req.data(), MPI_STATUSES_IGNORE);
+        } 
+        t2 = MPI_Wtime();
+    } else if (opt == 1) {
+        std::vector<cudaStream_t> streams(P2);
+        CUDA_CALL(cudaStreamCreate(&streams[0]));
+    
+        Testcase3::Callback_Params_Base base_params;
+        std::vector<Testcase3::Callback_Params> params_array;
+    
+        for (int i = 1; i < P2; i++){
+            CUDA_CALL(cudaStreamCreate(&streams[1]));
+            int p = (pidx_j+i)%P2;
+            Testcase3::Callback_Params params = {&base_params, p};
+            params_array.push_back(params);
+        }
+    
+        Testcase3::Thread_Params thread_params = {&base_params, send_ptr, P2, pidx_i, pidx_j, input_dim, transposed_dim, output_dim};
+    
+        for (int i = 0; i < runs+10; i++) {   
+            if (i == 10)
+                t1 = MPI_Wtime();
+    
+            // Same as the First-Transpose routine for pencil decomposition
+            for (size_t j = 0; j < comm_order.size(); j++){
+                size_t p_j = comm_order[j] % P2;
+    
+                // Start non-blocking MPI recv
+                MPI_Irecv(&recv_ptr[transposed_dim.size_x[pidx_i]*input_dim.start_y[p_j]*transposed_dim.size_z[pidx_j]],
+                    sizeof(R_t)*transposed_dim.size_x[pidx_i]*input_dim.size_y[p_j]*transposed_dim.size_z[pidx_j], MPI_BYTE,
+                    comm_order[j], p_j, MPI_COMM_WORLD, &recv_req[p_j]);
+    
+                // Copy 1D FFT results (z-direction) to the send buffer
+                // cudaPos = {z (bytes), y (elements), x (elements)}
+                // cudaPitchedPtr = {pointer, pitch (byte), allocation width, allocation height}
+                // cudaExtend = {width, height, depth}
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(transposed_dim.start_z[p_j]*sizeof(R_t), 0, 0);
+                cpy_params.srcPtr = make_cudaPitchedPtr(in_d, Nz*sizeof(R_t), Nz, input_dim.size_y[pidx_j]);
+                cpy_params.dstPos = make_cudaPos(0,0,0); // offset cannot be specified by cuda position allow ~> use pointer instead
+                cpy_params.dstPtr = make_cudaPitchedPtr(&send_ptr[input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*transposed_dim.start_z[p_j]],
+                    transposed_dim.size_z[p_j]*sizeof(R_t), transposed_dim.size_z[p_j], input_dim.size_y[pidx_j]);
+                cpy_params.extent = make_cudaExtent(transposed_dim.size_z[p_j]*sizeof(R_t), input_dim.size_y[pidx_j], input_dim.size_x[pidx_i]);
+                cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
+    
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_j]));
+    
+                // // After copy is complete, MPI starts a non-blocking send operation
+                CUDA_CALL(cudaLaunchHostFunc(streams[p_j], Testcase3::MPIsend_Callback, (void *)&params_array[j]));
+            }
+            std::thread mpisend_thread(&Testcase3::MPIsend_Thread<T>, std::ref(thread_params), std::ref(send_req));
+            {
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(transposed_dim.start_z[pidx_j]*sizeof(R_t), 0, 0);
+                cpy_params.srcPtr = make_cudaPitchedPtr(in_d, Nz*sizeof(R_t), Nz, input_dim.size_y[pidx_j]);
+                cpy_params.dstPos = make_cudaPos(0, input_dim.start_y[pidx_j], 0);
+                cpy_params.dstPtr = make_cudaPitchedPtr(out_d, transposed_dim.size_z[pidx_j]*sizeof(R_t), transposed_dim.size_z[pidx_j], transposed_dim.size_y[0]);
+                cpy_params.extent = make_cudaExtent(transposed_dim.size_z[pidx_j]*sizeof(R_t), input_dim.size_y[pidx_j], input_dim.size_x[pidx_i]);
+                cpy_params.kind   = cudaMemcpyDeviceToDevice;
+    
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[pidx_j]));
+            }
+    
+            // Start copying the received blocks to the temp buffer, where the second 1D FFT (y-direction) can be computed
+            // Since the received data has to be realigned (independent of cuda_aware), we use cudaMemcpy3D.
+            int p;
+            do {
+                // recv_req contains one null handle (i.e. recv_req[pidx_j]) and P2-1 active handles
+                // If all active handles are processed, Waitany will return MPI_UNDEFINED
+                MPI_Waitany(P2, recv_req.data(), &p, MPI_STATUSES_IGNORE);
+                if (p == MPI_UNDEFINED)
+                    break;
+    
+                // At this point, we received data of one of the P2-1 other relevant processes
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(0, 0, 0);
+                cpy_params.srcPtr = make_cudaPitchedPtr(&recv_ptr[transposed_dim.size_x[pidx_i]*input_dim.start_y[p]*transposed_dim.size_z[pidx_j]],
+                    transposed_dim.size_z[pidx_j]*sizeof(R_t), transposed_dim.size_z[pidx_j], input_dim.size_y[p]);
+                cpy_params.dstPos = make_cudaPos(0, input_dim.start_y[p], 0);
+                cpy_params.dstPtr = make_cudaPitchedPtr(out_d, transposed_dim.size_z[pidx_j]*sizeof(R_t), transposed_dim.size_z[pidx_j], transposed_dim.size_y[0]);
+                cpy_params.extent = make_cudaExtent(transposed_dim.size_z[pidx_j]*sizeof(R_t), input_dim.size_y[p], input_dim.size_x[pidx_i]);
+                cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;
+    
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[(pidx_j + P2 - p) % P2]));
+            } while (p != MPI_UNDEFINED);
+            // For the 1D FFT in y-direction, all data packages have to be received
+            CUDA_CALL(cudaDeviceSynchronize());
+            mpisend_thread.join();
+            MPI_Waitall(P2, send_req.data(), MPI_STATUSES_IGNORE);
+        }
+        t2 = MPI_Wtime();
+    } if (opt == 2) {
+        std::vector<MPI_Datatype> MPI_SEND_CUBES(P2);
+        std::vector<MPI_Datatype> MPI_RECV_CUBES(P2);
+        for (int i = 0; i < P2; i++) {
+            MPI_Type_vector(input_dim.size_x[pidx_i], transposed_dim.size_z[i]*input_dim.size_y[pidx_j]*sizeof(R_t), 
+                Nz*input_dim.size_y[pidx_j]*sizeof(R_t), MPI_BYTE, &MPI_SEND_CUBES[i]);
+            MPI_Type_vector(transposed_dim.size_x[pidx_i], transposed_dim.size_z[pidx_j]*input_dim.size_y[i]*sizeof(R_t), 
+                transposed_dim.size_z[pidx_j]*Ny*sizeof(R_t), MPI_BYTE, &MPI_RECV_CUBES[i]);
+            MPI_Type_commit(&MPI_SEND_CUBES[i]);
+            MPI_Type_commit(&MPI_RECV_CUBES[i]);
+        }
+
+        for (int i = 0; i < runs+10; i++) {   
+            if (i == 10)
+                t1 = MPI_Wtime();
+
+            if (!cuda_aware) {
+                CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nz*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i]*sizeof(R_t), cudaMemcpyDeviceToHost));
+                CUDA_CALL(cudaDeviceSynchronize());
+            }
+    
+            // Same as the First-Transpose routine for pencil decomposition
+            for (size_t j = 0; j < comm_order.size(); j++){
+                size_t p_j = comm_order[j] % P2;
+
+                MPI_Irecv(&recv_ptr[transposed_dim.size_z[pidx_j]*input_dim.start_y[p_j]], 1, MPI_RECV_CUBES[p_j], comm_order[j], p_j, MPI_COMM_WORLD, &recv_req[p_j]);
+    
+                MPI_Isend(&send_ptr[transposed_dim.start_z[p_j]], 1, MPI_SEND_CUBES[p_j], comm_order[j], pidx_j, MPI_COMM_WORLD, &(send_req[p_j]));
+            }
+            {
+                cudaMemcpy3DParms cpy_params = {0};
+                cpy_params.srcPos = make_cudaPos(transposed_dim.start_z[pidx_j]*sizeof(R_t), 0, 0);
+                cpy_params.srcPtr = make_cudaPitchedPtr(in_d, Nz*sizeof(R_t), Nz, input_dim.size_y[pidx_j]);
+                cpy_params.dstPos = make_cudaPos(0, input_dim.start_y[pidx_j], 0);
+                cpy_params.dstPtr = make_cudaPitchedPtr(out_d, transposed_dim.size_z[pidx_j]*sizeof(R_t), transposed_dim.size_z[pidx_j], transposed_dim.size_y[0]);
+                cpy_params.extent = make_cudaExtent(transposed_dim.size_z[pidx_j]*sizeof(R_t), input_dim.size_y[pidx_j], input_dim.size_x[pidx_i]);
+                cpy_params.kind   = cudaMemcpyDeviceToDevice;
+    
+                CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
+            }
+            MPI_Waitall(P2, recv_req.data(), MPI_STATUSES_IGNORE);
+            if (!cuda_aware)
+                CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, transposed_dim.size_z[pidx_j]*Ny*transposed_dim.size_x[pidx_i]*sizeof(R_t), cudaMemcpyHostToDevice));
+            
+            CUDA_CALL(cudaDeviceSynchronize());
+            MPI_Waitall(P2, send_req.data(), MPI_STATUSES_IGNORE);
+        } 
+        t2 = MPI_Wtime();
+    }
+
+    double size_in = transposed_dim.size_z[pidx_j]*(Ny-input_dim.size_y[pidx_j])*transposed_dim.size_x[pidx_i]*sizeof(R_t)*1.0e-6;
+    double size_out = (Nz-transposed_dim.size_z[pidx_j])*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i]*sizeof(R_t)*1.0e-6;
+    // bandwidth in MB/s
+    double bandwidth_in = size_in*runs/(t2-t1);
+    double bandwidth_out = size_in*runs/(t2-t1);
+    printf("Incoming Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", pidx, runs, size_in, bandwidth_in);
+    printf("Outgoing Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", pidx, runs, size_out, bandwidth_out);
 
     MPI_Finalize();
     return 0;

@@ -53,7 +53,8 @@ protected:
       *  Therefore the sending process has to perform a 2D-Memcpy to the send buffer. The receiving process simply gathers all arriving messages (with an 1D-Memcpy for non CUDA-aware MPI versions).
       *  There are multiple options to consider:
       *  - opt=0: Sender performs cudaMemcpy2D from device to pinned memory, such that the relevant data is continuous. Afterwards the data is send as MPI_BYTE.
-      *  - opt=1: Sender performs cudaMemcpy(1D) from device to pinned memory (for non CUDA-aware MPI) and sends non-continuous data with a custom data type (via MPI_Type_vector).
+      *  - opt=1: Same as opt=0, except that cudaMemcpy2D is performed on different streams and the MPI_Isend routine is called indirectly via cudaLaunchHostFunc.
+      *  - opt=2: Sender performs cudaMemcpy(1D) from device to pinned memory (for non CUDA-aware MPI) and sends non-continuous data with a custom data type (via MPI_Type_vector).
       *
       * @param opt Selects one of the above options.
       * @param runs Specifies the number of iterations across which the benchmark averages the result. 
@@ -73,7 +74,7 @@ protected:
       * @param runs Specifies the number of iterations across which the benchmark averages the result. 
       * There are an additional 10 warm-up rounds, which are not considered for the resulting bandwidth.
       */
-      // int testcase3(const int opt, const int runs);
+      int testcase3(const int opt, const int runs);
       int initializeRandArray(void* in_d, size_t N1, size_t N2);
 
       size_t Nx, Ny, Nz;
