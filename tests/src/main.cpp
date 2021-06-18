@@ -4,6 +4,7 @@
 #include "tests_pencil_random_1d.hpp"
 #include "tests_pencil_random_2d.hpp"
 #include "tests_pencil_random_3d.hpp"
+#include "tests_reference.hpp"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -102,7 +103,20 @@ int main(int argc, char* argv[]) {
                 test->run(testcase, opt, runs);
                 delete test;
             }   
-            
+        } else if (option.compare("Reference") == 0) {
+            size_t P1, P2;
+            sstream = std::stringstream(std::string(argv[10]));
+            sstream >> P1;
+            sstream = std::stringstream(std::string(argv[11]));
+            sstream >> P2;
+
+            if (std::string(argv[9]).compare("double")==0) {
+                Tests_Reference<double> test(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
+                test.run(testcase, opt, runs);
+            } else {
+                Tests_Reference<float> test(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
+                test.run(testcase, opt, runs);
+            }
         } else {
             printInvalidArgHelp();
             return 1;
