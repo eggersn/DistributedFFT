@@ -4,6 +4,10 @@
 #include "mpi.h"
 #include "mpi-ext.h"
 
+/** @defgroup tests_pencil Collection of different testcases for pencil decomposition
+*   @ingroup tests
+*   @{
+*/
 template<typename T> 
 class Tests_Pencil_Random {
 public:
@@ -26,3 +30,4 @@ protected:
       size_t P1, P2;
       bool cuda_aware = false;
 };
+/**@}*/

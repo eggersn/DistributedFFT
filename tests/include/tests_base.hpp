@@ -7,6 +7,9 @@
 #include "device_launch_parameters.h"
 #include "cufft.hpp"
 
+/** @defgroup tests Collection of different testcases
+*   @{
+*/
 // Initialization (Data Generation)
 // Definition in tests/pencil/base.cu
 extern __global__ void scaleUniformArrayFloat(cuFFT<float>::R_t* data_d, cuFFT<float>::R_t factor, int n);
@@ -28,3 +31,4 @@ template<> struct Random_Tests<double> {
    static decltype(cublasDzasum)* cublasSum;
    static decltype(scaleUniformArrayDouble)* scaleUniformArray;
 };
+/** @}*/

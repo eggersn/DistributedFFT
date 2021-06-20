@@ -62,13 +62,14 @@ protected:
       */
       int testcase2(const int opt, const int runs);
       /**
-      *  \brief Similar to testcase2, except that the receiving process performs an additional 2D-Memcpy.
+      *  \brief A simple reference testcase which measures the bandwidth with cudaMemcpy3D (for sender & receiver) in MB/s for each rank. This testcase is mostly relevant for the pencil decomposition.
       * 
-      *  Each process generates a random input of size \f$N_x*N_y*N_z\f$. Afterwards the region is split into multiple parts of size \f$(N_x/world_size)*N_y*N_z\f$, where the i'th region is send to rank i.
-      *  Therefore the sending process has to perform a 2D-Memcpy to the send buffer. The receiving process simply gathers all arriving messages (with an 1D-Memcpy for non CUDA-aware MPI versions).
+      *  Each process generates a random input of size \f$N_{p_x}*N_{p_y}*N_z\f$. Afterwards the region is split into multiple parts across the z-axis, where the i'th region is send to rank i.
+      *  Therefore the sending process has to perform a 3D-Memcpy to the send buffer. The receive buffer is of size \f$N_{p_x}*N_{y}*N_{p_z}\f$. Therefore, we need an additional 3D-Memcpy. 
       *  There are multiple options to consider:
-      *  - opt=0: Sender performs cudaMemcpy2D from device to pinned memory, such that the relevant data is continuous. Afterwards the data is send as MPI_BYTE.
-      *  - opt=1: Sender performs cudaMemcpy(1D) from device to pinned memory (for non CUDA-aware MPI) and sends non-continuous data with a custom data type (via MPI_Type_vector).
+      *  - opt=0: Both sender and receiver perform a 3D-Memcpy. The receiver uses MPI_Waitany to overlap the receive and copy routines.
+      *  - opt=1: Same as opt=0, except that cudaMemcpy3D is performed on different streams and the MPI_Isend routine is called indirectly via cudaLaunchHostFunc.
+      *  - opt=2: Both sender and receiver use custom MPI_Types (advantage: For CUDA-aware MPI no recv/send buffer has to be allocated).
       *
       * @param opt Selects one of the above options.
       * @param runs Specifies the number of iterations across which the benchmark averages the result. 
