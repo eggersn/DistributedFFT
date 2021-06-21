@@ -71,10 +71,10 @@ int main(int argc, char* argv[]) {
             }
         } else if (option.compare(0, 6, "Pencil") == 0) {
             size_t P1, P2;
-            sstream = std::stringstream(std::string(argv[10]));
-            sstream >> P1;
-            sstream = std::stringstream(std::string(argv[11]));
-            sstream >> P2;
+            sstream.str("");
+            sstream.clear();
+            sstream << std::string(argv[10]) << ' ' << std::string(argv[11]);
+            sstream >> P1 >> P2;
 
             if (std::string(argv[9]).compare("double")==0) {
                 Tests_Pencil_Random<double> *test;
@@ -105,10 +105,10 @@ int main(int argc, char* argv[]) {
             }   
         } else if (option.compare("Reference") == 0) {
             size_t P1, P2;
-            sstream = std::stringstream(std::string(argv[10]));
-            sstream >> P1;
-            sstream = std::stringstream(std::string(argv[11]));
-            sstream >> P2;
+            sstream.str("");
+            sstream.clear();
+            sstream << std::string(argv[10]) << ' ' << std::string(argv[11]);
+            sstream >> P1 >> P2;
 
             if (std::string(argv[9]).compare("double")==0) {
                 Tests_Reference<double> test(Nx, Ny, Nz, allow_cuda_aware, P1, P2);
