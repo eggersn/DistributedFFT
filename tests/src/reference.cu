@@ -964,5 +964,42 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
     return 0;
 }
 
+// template<typename T>
+// int Tests_Reference<T>::testcase4(const int opt, const int runs) {
+//     using R_t = typename cuFFT<T>::R_t;
+
+//     MPI_Init(NULL, NULL);
+
+//     //number of processes
+//     int world_size;
+//     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+//     //get global rank
+//     int rank;
+//     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+//     int dev_count;
+//     CUDA_CALL(cudaGetDeviceCount(&dev_count));
+
+//     int dev = rank % dev_count;
+//     CUDA_CALL(cudaSetDevice(dev));
+
+//     R_t *in_d, out_d;
+//     CUDA_CALL(cudaMalloc((void**)&in_d, Nx*Ny*Nz*sizeof(R_t)));
+//     CUDA_CALL(cudaMalloc((void**)&in_d, (world_size-1)*Nx*Ny*Nz*sizeof(R_t)));
+
+//     initializeRandArray(in_d, Nx, Ny);
+
+//     // use MPI 
+//     if (opt == 0) {
+        
+//     } else { // use cudamemcpy peer-2-peer
+
+//     }
+
+//     MPI_Finalize();
+//     return 0;
+// }
+
 template class Tests_Reference<float>;
 template class Tests_Reference<double>;

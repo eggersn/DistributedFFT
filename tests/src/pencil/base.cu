@@ -29,7 +29,7 @@ int Tests_Pencil_Random<T>::initializeRandArray(void* in_d, size_t N1, size_t N2
     //create pseudo-random generator
     CURAND_CALL(curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT));
     //set seed of generator
-    // CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, 1234ULL));
+    CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, (unsigned long long) clock()));
     //get poisson samples
     CURAND_CALL(Random_Tests<T>::generateUniform(gen, real, N1*N2*Nz));
 

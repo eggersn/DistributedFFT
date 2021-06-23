@@ -10,16 +10,86 @@
 #include <mutex>
 #include <condition_variable>
 
+/*! \page Pencil_Decomposition
+    - \subpage MPIcuFFT_Pencil
+    - \subpage MPIcuFFT_Pencil_Opt1
+*/
+
+/** \class MPIcuFFT_Pencil 
+    \section Visualisation
+    \image html graphics/Pencil_Default.png
+    The above example illustrates the procedure for P1 = P2 = 3. The pencil highlighted in green is (0, 2), i.e., \a pidx_i = 0 and \a pidx_j = 2.
+    \section Details
+    There are a few technical details to consider when using this option:
+    - Required memory space (besides workspace required by cuFFT):
+        -# If MPI is not CUDA-aware:
+            - For both redistribution, an additional send- and recv-buffer (on host memory) is required
+            - An additional buffer is needed, which contains the received data (on device memory) and serves as the input for the second and third FFT.
+        -# If MPI is CUDA-aware:
+            - Same as above, only that send- and recv-buffer are allocated on device memory
+    - Required cudaMemcpy operations for each send/recv/local transpose:
+        -# First redistribution:
+            - send: 2D (or 3D) memcpy
+            - recv: 2D (or 3D) memcpy
+        -# Second redistribution:
+            - send: 2D (or 3D) memcpy
+            - recv: 1D memcpy (only if MPI is not CUDA-aware)
+    - For the three different 1D-FFT's, we use the following cuFFT plans (with cufftMakePlanMay64)
+        -# z-direction: A single plan with:
+            - istride = 1, idist = Nz
+            - ostride = 1, odist = \f$\lfloor Nz/2 \rfloor + 1\f$
+            - batch = input_dim.size_x[pidx_i] * input_dim.size_y[pidx_j]
+        -# y-direction: min(transposed_dim.size_x[pidx_i], transposed_dim.size_z[pidx_j]) plans, where each one is executed in a different stream. \n
+            Each plan is defined by the following properties:
+            - istride = ostride =  transposed_dim.size_z[pidx_j]
+            - if transposed_dim.size_x[pidx_i] <= transposed_dim.size_z[pidx_j]: idist = odist = 1
+            - else: idist = odist = transposed_dim.size_z[pidx_j] * transposed_dim.size_y[0]
+            - batch = transposed_dim.size_z[pidx_j]*transposed_dim.size_x[pidx_i]
+        -# x-direction: A single plan with:
+            - istride = ostride = output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]
+            - idist = odist = 1
+            - batch = output_dim.size_z[pidx_j]*output_dim.size_y[pidx_i]
+*/
 template<typename T> class MPIcuFFT_Pencil : public MPIcuFFT<T> {
 public:
+    /** 
+    * \brief Prepares for initialization (see initFFT)
+    */
     MPIcuFFT_Pencil (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
     ~MPIcuFFT_Pencil ();
 
-    void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
-    void setWorkArea(void *device=nullptr, void *host=nullptr);
+    /** 
+    * \brief Creates the cuFFT plans and allocates the required memory space. 
+    *
+    * The function starts by initializing \a pidx_i and \a pidx_j, along with \a input_dim, \a transposed_dim and \a output_dim.
+    * Afterwards, the cuFFT plans are created as described in \ref Details. Finally, setWorkArea is called to allocate the device memory.
+    * 
+    * @param global_size specifies the dimensions Nx, Ny and Nz (of the global input data)
+    * @param partition specifies the grid size used to partition the global input data
+    * @param allocate specifies if device memory has to be allocated
+    */
+    virtual void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
+    /**
+    * \brief Allocates the required host and device memory (see \ref Details)
+    */
+    virtual void setWorkArea(void *device=nullptr, void *host=nullptr);
 
-    void execR2C(void *out, const void *in) { this->execR2C(out, in, 3);}
-    void execR2C(void *out, const void *in, int d);
+    /**
+    * \brief Computes a 3D FFT as illustrated by \ref Visualisation.
+    * @param out is reused for each 1D cuFFT computation. Therefore is must hold that:
+    *   - 1D FFT (z-direction): size(out) >= input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1)
+    *   - 1D FFT (y-direction): size(out) >= transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]
+    *   - 1D FFT (x-direction): size(out) >= Nx*out_dim.size_y[pidx_i]*out_dim.size_z[pidx_j]
+    */
+    virtual void execR2C(void *out, const void *in) { this->execR2C(out, in, 3);}
+    /**
+    * \brief Computes the FFT in its first d dimensions as illustrated by \ref Visualisation.
+    * @param out is reused for each 1D cuFFT computation. Therefore is must hold that:
+    *   - 1D FFT (z-direction): size(out) >= input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1)
+    *   - 1D FFT (y-direction): size(out) >= transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]
+    *   - 1D FFT (x-direction): size(out) >= Nx*out_dim.size_y[pidx_i]*out_dim.size_z[pidx_j]
+    */
+    virtual void execR2C(void *out, const void *in, int d);
     void getPartitionDimensions(Partition_Dimensions &input_dim_, Partition_Dimensions &transposed_dim_, Partition_Dimensions &output_dim_) {
         input_dim_ = input_dim;
         transposed_dim_ = transposed_dim;
@@ -44,11 +114,28 @@ protected:
         const size_t p;
     };
 
+    //! \brief Called by cudaCallHostFunc after a memcpy (used by the send procedure) is complete. It notifies the sending thread that is can start sending to the corresponding rank.
     static void CUDART_CB MPIsend_Callback(void *data);
+
+    //! \brief Sending thread for the first global redistribution
     void MPIsend_Thread_FirstCallback(Callback_Params_Base &params, void *ptr);
+    //! \brief Sending thread for the second global redistribution
     void MPIsend_Thread_SecondCallback(Callback_Params_Base &params, void *ptr);
 
+    //! \brief Can be called by MPIcuFFT_Pencil_Opt1 to avoid redundancy
+    void MPIsend_Thread_FirstCallback_Base(void *data, void *ptr) {
+        struct Callback_Params_Base *params = (Callback_Params_Base *) data;
+        this->MPIsend_Thread_FirstCallback(*params, ptr);
+    }
+    //! \brief Can be called by MPIcuFFT_Pencil_Opt1 to avoid redundancy
+    void MPIsend_Thread_SecondCallback_Base(void *data, void *ptr) {
+        struct Callback_Params_Base *params = (Callback_Params_Base *) data;
+        this->MPIsend_Thread_SecondCallback(*params, ptr);
+    }
+
+    //! \brief Computes the global rank of the sending and receiving ranks relevant for the first global redistribution
     void commOrder_FirstTranspose();
+    //! \brief Computes the global rank of the sending and receiving ranks relevant for the second global redistribution
     void commOrder_SecondTranspose();
 
     using MPIcuFFT<T>::Peer;
@@ -80,20 +167,20 @@ protected:
     using MPIcuFFT<T>::initialized;
     using MPIcuFFT<T>::fft3d;
 
-    GlobalSize *global_size;
-    Partition *partition;
+    GlobalSize *global_size; //! Specifies Nx, Ny and Nz as the global input dimensions
+    Partition *partition; //! Specifies P1 and P2
 
-    size_t pidx_i;
-    size_t pidx_j;
+    size_t pidx_i; //! Index of node in P1-direction
+    size_t pidx_j; //! Index of node in P2-direction
 
-    size_t ws_c2c_0;
-    size_t num_of_streams;
+    size_t ws_c2c_0; //! Workspace of a single batched 1D FFT in y-direction.
+    size_t num_of_streams; //! Number of batched 1D FFT's in y-direction (see \ref Details)
 
-    std::vector<cudaStream_t> streams;
+    std::vector<cudaStream_t> streams; //! For each batched 1D FFT in y-direction, we use a stream. The streams are reused for the sending procedures.
 
-    cufftHandle planR2C;
-    std::vector<cufftHandle> planC2C_0;
-    cufftHandle planC2C_1;
+    cufftHandle planR2C; //! cuFFT plan for the 1D FFT in z-direction
+    std::vector<cufftHandle> planC2C_0; //! cuFFT plans for the 1D FFT in y-direction (planC2C_0.size() == num_of_streams)
+    cufftHandle planC2C_1; //! cuFFT plan for the 1D FFT in x-direction
 
     std::vector<MPI_Request> send_req;
     std::vector<MPI_Request> recv_req;
@@ -102,7 +189,7 @@ protected:
     Partition_Dimensions transposed_dim;
     Partition_Dimensions output_dim;
 
-    Timer *timer;
+    Timer *timer; //! Used for the benchmarks
 
     std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "First Transpose (First Send)", "First Transpose (Packing)", "First Transpose (Start Local Transpose)", 
         "First Transpose (Start Receive)", "First Transpose (Finished Receive)", "1D FFT Y-Direction", "Second Transpose (Preparation)",

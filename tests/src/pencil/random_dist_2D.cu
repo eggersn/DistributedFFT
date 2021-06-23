@@ -1,10 +1,15 @@
 #include "tests_pencil_random_2d.hpp"
 #include "mpicufft_pencil.hpp"
+#include "mpicufft_pencil_opt1.hpp"
 #include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
+
+#define error(e) {                  \
+    throw std::runtime_error(e);    \
+}
 
 #define CUDA_CALL(x) do { if((x)!=cudaSuccess) { \
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);\
@@ -85,15 +90,19 @@ int Tests_Pencil_Random_2D<T>::testcase0(const int opt, const int runs){
     size_t pidx_j = rank % P2;
         
     //initialize MPIcuFFT
-    MPIcuFFT_Pencil<T> mpicuFFT(MPI_COMM_WORLD, true);
+    MPIcuFFT_Pencil<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Pencil_Opt1<T>(MPI_COMM_WORLD, cuda_aware, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Pencil<T>(MPI_COMM_WORLD, cuda_aware, world_size);
 
     Pencil_Partition partition(P1, P2);
     GlobalSize global_size(Nx, Ny, Nz);
-    mpicuFFT.initFFT(&global_size, &partition, true);
+    mpicuFFT->initFFT(&global_size, &partition, true);
 
     // Allocate Memory
     Partition_Dimensions input_dim, transposed_dim, output_dim;
-    mpicuFFT.getPartitionDimensions(input_dim, transposed_dim, output_dim);
+    mpicuFFT->getPartitionDimensions(input_dim, transposed_dim, output_dim);
 
     size_t out_size = std::max(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1), transposed_dim.size_x[pidx_i]*transposed_dim.size_y[0]*transposed_dim.size_z[pidx_j]);
 
@@ -109,7 +118,7 @@ int Tests_Pencil_Random_2D<T>::testcase0(const int opt, const int runs){
     for (int i = 0; i < runs; i++) {
         this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
         MPI_Barrier(MPI_COMM_WORLD);
-        mpicuFFT.execR2C(out_d, in_d, 2);
+        mpicuFFT->execR2C(out_d, in_d, 2);
         MPI_Barrier(MPI_COMM_WORLD);
     }
 
@@ -128,7 +137,10 @@ int Tests_Pencil_Random_2D<T>::testcase0(const int opt, const int runs){
 }
 
 template<typename T> 
-int Tests_Pencil_Random_2D<T>::testcase1(const int opt, const int runs) {      
+int Tests_Pencil_Random_2D<T>::testcase1(const int opt, const int runs) {   
+    if (opt != 0)
+        error("Selected option is not supported for this testcase");
+
     int provided; 
     //initialize MPI
     MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
@@ -339,15 +351,16 @@ int Tests_Pencil_Random_2D<T>::compute(const int rank, const int world_size, con
     size_t pidx_j = rank % P2;
 
     //initialize MPIcuFFT
-    MPIcuFFT_Pencil<T> mpicuFFT(MPI_COMM_WORLD, cuda_aware, world_size);
+    MPIcuFFT_Pencil<T> *mpicuFFT;
+    mpicuFFT = new MPIcuFFT_Pencil<T>(MPI_COMM_WORLD, cuda_aware, world_size);
 
     Pencil_Partition partition(P1, P2);
     GlobalSize global_size(Nx, Ny, Nz);
-    mpicuFFT.initFFT(&global_size, &partition, true);
+    mpicuFFT->initFFT(&global_size, &partition, true);
 
     // Allocate Memory
     Partition_Dimensions input_dim, transposed_dim, output_dim;
-    mpicuFFT.getPartitionDimensions(input_dim, transposed_dim, output_dim);
+    mpicuFFT->getPartitionDimensions(input_dim, transposed_dim, output_dim);
 
     size_t out_size = std::max(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1), transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]);
 
@@ -376,7 +389,7 @@ int Tests_Pencil_Random_2D<T>::compute(const int rank, const int world_size, con
         MPI_Barrier(MPI_COMM_WORLD);
     
         //execute
-        mpicuFFT.execR2C(out_d, in_d, 2);
+        mpicuFFT->execR2C(out_d, in_d, 2);
     
         if (!cuda_aware){
             CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]*sizeof(C_t), cudaMemcpyDeviceToHost));

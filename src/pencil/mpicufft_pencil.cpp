@@ -15,31 +15,6 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);  \
     exit(EXIT_FAILURE); }} while(0)
 
-#define DEBUG 1
-#define debug(d, v) {                                                 \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d,%d): %s: %s in %s:%d\n",pidx_i,pidx_j,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
-
-#define debug_h(v) {                                                  \
-  if (DEBUG == 1) {                                                   \
-    printf("%s",v);                \
-  }                                                                   \
-}
-
-#define debug_int(d, v) {                                             \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d,%d): %s: %d in %s:%d\n",pidx_i,pidx_j,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
-
-#define debug_p(d, v) {                                                  \
-  if (DEBUG == 1) {                                                   \
-    printf("DEBUG (%d,%d): %s: %p in %s:%d\n",pidx_i,pidx_j,d,v,__FILE__,__LINE__); \
-  }                                                                   \
-}
-
 template<typename T>
 MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : 
     MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
@@ -332,7 +307,7 @@ void MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback(Callback_Params_Base &bas
 
         MPI_Isend(&send_ptr[transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*output_dim.start_y[p_i]], 
             sizeof(C_t)*transposed_dim.size_x[pidx_i]*output_dim.size_y[p_i]*transposed_dim.size_z[pidx_j], MPI_BYTE,
-            p, pidx_i, comm, &(send_req[p_i]));
+            p, pidx_i, comm, &send_req[p_i]);
 
         lk.unlock();
     }
@@ -413,7 +388,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
         timer->stop_store("1D FFT Z-Direction");
 
         for (size_t i = 0; i < comm_order.size(); i++){
-            size_t p_i = pidx_i;
             size_t p_j = comm_order[i] % partition->P2;
 
             // Start non-blocking MPI recv

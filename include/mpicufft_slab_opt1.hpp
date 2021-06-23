@@ -2,6 +2,41 @@
 
 #include "mpicufft_slab.hpp"
 
+
+/** \class MPIcuFFT_Pencil_Opt1
+    \section Visualisation
+    \image html graphics/Pencil_Opt1.png
+    The above example illustrates the procedure for P1 = P2 = 3. The pencil highlighted in green is (0, 2), i.e., \a pidx_i = 0 and \a pidx_j = 2.
+    The global redistributions are highlighted in red and blue, while the local transformations (due to the stride and dist settings of the cuFFT plans) are visualized in violet.
+    \section Details
+    There are a few technical details to consider when using this option:
+    - Required memory space (besides workspace required by cuFFT):
+        -# If MPI is not CUDA-aware:
+            - For both redistribution, an additional send- and recv-buffer (on host memory) is required.
+            - An additional buffer is needed, which contains the received data (on device memory) and serves as the input for the second and third FFT.
+        -# If MPI is CUDA-aware:
+            - Due to the local transformations, we do not require a send buffer in this case.
+    - Required cudaMemcpy operations for each send/recv/local transpose:
+        -# First redistribution:
+            - send: 1D memcpy (only if MPI is not CUDA-aware)
+            - recv: 2D (or 3D) memcpy
+        -# Second redistribution:
+            - send: 1D memcpy (only if MPI is not CUDA-aware)
+            - recv: 2D (or 3D) memcpy
+    - For the three different 1D-FFT's, we use the following cuFFT plans (with cufftMakePlanMay64)
+        -# z-direction: A single plan with:
+            - istride = 1, idist = Nz
+            - ostride = input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i], odist = 1
+            - batch = input_dim.size_x[pidx_i] * input_dim.size_y[pidx_j]
+        -# y-direction: A single plan with:
+            - istride = 1, idist = Ny
+            - ostride = transposed_dim.size_z[pidx_j]*transposed_dim.size_x[pidx_i], odist = 1
+            - batch = transposed_dim.size_z[pidx_j]*transposed_dim.size_x[pidx_i]
+        -# x-direction: A single plan with:
+            - istride = 1, idist = Nx
+            - ostride = output_dim.size_z[pidx_j]*output_dim.size_y[pidx_i], odist = 1
+            - batch = output_dim.size_z[pidx_j]*output_dim.size_y[pidx_i]
+*/
 template<typename T> class MPIcuFFT_Slab_Opt1 : public MPIcuFFT_Slab<T> {
 public: 
     MPIcuFFT_Slab_Opt1 (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1) :

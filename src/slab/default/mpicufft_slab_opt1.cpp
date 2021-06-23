@@ -236,14 +236,19 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("Transpose (Finished Receive)");
 
+    // avoid modification of complex, while MPI_Isendv is not done yet
+    if (cuda_aware)
+      MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
+
     // compute remaining 1d FFT, for cuda-aware recv and temp buffer are identical
     CUFFT_CALL(cuFFT<T>::execC2C(planC2C, temp_ptr, complex, CUFFT_FORWARD));
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("1D FFT X-Direction");
 
-    if (!cuda_aware)
-        mpisend_thread.join();
-    MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
+    if (!cuda_aware) {
+      mpisend_thread.join();
+      MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
+    }
     timer->stop_store("Run complete");
   }
   cudaProfilerStop();

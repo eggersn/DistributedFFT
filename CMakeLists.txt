@@ -8,13 +8,13 @@ if(NOT DEFINED CMAKE_CUDA_STANDARD)
     set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 endif()
 
-set(MPICUFFT_FILES src/mpicufft.cpp src/slab/default/mpicufft_slab.cpp src/slab/default/mpicufft_slab_opt1.cpp src/slab/z_then_yx/mpicufft_slab_z_then_yx.cpp src/slab/z_then_yx/mpicufft_slab_z_then_yx_opt1.cpp src/slab/y_then_zx/mpicufft_slab_y_then_zx.cpp src/pencil/mpicufft_pencil.cpp)
+set(MPICUFFT_FILES src/mpicufft.cpp src/slab/default/mpicufft_slab.cpp src/slab/default/mpicufft_slab_opt1.cpp src/slab/z_then_yx/mpicufft_slab_z_then_yx.cpp src/slab/z_then_yx/mpicufft_slab_z_then_yx_opt1.cpp src/slab/y_then_zx/mpicufft_slab_y_then_zx.cpp src/pencil/mpicufft_pencil.cpp src/pencil/mpicufft_pencil_opt1.cpp)
 set(SLABTEST_FILES tests/src/slab/base.cu tests/src/slab/random_dist.cu tests/src/slab/random_dist_y_then_zx.cu tests/src/slab/random_dist_z_then_yx.cu)
 set(PENCILTEST_FILES tests/src/pencil/base.cu tests/src/pencil/random_dist_1D.cu tests/src/pencil/random_dist_2D.cu tests/src/pencil/random_dist_3D.cu)
 set(TIMER_FILES src/timer.cpp)
 set(EXEC_FILES tests/src/reference.cu tests/src/base.cu tests/src/main.cpp)
 
-include_directories(./include ./tests/include)
+include_directories(include tests/include)
 
 # create library and link them
 add_library(mpicufft SHARED ${MPICUFFT_FILES})
@@ -27,6 +27,8 @@ add_executable(tests_exec ${EXEC_FILES})
 set(MPI_HOME ${MPI_HOME})
 set(MPI_CXX_COMPILER_FLAGS "-g")
 find_package(MPI REQUIRED)
+
+set_property(TARGET timer PROPERTY CXX_STANDARD 11)
 
 if(${CMAKE_VERSION} VERSION_LESS "3.18.0") 
     set_source_files_properties(${MPICUFFT_FILES} PROPERTIES LANGUAGE CUDA)
