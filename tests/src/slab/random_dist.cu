@@ -78,6 +78,10 @@ int Tests_Slab_Random_Default<T>::testcase0(const int opt, const int runs){
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
     size_t N1=Nx/world_size;
     size_t N2=Ny/world_size;
     if (rank < Nx%world_size)
