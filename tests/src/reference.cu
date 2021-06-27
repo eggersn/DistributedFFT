@@ -302,6 +302,10 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
     R_t *in_d, *send_ptr, *recv_ptr, *out_d;
 
     CUDA_CALL(cudaMalloc((void **)&in_d, Nx*Ny*Nz*sizeof(R_t)));
@@ -452,6 +456,10 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
     //get global rank
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
 
     R_t *in_d, *send_ptr, *recv_ptr, *out_d;
 
@@ -677,6 +685,10 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
     //get global rank
     int pidx;
     MPI_Comm_rank(MPI_COMM_WORLD, &pidx);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
 
     size_t pidx_i = pidx/P2;
     size_t pidx_j = pidx%P2;
