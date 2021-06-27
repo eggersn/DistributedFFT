@@ -13,7 +13,7 @@ def menu_main():
         "[0] Run Specified Job (job.json)\n" +
         "[1] Pencil Decomposition \n" + 
         "[2] Slab Decomposition \n\n" +
-        "Selection: ", end='')
+        "Selection: ")
         try: 
             opt = int(input())
             if opt >= 0 and opt <= 2:
@@ -27,7 +27,11 @@ def menu_main():
 
     return 0
 
-opt = menu_main()
+if len(sys.argv) == 1:
+    opt = menu_main()
+else:
+    opt = int(sys.argv[1])
+
 os.chdir("build")
 print()
 if opt == 0:

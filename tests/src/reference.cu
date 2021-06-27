@@ -7,6 +7,8 @@
 #include <thread> 
 #include <mutex>
 #include <condition_variable>
+#include <fstream>
+#include <sys/stat.h>
 
 #define CUDA_CALL(x) do { if((x)!=cudaSuccess) { \
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);\
@@ -324,7 +326,6 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
 
     std::vector<MPI_Request> send_req(world_size, MPI_REQUEST_NULL);
     std::vector<MPI_Request> recv_req(world_size, MPI_REQUEST_NULL);
-
     double t1, t2;
     if (opt == 0) {
         for (int i = 0; i < runs+10; i++) {   
@@ -375,10 +376,39 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
         }
         t2 = MPI_Wtime();
     }
-    double size = (world_size-1)*Nx*Ny*Nz*sizeof(R_t)*1.0e-6;
     // bandwidth in MB/s
+    double size = (world_size-1)*Nx*Ny*Nz*sizeof(R_t)*1.0e-6;
     double bandwidth = size*runs/(t2-t1);
-    printf("Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", rank, runs, size, bandwidth);
+
+    std::vector<double> send_buffer{size, bandwidth};
+    std::vector<double> recv_buffer;
+    if (rank == 0)
+        recv_buffer.resize(2*world_size, 0);
+
+    MPI_Gather(send_buffer.data(), 2, MPI_DOUBLE, recv_buffer.data(), 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    std::string filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    if (rank == 0){
+        std::ofstream myfile;
+        struct stat buffer; 
+        if (!stat (filename.c_str(), &buffer) == 0) {
+            myfile.open(filename);
+            myfile << ",";
+            for (int i = 0; i < world_size; i++)
+                myfile << i << ",";
+        } else {
+            myfile.open(filename, std::ios_base::app);
+        }
+        myfile << "\n";
+        std::string descs[2] = {"size", "bandwidth"};
+        for (int i = 0; i < 2; i++){
+            myfile << descs[i] << ",";
+            for (int j = 0; j < world_size; j++)
+                myfile << recv_buffer[j * 2 + i] << ",";
+            myfile << "\n";
+        }
+        myfile.close();
+    }
 
     MPI_Finalize();
     return 0;
@@ -606,8 +636,36 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
     // bandwidth in MB/s
     double bandwidth_in = size_in*runs/(t2-t1);
     double bandwidth_out = size_in*runs/(t2-t1);
-    printf("Incoming Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", rank, runs, size_in, bandwidth_in);
-    printf("Outgoing Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", rank, runs, size_out, bandwidth_out);
+
+    std::vector<double> send_buffer{size_in, size_out, bandwidth_in, bandwidth_out};
+    std::vector<double> recv_buffer;
+    if (rank == 0)
+        recv_buffer.resize(4*world_size, 0);
+
+    MPI_Gather(send_buffer.data(), 4, MPI_DOUBLE, recv_buffer.data(), 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    std::string filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    if (rank == 0){
+        std::ofstream myfile;
+        struct stat buffer; 
+        if (!stat (filename.c_str(), &buffer) == 0) {
+            myfile.open(filename);
+            myfile << ",";
+            for (int i = 0; i < world_size; i++)
+                myfile << i << ",";
+        } else {
+            myfile.open(filename, std::ios_base::app);
+        }
+        myfile << "\n";
+        std::string descs[4] = {"size_in", "size_out", "bandwidth_in", "bandwidth_out"};
+        for (int i = 0; i < 4; i++){
+            myfile << descs[i] << ",";
+            for (int j = 0; j < world_size; j++)
+                myfile << recv_buffer[j * 4 + i] << ",";
+            myfile << "\n";
+        }
+        myfile.close();
+    }
 
     MPI_Finalize();
     return 0;
@@ -688,7 +746,7 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
 
     int dev_count;
     CUDA_CALL(cudaGetDeviceCount(&dev_count));
-    CUDA_CALL(cudaSetDevice(rank % dev_count));
+    CUDA_CALL(cudaSetDevice(pidx % dev_count));
 
     size_t pidx_i = pidx/P2;
     size_t pidx_j = pidx%P2;
@@ -969,8 +1027,35 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
     // bandwidth in MB/s
     double bandwidth_in = size_in*runs/(t2-t1);
     double bandwidth_out = size_in*runs/(t2-t1);
-    printf("Incoming Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", pidx, runs, size_in, bandwidth_in);
-    printf("Outgoing Bandwidth for rank=%d, runs=%d, size=%f MB in MB/s: %f\n", pidx, runs, size_out, bandwidth_out);
+    std::vector<double> send_buffer{size_in, size_out, bandwidth_in, bandwidth_out};
+    std::vector<double> recv_buffer;
+    if (pidx == 0)
+        recv_buffer.resize(4*world_size, 0);
+
+    MPI_Gather(send_buffer.data(), 4, MPI_DOUBLE, recv_buffer.data(), 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    std::string filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    if (pidx == 0){
+        std::ofstream myfile;
+        struct stat buffer; 
+        if (!stat (filename.c_str(), &buffer) == 0) {
+            myfile.open(filename);
+            myfile << ",";
+            for (int i = 0; i < world_size; i++)
+                myfile << i << ",";
+        } else {
+            myfile.open(filename, std::ios_base::app);
+        }
+        myfile << "\n";
+        std::string descs[4] = {"size_in", "size_out", "bandwidth_in", "bandwidth_out"};
+        for (int i = 0; i < 4; i++){
+            myfile << descs[i] << ",";
+            for (int j = 0; j < world_size; j++)
+                myfile << recv_buffer[j * 4 + i] << ",";
+            myfile << "\n";
+        }
+        myfile.close();
+    }
 
     MPI_Finalize();
     return 0;
