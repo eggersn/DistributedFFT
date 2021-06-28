@@ -1,517 +1,169 @@
 {
-    "size": [32, 64, 128, 256, 512],
+    "size": [32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512],
     "warmup-rounds": 10,
-    "additional-flags": "--hostfile ../hostfile --map-by node --prefix /home/eggersn/opt/openmpi-4.1.1",
+    "additional-flags": "",
     "tests": [
         {
-            "name": "Pencil_3D",
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": false,
             "precision": "double",
-            "testcase": 0,
+            "testcase": 1,
             "option": 0,
             "P1": 2,
             "P2": 2
         }, 
         {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 4,
-            "P2": 4
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 5,
-            "P2": 5
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 6,
-            "P2": 6
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 2,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 4,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 6,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 2
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 4
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 5
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 6
-        },
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 3
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 6
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 9
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 1,
-            "P": 3
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 1,
-            "P": 6
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 1,
-            "P": 9
-        }, 
-        {
-            "name": "Slab_Z_Then_YX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 3
-        }, 
-        {
-            "name": "Slab_Z_Then_YX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 6
-        }, 
-        {
-            "name": "Slab_Z_Then_YX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 9
-        }, 
-        {
-            "name": "Slab_Z_Then_YX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 1,
-            "P": 3
-        }, 
-        {
-            "name": "Slab_Z_Then_YX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 1,
-            "P": 6
-        }, 
-        {
-            "name": "Slab_Z_Then_YX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 1,
-            "P": 9
-        }, 
-        {
-            "name": "Slab_Y_Then_ZX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 3
-        }, 
-        {
-            "name": "Slab_Y_Then_ZX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 6
-        }, 
-        {
-            "name": "Slab_Y_Then_ZX",
-            "repetitions": 100,
-            "cuda_aware": false,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 9
-        },
-        {
-            "name": "Pencil_3D",
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
+            "testcase": 1,
             "option": 0,
             "P1": 2,
             "P2": 2
         }, 
         {
-            "name": "Pencil_3D",
+            "name": "Reference",
             "repetitions": 100,
-            "cuda_aware": true,
+            "cuda_aware": false,
             "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 4,
-            "P2": 4
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 5,
-            "P2": 5
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 6,
-            "P2": 6
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
+            "testcase": 1,
+            "option": 1,
             "P1": 2,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 4,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 6,
-            "P2": 3
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
             "P2": 2
         }, 
         {
-            "name": "Pencil_3D",
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 4
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 5
-        }, 
-        {
-            "name": "Pencil_3D",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P1": 3,
-            "P2": 6
-        },
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 3
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 6
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 9
-        }, 
-        {
-            "name": "Slab_Default",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
+            "testcase": 1,
             "option": 1,
-            "P": 3
+            "P1": 2,
+            "P2": 2
         }, 
         {
-            "name": "Slab_Default",
+            "name": "Reference",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 2,
+            "option": 0,
+            "P1": 2,
+            "P2": 2
+        }
+        , 
+        {
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
+            "testcase": 2,
+            "option": 0,
+            "P1": 2,
+            "P2": 2
+        }, 
+        {
+            "name": "Reference",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 2,
             "option": 1,
-            "P": 6
+            "P1": 2,
+            "P2": 2
         }, 
         {
-            "name": "Slab_Default",
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
+            "testcase": 2,
             "option": 1,
-            "P": 9
+            "P1": 2,
+            "P2": 2
         }, 
         {
-            "name": "Slab_Z_Then_YX",
+            "name": "Reference",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 2,
+            "option": 2,
+            "P1": 2,
+            "P2": 2
+        }, 
+        {
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
+            "testcase": 2,
+            "option": 2,
+            "P1": 2,
+            "P2": 2
+        }, 
+        {
+            "name": "Reference",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 3,
             "option": 0,
-            "P": 3
-        }, 
+            "P1": 2,
+            "P2": 2
+        }
+        , 
         {
-            "name": "Slab_Z_Then_YX",
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
+            "testcase": 3,
             "option": 0,
-            "P": 6
+            "P1": 2,
+            "P2": 2
         }, 
         {
-            "name": "Slab_Z_Then_YX",
+            "name": "Reference",
             "repetitions": 100,
-            "cuda_aware": true,
+            "cuda_aware": false,
             "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 9
-        }, 
-        {
-            "name": "Slab_Z_Then_YX",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
+            "testcase": 3,
             "option": 1,
-            "P": 3
+            "P1": 2,
+            "P2": 2
         }, 
         {
-            "name": "Slab_Z_Then_YX",
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
+            "testcase": 3,
             "option": 1,
-            "P": 6
+            "P1": 2,
+            "P2": 2
         }, 
         {
-            "name": "Slab_Z_Then_YX",
+            "name": "Reference",
+            "repetitions": 100,
+            "cuda_aware": false,
+            "precision": "double",
+            "testcase": 3,
+            "option": 2,
+            "P1": 2,
+            "P2": 2
+        }, 
+        {
+            "name": "Reference",
             "repetitions": 100,
             "cuda_aware": true,
             "precision": "double",
-            "testcase": 0,
-            "option": 1,
-            "P": 9
-        }, 
-        {
-            "name": "Slab_Y_Then_ZX",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 3
-        }, 
-        {
-            "name": "Slab_Y_Then_ZX",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 6
-        }, 
-        {
-            "name": "Slab_Y_Then_ZX",
-            "repetitions": 100,
-            "cuda_aware": true,
-            "precision": "double",
-            "testcase": 0,
-            "option": 0,
-            "P": 9
+            "testcase": 3,
+            "option": 2,
+            "P1": 2,
+            "P2": 2
         }
     ]
 }

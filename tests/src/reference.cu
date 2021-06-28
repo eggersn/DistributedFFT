@@ -387,7 +387,9 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
 
     MPI_Gather(send_buffer.data(), 2, MPI_DOUBLE, recv_buffer.data(), 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    std::string filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    std::string filename = "../benchmarks/reference.csv";
+    if (opt != 0) 
+        filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
     if (rank == 0){
         std::ofstream myfile;
         struct stat buffer; 
@@ -462,7 +464,6 @@ namespace Testcase2 {
     
         int p = base_params->comm_ready.back();
         base_params->comm_ready.pop_back();
-        size_t oslice = params.Nz*params.start_y[p]*params.sizes_x[params.rank];
     
         MPI_Isend(&send_ptr[params.Nz*params.start_y[p]*params.sizes_x[params.rank]], 
             params.Nz*params.sizes_y[p]*params.sizes_x[params.rank]*sizeof(R_t), 
@@ -477,7 +478,17 @@ template<typename T>
 int Tests_Reference<T>::testcase2(const int opt, const int runs) {
     using R_t = typename cuFFT<T>::R_t;
 
-    MPI_Init(NULL, NULL);
+    if (opt == 1) {
+        int provided;
+        //initialize MPI
+        MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+        if (provided < MPI_THREAD_MULTIPLE) {
+            printf("ERROR: The MPI library does not have full thread support\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+    } else {
+        MPI_Init(NULL, NULL);
+    }
 
     //number of processes
     int world_size;
@@ -519,7 +530,7 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
         CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nz*sizes_y[rank]*Nx*sizeof(R_t)));
     } else {
         CUDA_CALL(cudaMalloc((void **)&send_ptr, sizes_x[rank]*Ny*Nz*sizeof(R_t)));
-        recv_ptr = out_d;
+        CUDA_CALL(cudaMalloc((void **)&recv_ptr, Nz*sizes_y[rank]*Nx*sizeof(R_t)));
     }
     this->initializeRandArray(in_d, sizes_x[rank], Ny);
     CUDA_CALL(cudaDeviceSynchronize());
@@ -589,13 +600,12 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
             std::thread mpisend_thread(&Testcase2::MPIsend_Thread<T>, std::ref(thread_params), std::ref(send_req));
             MPI_Waitall(world_size, recv_req.data(), MPI_STATUS_IGNORE);
     
-            mpisend_thread.join();
-            MPI_Waitall(world_size, send_req.data(), MPI_STATUS_IGNORE);
             if (!cuda_aware) {
                 CUDA_CALL(cudaMemcpyAsync(out_d, recv_ptr, Nz*sizes_y[rank]*Nx*sizeof(R_t), cudaMemcpyHostToDevice));
                 CUDA_CALL(cudaDeviceSynchronize());
-            }
-    
+            } 
+            mpisend_thread.join();
+            MPI_Waitall(world_size, send_req.data(), MPI_STATUS_IGNORE);
         }
         t2 = MPI_Wtime();
     } else if (opt == 2) {
@@ -644,7 +654,9 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
 
     MPI_Gather(send_buffer.data(), 4, MPI_DOUBLE, recv_buffer.data(), 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    std::string filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    std::string filename = "../benchmarks/reference.csv";
+    if (opt != 0) 
+        filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
     if (rank == 0){
         std::ofstream myfile;
         struct stat buffer; 
@@ -734,7 +746,17 @@ template<typename T>
 int Tests_Reference<T>::testcase3(const int opt, const int runs) {
     using R_t = typename cuFFT<T>::R_t;
 
-    MPI_Init(NULL, NULL);
+    if (opt == 1) {
+        int provided;
+        //initialize MPI
+        MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+        if (provided < MPI_THREAD_MULTIPLE) {
+            printf("ERROR: The MPI library does not have full thread support\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+    } else {
+        MPI_Init(NULL, NULL);
+    }
 
     //number of processes
     int world_size;
@@ -1034,7 +1056,9 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
 
     MPI_Gather(send_buffer.data(), 4, MPI_DOUBLE, recv_buffer.data(), 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    std::string filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    std::string filename = "../benchmarks/reference.csv";
+    if (opt != 0) 
+        filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
     if (pidx == 0){
         std::ofstream myfile;
         struct stat buffer; 

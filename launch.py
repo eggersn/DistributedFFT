@@ -39,14 +39,14 @@ if opt == 0:
         print("Starting computation for size {}".format(s))
         for test in data["tests"]:
             ranks = 0
-            if test["name"][0:6] == "Pencil":
+            if test["name"][0:6] == "Pencil" or test["name"] == "Reference":
                 print("-> Executing test {} \n   (size: {}, P1: {}, P2: {}, cuda_aware: {}, precision: {})".format(test["name"], s, test["P1"], test["P2"], str(test["cuda_aware"]).lower(), test["precision"]))
                 ranks = test["P1"] * test["P2"]
             else:
                 print("-> Executing test {} \n   (size: {}, P: {}, cuda_aware: {}, precision: {})".format(test["name"], s, test["P"], str(test["cuda_aware"]).lower(), test["precision"]))
                 ranks = test["P"]
             # One additional process for coordination
-            if test["testcase"] == 1:
+            if test["testcase"] == 1 and test["name"] != "Reference":
                 ranks += 1
             command = "mpiexec -n " + str(ranks) + " " + data["additional-flags"] + " " + "tests_exec " + str(test["name"]) + " " + str(test["testcase"]) + " " 
             command += str(test["option"]) + " " + str(data["warmup-rounds"] + test["repetitions"]) + " " + str(s) + " " + str(s) + " " + str(s) + " " + str(test["cuda_aware"]).lower() + " " + test["precision"]
@@ -55,6 +55,9 @@ if opt == 0:
             if test["name"][0:6] == "Pencil":
                 command += " " + str(test["P1"]) + " " + str(test["P2"])
                 benchmarkfile = "pencil"
+            elif test["name"] == "Reference":
+                command += " " + str(test["P1"]) + " " + str(test["P2"])
+                benchmarkfile = "reference"
 
             if test["option"] != 0:
                 benchmarkfile += "_opt" + str(test["option"])
@@ -66,8 +69,10 @@ if opt == 0:
 
             with open("../benchmarks/" + benchmarkfile + ".csv", 'r') as f_in:
                 f_data = f_in.read().splitlines(True)
-                index = [i for i, n in enumerate(f_data) if n == "\n"][data["warmup-rounds"]-1]
-            if test["name"][0:6] == "Pencil":
+                index = 0
+                if test["name"] != "Reference":
+                    index = [i for i, n in enumerate(f_data) if n == "\n"][data["warmup-rounds"]-1]
+            if test["name"][0:6] == "Pencil" or test["name"] == "Reference":
                 with open("../benchmarks/" + benchmarkfile + "/test_" + str(s) + "_" + str(test["P1"]) + "_" + str(test["P2"]) + "_" + str(test["cuda_aware"]).lower() + "_" + test["precision"]  + ".csv", 'w') as f_out:
                     f_out.writelines(f_data[0])
                     f_out.writelines(f_data[index+1:])
