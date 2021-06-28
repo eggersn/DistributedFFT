@@ -1,2 +1,3 @@
-127.0.0.1       slots=2
-192.168.1.106   slots=4
+127.0.0.1       slots=18
+pcsgs04         slots=18
+pcsgs05         slots=18
