@@ -58,8 +58,13 @@ else:
     opt = int(sys.argv[1])
     filename = "../jobs/" + sys.argv[2] + ".json"
 
-os.chdir("build")
+hostname = os.uname()[1]
+if hostname[0:6] == "pcsgs0":
+    os.chdir("build_pcsgs")
+elif hostname == "krypton":
+    os.chdir("build_krypton")
 print()
+
 if opt == 0:
     with open(filename) as f:
         data = json.load(f)

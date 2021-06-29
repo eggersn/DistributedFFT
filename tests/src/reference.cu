@@ -575,7 +575,7 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
         std::vector<Testcase2::Callback_Params> params_array;
 
         for (int i = 1; i < world_size; i++){
-            CUDA_CALL(cudaStreamCreate(&streams[1]));
+            CUDA_CALL(cudaStreamCreate(&streams[i]));
             int p = (rank+i)%world_size;
             Testcase2::Callback_Params params = {&base_params, p};
             params_array.push_back(params);
@@ -914,7 +914,7 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
         std::vector<Testcase3::Callback_Params> params_array;
     
         for (int i = 1; i < P2; i++){
-            CUDA_CALL(cudaStreamCreate(&streams[1]));
+            CUDA_CALL(cudaStreamCreate(&streams[i]));
             int p = (pidx_j+i)%P2;
             Testcase3::Callback_Params params = {&base_params, p};
             params_array.push_back(params);
