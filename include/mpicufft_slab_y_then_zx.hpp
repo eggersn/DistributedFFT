@@ -11,7 +11,7 @@
 
 template<typename T> class MPIcuFFT_Slab_Y_Then_ZX : public MPIcuFFT<T> {
 public:
-    MPIcuFFT_Slab_Y_Then_ZX (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
+    MPIcuFFT_Slab_Y_Then_ZX (Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1);
     ~MPIcuFFT_Slab_Y_Then_ZX ();
 
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true) { initFFT(global_size, allocate); }
@@ -40,10 +40,7 @@ protected:
     static void CUDART_CB MPIsend_Callback(void *data);
     void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
-    using MPIcuFFT<T>::Peer;
-    using MPIcuFFT<T>::All2All;
-    using MPIcuFFT<T>::comm_mode;
-    
+    using MPIcuFFT<T>::config;
     using MPIcuFFT<T>::comm;
 
     using MPIcuFFT<T>::pidx;

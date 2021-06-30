@@ -22,9 +22,7 @@ decltype(cufftExecZ2D)* cuFFT<double>::execC2R = cufftExecZ2D;
 decltype(cufftExecZ2Z)* cuFFT<double>::execC2C = cufftExecZ2Z;
 
 template<typename T> 
-MPIcuFFT<T>::MPIcuFFT(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : comm(comm), cuda_aware(mpi_cuda_aware) {
-    comm_mode = Peer;
-
+MPIcuFFT<T>::MPIcuFFT(Configurations config, MPI_Comm comm, int max_world_size) : comm(comm), config(config), cuda_aware(config.cuda_aware) {
     MPI_Comm_size(comm, &pcnt);
     MPI_Comm_rank(comm, &pidx);
 

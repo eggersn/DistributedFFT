@@ -1,0 +1,18 @@
+{
+    "size": [32, 64, 96],
+    "warmup-rounds": 10,
+    "additional-flags": "",
+    "global_test_settings": {
+        "--iterations": 100
+    },
+    "tests": [
+        {
+            "name": "Reference",
+            "--testcase": 1,
+            "--opt": 0,
+            "-p": 4,
+            "--cuda_aware": true,
+            "--double_prec": true
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tests_base.hpp"
+#include "params.hpp"
 #include "mpi.h"
 #include "mpi-ext.h"
 
@@ -8,11 +9,11 @@ template<typename T>
 class Tests_Slab_Random {
 public:
       virtual int run(const int testcase, const int opt, const int runs) = 0;
-      void setParams(size_t Nx_, size_t Ny_, size_t Nz_, bool allow_cuda_aware) {
+      void setParams(size_t Nx_, size_t Ny_, size_t Nz_, Configurations config_) {
          Nx = Nx_;
          Ny = Ny_;
          Nz = Nz_;
-         cuda_aware = allow_cuda_aware * MPIX_Query_cuda_support();
+         config = config_;
       }
 
 protected:
@@ -21,5 +22,5 @@ protected:
       virtual  int coordinate(const int world_size, const int runs) = 0;
 
       size_t Nx, Ny, Nz;
-      bool cuda_aware = false;
+      Configurations config;
 };

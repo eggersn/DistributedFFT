@@ -2,6 +2,9 @@
     "size": [32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512],
     "warmup-rounds": 10,
     "additional-flags": "--hostfile ../hostfile --map-by node --prefix /home/eggersn/opt/openmpi-4.1.1",
+    "global_test_settings": {
+        "iterations": 100
+    },
     "tests": [
         {
             "name": "Reference",

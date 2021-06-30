@@ -73,7 +73,12 @@ int Tests_Reference<T>::testcase0(const int runs) {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    timer = new Timer(MPI_COMM_WORLD, 0, world_size, rank, section_descriptions, "../benchmarks/reference.csv");
+    mkdir((benchmark_dir +  "/reference").c_str(), 0777);
+    mkdir((benchmark_dir +  "/reference/testcase0").c_str(), 0777);
+    std::string filename = benchmark_dir +  "/reference/testcase0/test_" + std::to_string(Nx) + "_" + std::to_string(cuda_aware);
+    filename += "_" + std::to_string(P1) + "_" + std::to_string(P2) + ".csv";
+
+    timer = new Timer(MPI_COMM_WORLD, 0, world_size, rank, section_descriptions, filename);
     timer->start();
 
     size_t pidx_i = rank / P2;
@@ -227,8 +232,8 @@ int Tests_Reference<T>::testcase0(const int runs) {
             MPI_Waitall(world_size, send_req.data(), MPI_STATUSES_IGNORE);
             timer->stop_store("Finished Send");
             timer->stop_store("Run complete");
-            timer->gather();
-
+            if (i >= warmup_rounds)
+                timer->gather();
         }
     } else {
         R_t *send_ptr;
@@ -282,7 +287,8 @@ int Tests_Reference<T>::testcase0(const int runs) {
             **************************************************************************/
             
             timer->stop_store("Run complete");
-            timer->gather();
+            if (i > warmup_rounds)
+                timer->gather();
         }
     }
     //finalize
@@ -328,8 +334,8 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
     std::vector<MPI_Request> recv_req(world_size, MPI_REQUEST_NULL);
     double t1, t2;
     if (opt == 0) {
-        for (int i = 0; i < runs+10; i++) {   
-            if (i == 10)
+        for (int i = 0; i < runs; i++) {   
+            if (i == warmup_rounds)
                 t1 = MPI_Wtime();
             if (!cuda_aware) {
                 CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nx*Ny*Nz*sizeof(R_t), cudaMemcpyDeviceToHost));
@@ -358,8 +364,8 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
             rdispls[(rank + i) % world_size] = (i-1)*Nx*Ny*Nz*sizeof(R_t);
         }
 
-        for (int i = 0; i < runs+10; i++) {   
-            if (i == 10)
+        for (int i = 0; i < runs; i++) {   
+            if (i == warmup_rounds)
                 t1 = MPI_Wtime();
             if (!cuda_aware) {
                 CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nx*Ny*Nz*sizeof(R_t), cudaMemcpyDeviceToHost));
@@ -378,7 +384,7 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
     }
     // bandwidth in MB/s
     double size = (world_size-1)*Nx*Ny*Nz*sizeof(R_t)*1.0e-6;
-    double bandwidth = size*runs/(t2-t1);
+    double bandwidth = size*(runs-warmup_rounds)/(t2-t1);
 
     std::vector<double> send_buffer{size, bandwidth};
     std::vector<double> recv_buffer;
@@ -387,9 +393,10 @@ int Tests_Reference<T>::testcase1(const int opt, const int runs) {
 
     MPI_Gather(send_buffer.data(), 2, MPI_DOUBLE, recv_buffer.data(), 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    std::string filename = "../benchmarks/reference.csv";
-    if (opt != 0) 
-        filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    mkdir((benchmark_dir +  "/reference").c_str(), 0777);
+    mkdir((benchmark_dir +  "/reference/testcase1").c_str(), 0777);
+    std::string filename = benchmark_dir +  "/reference/testcase1/test_" + std::to_string(opt) + "_" + std::to_string(Nx) + "_" + std::to_string(cuda_aware);
+    filename += "_" + std::to_string(P1) + "_" + std::to_string(P2) + ".csv";
     if (rank == 0){
         std::ofstream myfile;
         struct stat buffer; 
@@ -541,8 +548,8 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
 
     double t1, t2;
     if (opt == 0) {
-        for (int i = 0; i < runs+10; i++) {   
-            if (i == 10)
+        for (int i = 0; i < runs; i++) {   
+            if (i == warmup_rounds)
                 t1 = MPI_Wtime();
     
             for (int j = 1; j < world_size; j++) {
@@ -583,8 +590,8 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
 
         Testcase2::Thread_Params thread_params = {&base_params, send_ptr, world_size, rank, Nx, Ny, Nz, sizes_x, sizes_y, start_y};
 
-        for (int i = 0; i < runs+10; i++) {   
-            if (i == 10)
+        for (int i = 0; i < runs; i++) {   
+            if (i == warmup_rounds)
                 t1 = MPI_Wtime();
     
             for (int j = 1; j < world_size; j++) {
@@ -615,8 +622,8 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
             MPI_Type_commit(&MPI_PENCILS[i]);
         }
 
-        for (int i = 0; i < runs+10; i++) {   
-            if (i == 10)
+        for (int i = 0; i < runs; i++) {   
+            if (i == warmup_rounds)
                 t1 = MPI_Wtime();
     
             if (!cuda_aware) {
@@ -644,8 +651,8 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
     double size_in = Nz*sizes_y[rank]*(Nx-sizes_x[rank])*sizeof(R_t)*1.0e-6;
     double size_out = Nz*(Ny-sizes_y[rank])*sizes_x[rank]*sizeof(R_t)*1.0e-6;
     // bandwidth in MB/s
-    double bandwidth_in = size_in*runs/(t2-t1);
-    double bandwidth_out = size_in*runs/(t2-t1);
+    double bandwidth_in = size_in*(runs-warmup_rounds)/(t2-t1);
+    double bandwidth_out = size_in*(runs-warmup_rounds)/(t2-t1);
 
     std::vector<double> send_buffer{size_in, size_out, bandwidth_in, bandwidth_out};
     std::vector<double> recv_buffer;
@@ -654,9 +661,10 @@ int Tests_Reference<T>::testcase2(const int opt, const int runs) {
 
     MPI_Gather(send_buffer.data(), 4, MPI_DOUBLE, recv_buffer.data(), 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    std::string filename = "../benchmarks/reference.csv";
-    if (opt != 0) 
-        filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    mkdir((benchmark_dir +  "/reference").c_str(), 0777);
+    mkdir((benchmark_dir +  "/reference/testcase2").c_str(), 0777);
+    std::string filename = benchmark_dir +  "/reference/testcase2/test_" + std::to_string(opt) + "_" + std::to_string(Nx) + "_" + std::to_string(cuda_aware);
+    filename += "_" + std::to_string(P1) + "_" + std::to_string(P2) + ".csv";
     if (rank == 0){
         std::ofstream myfile;
         struct stat buffer; 
@@ -1047,8 +1055,8 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
     double size_in = transposed_dim.size_z[pidx_j]*(Ny-input_dim.size_y[pidx_j])*transposed_dim.size_x[pidx_i]*sizeof(R_t)*1.0e-6;
     double size_out = (Nz-transposed_dim.size_z[pidx_j])*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i]*sizeof(R_t)*1.0e-6;
     // bandwidth in MB/s
-    double bandwidth_in = size_in*runs/(t2-t1);
-    double bandwidth_out = size_in*runs/(t2-t1);
+    double bandwidth_in = size_in*(runs-warmup_rounds)/(t2-t1);
+    double bandwidth_out = size_in*(runs-warmup_rounds)/(t2-t1);
     std::vector<double> send_buffer{size_in, size_out, bandwidth_in, bandwidth_out};
     std::vector<double> recv_buffer;
     if (pidx == 0)
@@ -1056,9 +1064,11 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
 
     MPI_Gather(send_buffer.data(), 4, MPI_DOUBLE, recv_buffer.data(), 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    std::string filename = "../benchmarks/reference.csv";
-    if (opt != 0) 
-        filename = "../benchmarks/reference_opt" + std::to_string(opt) + ".csv";
+    mkdir((benchmark_dir +  "/reference").c_str(), 0777);
+    mkdir((benchmark_dir +  "/reference/testcase3").c_str(), 0777);
+    std::string filename = benchmark_dir +  "/reference/testcase3/test_" + std::to_string(opt) + "_" + std::to_string(Nx) + "_" + std::to_string(cuda_aware);
+    filename += "_" + std::to_string(P1) + "_" + std::to_string(P2) + ".csv";
+    printf(filename.c_str());
     if (pidx == 0){
         std::ofstream myfile;
         struct stat buffer; 

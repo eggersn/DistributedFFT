@@ -47,9 +47,17 @@ MPIcuFFT_Pencil_Opt1<T>::~MPIcuFFT_Pencil_Opt1() {
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::initFFT(GlobalSize *global_size_, Partition *partition_, bool allocate) {
-    timer->start();
     global_size = global_size_;
     partition = partition_;
+
+    mkdir((config.benchmark_dir +  "/pencil").c_str(), 0777);
+    std::stringstream ss;
+    ss << config.benchmark_dir <<  "/pencil/test_1_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+    ss << "_" << cuda_aware << "_" << partition->P1 << "_" << partition->P2 << ".csv";
+    std::string filename = ss.str();
+    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);
+
+    timer->start();
 
     // Determine pidx_x and pidx_y using partition
     if (partition == nullptr || global_size == nullptr)
@@ -519,7 +527,10 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
         timer->stop_store("Run complete");
     }
     cudaProfilerStop();
-    timer->gather();
+    if (config.warmup_rounds == 0) 
+        timer->gather();
+    else 
+        config.warmup_rounds--;
 }
 
 template class MPIcuFFT_Pencil_Opt1<float>;

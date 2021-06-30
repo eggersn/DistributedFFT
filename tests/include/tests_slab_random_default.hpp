@@ -15,5 +15,5 @@ protected:
     using Tests_Slab_Random<T>::Nx;
     using Tests_Slab_Random<T>::Ny;
     using Tests_Slab_Random<T>::Nz;
-    using Tests_Slab_Random<T>::cuda_aware;
+    using Tests_Slab_Random<T>::config;
 };

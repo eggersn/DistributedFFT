@@ -16,8 +16,8 @@
     exit(EXIT_FAILURE); }} while(0)
 
 template<typename T>
-MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) : 
-    MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
+MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(Configurations config, MPI_Comm comm, int max_world_size) : 
+    MPIcuFFT<T>(config, comm, max_world_size) {
     cudaProfilerStart();
     pidx_i = 0;
     pidx_j = 0;
@@ -26,8 +26,6 @@ MPIcuFFT_Pencil<T>::MPIcuFFT_Pencil(MPI_Comm comm, bool mpi_cuda_aware, int max_
 
     planR2C = 0;
     planC2C_1 = 0;
-
-    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, "../benchmarks/pencil.csv");
 }
 
 template<typename T> 
@@ -62,9 +60,16 @@ void MPIcuFFT_Pencil<T>::commOrder_SecondTranspose() {
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::initFFT(GlobalSize *global_size_, Partition *partition_, bool allocate) {
-    timer->start();
     global_size = global_size_;
     partition = partition_;
+    mkdir((config.benchmark_dir +  "/pencil").c_str(), 0777);
+    std::stringstream ss;
+    ss << config.benchmark_dir <<  "/pencil/test_0_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+    ss << "_" << cuda_aware << "_" << partition->P1 << "_" << partition->P2 << ".csv";
+    std::string filename = ss.str();
+    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);
+
+    timer->start();
 
     // Determine pidx_x and pidx_y using partition
     if (partition == nullptr || global_size == nullptr)
@@ -587,7 +592,10 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
         timer->stop_store("Run complete");
     }
     cudaProfilerStop();
-    timer->gather();
+    if (config.warmup_rounds == 0) 
+        timer->gather();
+    else 
+        config.warmup_rounds--;
 }
 
 template class MPIcuFFT_Pencil<float>;

@@ -17,5 +17,5 @@ protected:
     using Tests_Pencil_Random<T>::Nz;
     using Tests_Pencil_Random<T>::P1;
     using Tests_Pencil_Random<T>::P2;
-    using Tests_Pencil_Random<T>::cuda_aware;
+    using Tests_Pencil_Random<T>::config;
 };

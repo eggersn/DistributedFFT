@@ -4,8 +4,8 @@
 
 template<typename T> class MPIcuFFT_Slab_Z_Then_YX_Opt1 : public MPIcuFFT_Slab_Z_Then_YX<T> {
 public:
-    MPIcuFFT_Slab_Z_Then_YX_Opt1 (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1) :
-        MPIcuFFT_Slab_Z_Then_YX<T>(comm, mpi_cuda_aware, max_world_size) {timer->setFileName("../benchmarks/slab_z_then_yx_opt1.csv");}
+    MPIcuFFT_Slab_Z_Then_YX_Opt1 (Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1) :
+        MPIcuFFT_Slab_Z_Then_YX<T>(config, comm, max_world_size) {}
 
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true) { initFFT(global_size, allocate); }
     void initFFT(GlobalSize *global_size, bool allocate=true);
@@ -27,10 +27,7 @@ protected:
     static void CUDART_CB MPIsend_Callback(void *data);
     void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
-    using MPIcuFFT_Slab_Z_Then_YX<T>::Peer;
-    using MPIcuFFT_Slab_Z_Then_YX<T>::All2All;
-    using MPIcuFFT_Slab_Z_Then_YX<T>::comm_mode;
-    
+    using MPIcuFFT_Slab_Z_Then_YX<T>::config;
     using MPIcuFFT_Slab_Z_Then_YX<T>::comm;
 
     using MPIcuFFT_Slab_Z_Then_YX<T>::pidx;

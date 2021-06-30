@@ -14,6 +14,13 @@
 
 template<typename T> 
 void MPIcuFFT_Slab_Z_Then_YX_Opt1<T>::initFFT(GlobalSize *global_size, bool allocate) {
+    mkdir((config.benchmark_dir +  "/slab_z_then_yx").c_str(), 0777);
+    std::stringstream ss;
+    ss << config.benchmark_dir <<  "/slab_z_then_yx/test_1_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+    ss << "_" << cuda_aware << "_" << pcnt << ".csv";
+    std::string filename = ss.str();
+    
+    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);
     timer->start();
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
@@ -248,7 +255,10 @@ void MPIcuFFT_Slab_Z_Then_YX_Opt1<T>::execR2C(void *out, const void *in) {
         }
         timer->stop_store("Run complete");
     }
-    timer->gather();
+    if (config.warmup_rounds == 0) 
+        timer->gather();
+    else 
+        config.warmup_rounds--;
 }
 
 template class MPIcuFFT_Slab_Z_Then_YX_Opt1<float>;

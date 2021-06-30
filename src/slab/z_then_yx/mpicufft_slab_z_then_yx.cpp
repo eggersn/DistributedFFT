@@ -12,8 +12,8 @@
     exit(EXIT_FAILURE); }} while(0)
 
 template<typename T> 
-MPIcuFFT_Slab_Z_Then_YX<T>::MPIcuFFT_Slab_Z_Then_YX(MPI_Comm comm, bool mpi_cuda_aware, int max_world_size) 
-    : MPIcuFFT<T>(comm, mpi_cuda_aware, max_world_size) {
+MPIcuFFT_Slab_Z_Then_YX<T>::MPIcuFFT_Slab_Z_Then_YX(Configurations config, MPI_Comm comm, int max_world_size) 
+    : MPIcuFFT<T>(config, comm, max_world_size) {
     input_sizes_x.resize(pcnt, 0);
     input_start_x.resize(pcnt, 0);
     output_sizes_z.resize(pcnt, 0);
@@ -38,8 +38,6 @@ MPIcuFFT_Slab_Z_Then_YX<T>::MPIcuFFT_Slab_Z_Then_YX(MPI_Comm comm, bool mpi_cuda
         CUDA_CALL(cudaStreamCreate(&stream));
         streams.push_back(stream);
     }
-
-    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, "../benchmarks/slab_z_then_yx.csv");
 }
 
 template<typename T> 
@@ -55,6 +53,12 @@ MPIcuFFT_Slab_Z_Then_YX<T>::~MPIcuFFT_Slab_Z_Then_YX() {
 
 template<typename T> 
 void MPIcuFFT_Slab_Z_Then_YX<T>::initFFT(GlobalSize *global_size, bool allocate) {
+    mkdir((config.benchmark_dir +  "/slab_z_then_yx").c_str(), 0777);
+    std::stringstream ss;
+    ss << config.benchmark_dir <<  "/slab_z_then_yx/test_0_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+    ss << "_" << cuda_aware << "_" << pcnt << ".csv";
+    std::string filename = ss.str();
+    timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);
     timer->start();
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
@@ -318,7 +322,10 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::execR2C(void *out, const void *in) {
         MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
         timer->stop_store("Run complete");
     }
-    timer->gather();
+    if (config.warmup_rounds == 0) 
+        timer->gather();
+    else 
+        config.warmup_rounds--;
 }
 
 template class MPIcuFFT_Slab_Z_Then_YX<float>;

@@ -5,8 +5,10 @@
 template<typename T>
 class MPIcuFFT_Pencil_Opt1 : public MPIcuFFT_Pencil<T> {
 public:
-    MPIcuFFT_Pencil_Opt1(MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1) :
-        MPIcuFFT_Pencil<T>(comm, mpi_cuda_aware, max_world_size) {timer->setFileName("../benchmarks/pencil_opt1.csv"); planC2C_0 = 0;}
+    MPIcuFFT_Pencil_Opt1(Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1) :
+        MPIcuFFT_Pencil<T>(config, comm, max_world_size) {
+        planC2C_0 = 0;
+    }
 
     ~MPIcuFFT_Pencil_Opt1();
 
@@ -35,10 +37,7 @@ protected:
         MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback_Base((void*)&params, ptr);
     }
 
-    using MPIcuFFT_Pencil<T>::Peer;
-    using MPIcuFFT_Pencil<T>::All2All;
-    using MPIcuFFT_Pencil<T>::comm_mode;
-    
+    using MPIcuFFT_Pencil<T>::config;
     using MPIcuFFT_Pencil<T>::comm;
 
     using MPIcuFFT_Pencil<T>::pidx;

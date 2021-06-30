@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <vector>
 #include <mpi.h>
+#include <sys/stat.h>
+#include <sstream>
 
 /*! \mainpage Main Page
 
@@ -35,7 +37,7 @@ All methods implement \subpage MPIcuFFT.
 
 template<typename T> class MPIcuFFT {
 public:
-    MPIcuFFT (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
+    MPIcuFFT (Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1);
     ~MPIcuFFT ();
 
     virtual void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true)= 0;
@@ -60,7 +62,7 @@ public:
 
   
 protected:  
-    enum commMode_e {Peer, All2All} comm_mode;
+    Configurations config;
     MPI_Comm comm;
 
     int pidx, pcnt;

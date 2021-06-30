@@ -92,9 +92,9 @@ int Tests_Pencil_Random_2D<T>::testcase0(const int opt, const int runs){
     //initialize MPIcuFFT
     MPIcuFFT_Pencil<T> *mpicuFFT;
     if (opt == 1)
-        mpicuFFT = new MPIcuFFT_Pencil_Opt1<T>(MPI_COMM_WORLD, cuda_aware, world_size);
+        mpicuFFT = new MPIcuFFT_Pencil_Opt1<T>(config, MPI_COMM_WORLD, world_size);
     else 
-        mpicuFFT = new MPIcuFFT_Pencil<T>(MPI_COMM_WORLD, cuda_aware, world_size);
+        mpicuFFT = new MPIcuFFT_Pencil<T>(config, MPI_COMM_WORLD, world_size);
 
     Pencil_Partition partition(P1, P2);
     GlobalSize global_size(Nx, Ny, Nz);
@@ -218,7 +218,7 @@ int Tests_Pencil_Random_2D<T>::coordinate(const int world_size, const int runs) 
     CUDA_CALL(cudaMalloc((void **)&out_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     CUDA_CALL(cudaMalloc((void **)&res_d, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     
-    if (cuda_aware){
+    if (config.cuda_aware){
         CUDA_CALL(cudaMalloc((void **)&send_ptr, Nx*Ny*Nz*sizeof(R_t)));
         CUDA_CALL(cudaMalloc((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     } else {
@@ -241,7 +241,7 @@ int Tests_Pencil_Random_2D<T>::coordinate(const int world_size, const int runs) 
                 cpy_params.dstPos = make_cudaPos(0, 0, 0);
                 cpy_params.dstPtr = make_cudaPitchedPtr(&send_ptr[send_count], Nz*sizeof(R_t), Nz, input_dim.size_y[p_j]);
                 cpy_params.extent = make_cudaExtent(Nz*sizeof(R_t), input_dim.size_y[p_j], input_dim.size_x[p_i]);
-                cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
+                cpy_params.kind   = config.cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost;
                 
                 CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
                 CUDA_CALL(cudaDeviceSynchronize());
@@ -301,7 +301,7 @@ int Tests_Pencil_Random_2D<T>::coordinate(const int world_size, const int runs) 
             cpy_params.dstPos = make_cudaPos(transposed_dim.start_z[p_j]*sizeof(C_t), 0, transposed_dim.start_x[p_i]);
             cpy_params.dstPtr = make_cudaPitchedPtr(res_d, (Nz/2+1)*sizeof(C_t), Nz/2+1, Ny);    
             cpy_params.extent = make_cudaExtent(transposed_dim.size_z[p_j]*sizeof(C_t), Ny, transposed_dim.size_x[p_i]);
-            cpy_params.kind   = cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;   
+            cpy_params.kind   = config.cuda_aware ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice;   
             
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params));
         } while (p != MPI_UNDEFINED);
@@ -325,7 +325,7 @@ int Tests_Pencil_Random_2D<T>::coordinate(const int world_size, const int runs) 
     CUDA_CALL(cudaFree(in_d));
     CUDA_CALL(cudaFree(out_d));
     CUDA_CALL(cudaFree(res_d));
-    if (cuda_aware){
+    if (config.cuda_aware){
         CUDA_CALL(cudaFree(send_ptr));
         CUDA_CALL(cudaFree(recv_ptr));
     } else {
@@ -352,7 +352,7 @@ int Tests_Pencil_Random_2D<T>::compute(const int rank, const int world_size, con
 
     //initialize MPIcuFFT
     MPIcuFFT_Pencil<T> *mpicuFFT;
-    mpicuFFT = new MPIcuFFT_Pencil<T>(MPI_COMM_WORLD, cuda_aware, world_size);
+    mpicuFFT = new MPIcuFFT_Pencil<T>(config, MPI_COMM_WORLD, world_size);
 
     Pencil_Partition partition(P1, P2);
     GlobalSize global_size(Nx, Ny, Nz);
@@ -368,7 +368,7 @@ int Tests_Pencil_Random_2D<T>::compute(const int rank, const int world_size, con
     CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
     
-    if (cuda_aware){
+    if (config.cuda_aware){
         recv_ptr = in_d;
         send_ptr = out_d;
     } else {
@@ -381,7 +381,7 @@ int Tests_Pencil_Random_2D<T>::compute(const int rank, const int world_size, con
         MPI_Irecv(recv_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), MPI_BYTE, world_size, world_size+1, MPI_COMM_WORLD, &recv_req);
         MPI_Wait(&recv_req, MPI_STATUSES_IGNORE);
     
-        if (!cuda_aware){
+        if (!config.cuda_aware){
             CUDA_CALL(cudaMemcpyAsync(in_d, recv_ptr, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
@@ -391,7 +391,7 @@ int Tests_Pencil_Random_2D<T>::compute(const int rank, const int world_size, con
         //execute
         mpicuFFT->execR2C(out_d, in_d, 2);
     
-        if (!cuda_aware){
+        if (!config.cuda_aware){
             CUDA_CALL(cudaMemcpyAsync(send_ptr, out_d, transposed_dim.size_x[pidx_i]*Ny*transposed_dim.size_z[pidx_j]*sizeof(C_t), cudaMemcpyDeviceToHost));
             CUDA_CALL(cudaDeviceSynchronize());
         }
@@ -404,7 +404,7 @@ int Tests_Pencil_Random_2D<T>::compute(const int rank, const int world_size, con
     CUDA_CALL(cudaFree(in_d));
     CUDA_CALL(cudaFree(out_d));
 
-    if (!cuda_aware) {
+    if (!config.cuda_aware) {
         CUDA_CALL(cudaFreeHost(recv_ptr));
         CUDA_CALL(cudaFreeHost(send_ptr));
     }

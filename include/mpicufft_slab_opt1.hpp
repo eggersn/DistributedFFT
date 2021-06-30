@@ -39,8 +39,8 @@
 */
 template<typename T> class MPIcuFFT_Slab_Opt1 : public MPIcuFFT_Slab<T> {
 public: 
-    MPIcuFFT_Slab_Opt1 (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1) :
-      MPIcuFFT_Slab<T>(comm, mpi_cuda_aware, max_world_size) {timer->setFileName("../benchmarks/slab_default_opt1.csv");}
+    MPIcuFFT_Slab_Opt1 (Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1) :
+      MPIcuFFT_Slab<T>(config, comm, max_world_size) {}
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
     void initFFT(GlobalSize *global_size, bool allocate=true) {
       this->initFFT(global_size, nullptr, allocate);
@@ -62,10 +62,7 @@ protected:
   static void CUDART_CB MPIsend_Callback(void *data);
   void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
-  using MPIcuFFT_Slab<T>::Peer;
-  using MPIcuFFT_Slab<T>::All2All;
-  using MPIcuFFT_Slab<T>::comm_mode;
-  
+  using MPIcuFFT_Slab<T>::config;  
   using MPIcuFFT_Slab<T>::comm;
 
   using MPIcuFFT_Slab<T>::pidx;

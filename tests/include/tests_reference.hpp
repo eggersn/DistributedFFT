@@ -8,8 +8,8 @@
 template<typename T> 
 class Tests_Reference {
 public:
-      Tests_Reference(size_t Nx, size_t Ny, size_t Nz, bool allow_cuda_aware, size_t P1, size_t P2) :
-            Nx(Nx), Ny(Ny), Nz(Nz), P1(P1), P2(P2) {
+      Tests_Reference(size_t Nx, size_t Ny, size_t Nz, bool allow_cuda_aware, int warmup_rounds, std::string benchmark_dir, size_t P1, size_t P2) :
+            Nx(Nx), Ny(Ny), Nz(Nz), P1(P1), P2(P2), warmup_rounds(warmup_rounds), benchmark_dir(benchmark_dir) {
             cuda_aware = allow_cuda_aware * MPIX_Query_cuda_support();
       }
 
@@ -26,7 +26,7 @@ protected:
       /**
       *  \brief A simple reference testcase, where the complete input is gathered on a single MPI rank to compute the complete 3D FFT with cuFFT.
       * 
-      *  For a given grid \f$P_1 \times P_1\f$, each rank starts by generating random input data for \f$\frac{N_x}{P_1} \cdot \frac{N_y}{P_2} \cdot N_z\f$. 
+      *  For a given grid \f$P_1 \times P_2\f$, each rank starts by generating random input data for \f$\frac{N_x}{P_1} \cdot \frac{N_y}{P_2} \cdot N_z\f$. 
       *  Afterwards each rank sends the data to rank 0. Here we simply wait for all input data to arrive and compute the complete 3D FFT.
       *  Finally, rank 0 distributes the computed result to the individual ranks,
       *  such that each rank ends up with the same partition \f$\frac{N_x}{P_1} \cdot \frac{N_y}{P_2} \cdot \lfloor \frac{N_z}{2}+1 \rfloor\f$.
@@ -82,6 +82,8 @@ protected:
       size_t P1; //!< Number of partitions in x-direction
       size_t P2; //!< Number of partitions in y-direction
       bool cuda_aware = false; //!< Indicates, whether CUDA-aware MPI is available **and** selected
+      int warmup_rounds = 0; //!< Number of rounds, before the timer is started.
+      std::string benchmark_dir = "../benchmarks"; //!< benchmark directory.
       Timer *timer; //!< Benchmark timer
       std::vector<std::string> section_descriptions = {"init", "Finished Send", "3D FFT", "Finished Receive", "Run complete"}; //!< Tags for the different timer sections.
 };

@@ -55,7 +55,7 @@ public:
     /** 
     * \brief Prepares for initialization (see initFFT)
     */
-    MPIcuFFT_Pencil (MPI_Comm comm=MPI_COMM_WORLD, bool mpi_cuda_aware=false, int max_world_size=-1);
+    MPIcuFFT_Pencil (Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1);
     ~MPIcuFFT_Pencil ();
 
     /** 
@@ -138,10 +138,7 @@ protected:
     //! \brief Computes the global rank of the sending and receiving ranks relevant for the second global redistribution
     void commOrder_SecondTranspose();
 
-    using MPIcuFFT<T>::Peer;
-    using MPIcuFFT<T>::All2All;
-    using MPIcuFFT<T>::comm_mode;
-    
+    using MPIcuFFT<T>::config;
     using MPIcuFFT<T>::comm;
 
     using MPIcuFFT<T>::pidx;

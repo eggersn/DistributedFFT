@@ -1,24 +1,21 @@
 #pragma once
 
 #include "tests_base.hpp"
+#include "params.hpp"
 #include "mpi.h"
 #include "mpi-ext.h"
 
-/** @defgroup tests_pencil Collection of different testcases for pencil decomposition
-*   @ingroup tests
-*   @{
-*/
 template<typename T> 
 class Tests_Pencil_Random {
 public:
       virtual int run(const int testcase, const int opt, const int runs) = 0;
-      void setParams(size_t Nx_, size_t Ny_, size_t Nz_, bool allow_cuda_aware, size_t P1_, size_t P2_) {
+      void setParams(size_t Nx_, size_t Ny_, size_t Nz_, Configurations config_, size_t P1_, size_t P2_) {
          Nx = Nx_;
          Ny = Ny_;
          Nz = Nz_;
          P1 = P1_;
          P2 = P2_;
-         cuda_aware = allow_cuda_aware * MPIX_Query_cuda_support();
+         config = config_;
       }
 
 protected:
@@ -28,6 +25,5 @@ protected:
 
       size_t Nx, Ny, Nz;
       size_t P1, P2;
-      bool cuda_aware = false;
+      Configurations config;
 };
-/**@}*/

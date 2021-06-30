@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 
 options = {"tc1": 2, "tc2": 3, "tc3": 3}
 
-prefix = "../../benchmarks_krypton/reference"
+prefix = "../../benchmarks_pcsgs/reference"
 P1 = 2; P2 = 2
-cuda_aware = False
+cuda_aware = True
 prec = "double"
 
 titles = ["Bandwidth MPI Communication", "Bandwidth Slab Transpose", "Bandwidth Pencil Transpose"]
