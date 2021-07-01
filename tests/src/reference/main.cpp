@@ -49,13 +49,13 @@ void printHelp() {
 struct ReferenceParams {
    size_t Nx, Ny, Nz;
    size_t P1, P2;
-   int testcase = 0;
-   int opt = 0;
-   int iterations = 1;
-   int warmup_rounds = 0;
-   bool cuda_aware = false;
-   bool double_prec = false;
-   std::string benchmark_dir = "../benchmarks";
+   int testcase;
+   int opt;
+   int iterations;
+   int warmup_rounds;
+   bool cuda_aware;
+   bool double_prec;
+   std::string benchmark_dir;
 };
 
 std::string getValueOfParam(int argc, char *argv[], std::string longdesc, std::string shortdesc) {

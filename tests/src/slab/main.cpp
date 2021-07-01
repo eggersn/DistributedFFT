@@ -41,16 +41,16 @@ void printHelp() {
 
 struct SlabParams {
    size_t Nx, Ny, Nz;
-   std::string sequence = "ZY_Then_X";
-   int testcase = 0;
-   int opt = 0;
-   int iterations = 1;
-   int warmup_rounds = 0;
-   bool cuda_aware = false;
-   bool double_prec = false;
-   std::string benchmark_dir = "../benchmarks";
-   CommunicationMethod comm_method = Peer2Peer;
-   SendMethod send_method = Sync;
+   std::string sequence;
+   int testcase;
+   int opt;
+   int iterations;
+   int warmup_rounds;
+   bool cuda_aware;
+   bool double_prec;
+   std::string benchmark_dir;
+   CommunicationMethod comm_method;
+   SendMethod send_method;
 };
 
 std::string getValueOfParam(int argc, char *argv[], std::string longdesc, std::string shortdesc) {
@@ -120,19 +120,19 @@ SlabParams parseParams(int argc, char *argv[]) {
       throw std::runtime_error("Invalid sequence.");
 
    std::string comm_method_str = getValueOfParam(argc, argv, "--comm-method", "-comm");
-   if (comm_method_str.compare("Peer2Peer"))
+   if (comm_method_str.compare("Peer2Peer") == 0 || comm_method_str.compare("") == 0)
       params.comm_method = Peer2Peer;
-   else if (comm_method_str.compare("All2All"))
+   else if (comm_method_str.compare("All2All") == 0)
       params.comm_method = All2All;
    else 
       throw std::runtime_error("Invalid communication method.");
 
    std::string send_method_str = getValueOfParam(argc, argv, "--send-method", "-snd");
-   if (send_method_str.compare("Sync"))
+   if (send_method_str.compare("Sync") == 0 || send_method_str.compare("") == 0)
       params.send_method = Sync;
-   else if (send_method_str.compare("Streams"))
+   else if (send_method_str.compare("Streams") == 0)
       params.send_method = Streams;
-   else if (send_method_str.compare("MPI_Type"))
+   else if (send_method_str.compare("MPI_Type") == 0)
       params.send_method = MPI_Type;
    else 
       throw std::runtime_error("Invalid send method.");

@@ -79,13 +79,16 @@ add_executable(reference ${EXEC_REF_FILES})
 add_executable(slab ${EXEC_SLAB_FILES})
 add_executable(pencil ${EXEC_PENCIL_FILES})
 
-if(${CMAKE_VERSION} VERSION_LESS "3.18.0") 
-    set_source_files_properties(tests/src/main.cpp PROPERTIES LANGUAGE CUDA)
+set_property(TARGET reference slab pencil PROPERTY CXX_STANDARD 11)
 
-    target_link_libraries(test_base PUBLIC MPI::MPI_CXX -lcudart -lcurand -lcublas)
-    target_link_libraries(slab_tests PUBLIC MPI::MPI_CXX -lcudart -lcurand -lcublas)
-    target_link_libraries(pencil_tests PUBLIC MPI::MPI_CXX -lcudart -lcurand -lcublas)
-    target_link_libraries(timer PUBLIC MPI::MPI_CXX)
+if(${CMAKE_VERSION} VERSION_LESS "3.18.0") 
+    set_source_files_properties(${TEST_BASE_FILES} ${SLABTEST_FILES} ${PENCILTEST_FILES} ${REFERENCETEST_FILES} PROPERTIES LANGUAGE CUDA)
+    set_source_files_properties(${EXEC_REF_FILES} ${EXEC_SLAB_FILES} ${EXEC_PENCIL_FILES} PROPERTIES LANGUAGE CUDA)
+
+    target_link_libraries(test_base PUBLIC -lcudart -lcurand -lcublas)
+    target_link_libraries(slab_tests PUBLIC MPI::MPI_CXX -lcudart -lcufft -lcurand -lcublas)
+    target_link_libraries(pencil_tests PUBLIC MPI::MPI_CXX -lcudart -lcufft -lcurand -lcublas)
+    target_link_libraries(reference_tests PUBLIC MPI::MPI_CXX -lcudart -lcufft -lcurand -lcublas)
 else()
     # requires cmake 3.17
     find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cublas)

@@ -45,15 +45,15 @@ struct PencilParams {
    size_t Nx, Ny, Nz;
    size_t P1, P2;
    int fft_dim;
-   int testcase = 0;
-   int opt = 0;
-   int iterations = 1;
-   int warmup_rounds = 0;
-   bool cuda_aware = false;
-   bool double_prec = false;
-   std::string benchmark_dir = "../benchmarks";
-   CommunicationMethod comm_method = Peer2Peer;
-   SendMethod send_method = Sync;
+   int testcase;
+   int opt;
+   int iterations;
+   int warmup_rounds;
+   bool cuda_aware;
+   bool double_prec;
+   std::string benchmark_dir;
+   CommunicationMethod comm_method;
+   SendMethod send_method;
 };
 
 std::string getValueOfParam(int argc, char *argv[], std::string longdesc, std::string shortdesc) {
@@ -117,7 +117,7 @@ PencilParams parseParams(int argc, char *argv[]) {
 
    params.iterations = StringToInt(getValueOfParam(argc, argv, "--iterations", "-i"));
    if (params.iterations == 0)
-      params.iterations == 1;
+      params.iterations = 1;
    params.warmup_rounds = StringToInt(getValueOfParam(argc, argv, "--warmup-rounds", "-w"));
    params.iterations += params.warmup_rounds;
    params.cuda_aware = checkFlag(argc, argv, "--cuda-aware", "-c");
