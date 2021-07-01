@@ -66,9 +66,9 @@ private:
 enum CommunicationMethod {Peer2Peer, All2All};
 enum SendMethod {Sync, Streams, MPI_Type};
 struct Configurations {
-    bool cuda_aware = false;
-    int warmup_rounds = 0;
-    CommunicationMethod comm_method = Peer2Peer;
-    SendMethod send_method = Sync;
-    std::string benchmark_dir = "../benchmarks";
+    bool cuda_aware;
+    int warmup_rounds;
+    CommunicationMethod comm_method;
+    SendMethod send_method;
+    std::string benchmark_dir;
 };
