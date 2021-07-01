@@ -44,6 +44,14 @@ protected:
   static void CUDART_CB MPIsend_Callback(void *data);
   void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
+  void Peer2Peer_Communication(void *complex_);
+  void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
+  void Peer2Peer_Stream(void *complex_, void *recv_ptr_);
+  void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
+  void All2All_Communication(void *complex_);
+  void All2All_Sync(void *complex_);
+  void All2All_MPIType(void *complex_);
+
   using MPIcuFFT<T>::config;  
   using MPIcuFFT<T>::comm;
 
@@ -92,7 +100,21 @@ protected:
   size_t output_size_x, output_size_z;    
 
   Timer *timer;
-
   std::vector<std::string> section_descriptions = {"init", "2D FFT (Sync)", "2D FFT Y-Z-Direction", "Transpose (First Send)", "Transpose (Packing)", "Transpose (Start Local Transpose)", 
     "Transpose (Start Receive)", "Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
+
+  // For Peer2Peer Streams
+  std::thread mpisend_thread;
+  Callback_Params_Base base_params;
+  std::vector<Callback_Params> params_array;
+
+  // For MPI_Type send method
+  std::vector<MPI_Datatype> MPI_PENCILS;
+  std::vector<MPI_Datatype> MPI_RECV;
+
+  // For All2All Communication
+  std::vector<int> sendcounts;
+  std::vector<int> sdispls;
+  std::vector<int> recvcounts;
+  std::vector<int> rdispls;
 };

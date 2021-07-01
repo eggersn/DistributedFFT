@@ -106,7 +106,7 @@ SlabParams parseParams(int argc, char *argv[]) {
 
    params.iterations = StringToInt(getValueOfParam(argc, argv, "--iterations", "-i"));
    if (params.iterations == 0)
-      params.iterations == 1;
+      params.iterations = 1;
    params.warmup_rounds = StringToInt(getValueOfParam(argc, argv, "--warmup-rounds", "-w"));
    params.iterations += params.warmup_rounds;
    params.cuda_aware = checkFlag(argc, argv, "--cuda-aware", "-c");

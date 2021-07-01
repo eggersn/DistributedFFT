@@ -208,6 +208,9 @@ int Tests_Slab_Random_Default<T>::coordinate(const int world_size, const int run
         CUFFT_CALL(cufftSetAutoAllocation(planR2C, 0));
         CUFFT_CALL(cufftMakePlan3d(planR2C, Nx, Ny, Nz, cuFFT<T>::R2Ctype, &ws_r2c));
         CUFFT_CALL(cufftSetWorkArea(planR2C, in_d));
+
+        MPI_Comm temp;
+        MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, 0, &temp);
     
         //Distribute input data
         size_t N1 = Nx/world_size;

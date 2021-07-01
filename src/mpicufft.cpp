@@ -26,8 +26,12 @@ MPIcuFFT<T>::MPIcuFFT(Configurations config, MPI_Comm comm, int max_world_size) 
     MPI_Comm_size(comm, &pcnt);
     MPI_Comm_rank(comm, &pidx);
 
-    if (max_world_size > 0 && pcnt > max_world_size)
-        pcnt = max_world_size;
+    if (max_world_size > 0 && pcnt > max_world_size) {
+      pcnt = max_world_size;
+      MPI_Comm new_comm;
+      MPI_Comm_split(comm, 0, pidx, &new_comm);
+      this->comm = new_comm;
+    }
 
     domainsize = 0;
     fft_worksize = 0;
