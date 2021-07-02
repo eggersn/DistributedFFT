@@ -196,6 +196,9 @@ int Tests_Slab_Random_Default<T>::coordinate(const int world_size, const int run
         CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     }
 
+    MPI_Comm temp;
+    MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, 0, &temp);
+
     for (int i = 0; i < runs; i++) {
         //random initialization of full Nx*Ny*Nz array
         this->initializeRandArray(in_d, Nx);
@@ -209,9 +212,6 @@ int Tests_Slab_Random_Default<T>::coordinate(const int world_size, const int run
         CUFFT_CALL(cufftMakePlan3d(planR2C, Nx, Ny, Nz, cuFFT<T>::R2Ctype, &ws_r2c));
         CUFFT_CALL(cufftSetWorkArea(planR2C, in_d));
 
-        MPI_Comm temp;
-        MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, 0, &temp);
-    
         //Distribute input data
         size_t N1 = Nx/world_size;
         size_t N2 = Ny/world_size;

@@ -62,6 +62,14 @@ protected:
   static void CUDART_CB MPIsend_Callback(void *data);
   void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
+  void Peer2Peer_Communication(void *complex_);
+  void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
+  void Peer2Peer_Streams(void *complex_, void *recv_ptr_);
+  void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
+  void All2All_Communication(void *complex_);
+  void All2All_Sync(void *complex_);
+  void All2All_MPIType(void *complex_);
+
   using MPIcuFFT_Slab<T>::config;  
   using MPIcuFFT_Slab<T>::comm;
 
@@ -109,4 +117,19 @@ protected:
   using MPIcuFFT_Slab<T>::timer;
 
   using MPIcuFFT_Slab<T>::section_descriptions;
+
+  // For Peer2Peer Streams
+  using MPIcuFFT_Slab<T>::mpisend_thread;
+  Callback_Params_Base base_params;
+  std::vector<Callback_Params> params_array;
+
+  // For MPI_Type send method
+  using MPIcuFFT_Slab<T>::MPI_PENCILS;
+  std::vector<MPI_Datatype> MPI_SND;
+
+  // For All2All Communication
+  using MPIcuFFT_Slab<T>::sendcounts;
+  using MPIcuFFT_Slab<T>::sdispls;
+  using MPIcuFFT_Slab<T>::recvcounts;
+  using MPIcuFFT_Slab<T>::rdispls;
 };

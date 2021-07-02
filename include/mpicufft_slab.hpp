@@ -44,13 +44,13 @@ protected:
   static void CUDART_CB MPIsend_Callback(void *data);
   void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
-  void Peer2Peer_Communication(void *complex_);
-  void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
-  void Peer2Peer_Stream(void *complex_, void *recv_ptr_);
-  void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
-  void All2All_Communication(void *complex_);
-  void All2All_Sync(void *complex_);
-  void All2All_MPIType(void *complex_);
+  virtual void Peer2Peer_Communication(void *complex_);
+  virtual void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
+  virtual void Peer2Peer_Streams(void *complex_, void *recv_ptr_);
+  virtual void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
+  virtual void All2All_Communication(void *complex_);
+  virtual void All2All_Sync(void *complex_);
+  virtual void All2All_MPIType(void *complex_);
 
   using MPIcuFFT<T>::config;  
   using MPIcuFFT<T>::comm;
@@ -101,7 +101,7 @@ protected:
 
   Timer *timer;
   std::vector<std::string> section_descriptions = {"init", "2D FFT (Sync)", "2D FFT Y-Z-Direction", "Transpose (First Send)", "Transpose (Packing)", "Transpose (Start Local Transpose)", 
-    "Transpose (Start Receive)", "Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
+    "Transpose (Start Receive)", "Transpose (Finished Receive)", "Transpose (Start All2All)", "Transpose (Finished All2All)", "1D FFT X-Direction", "Run complete"};
 
   // For Peer2Peer Streams
   std::thread mpisend_thread;
