@@ -28,24 +28,34 @@ def menu_main():
     return 0
 
 def select_job():
-    valid = False
-    os.system("clear")
-    jobs = [f for f in listdir("jobs") if isfile(join("jobs", f))]
-    while not valid:
-        print("Select a Job:\n" + "-" * 35)
-        for i in range(len(jobs)):
-            print("[{}] {}".format(i, jobs[i]))
-        print("Selection: ")
-        try: 
-            opt = int(input())
-            if opt >= 0 and opt < len(jobs):
-                return jobs[opt]
-        except ValueError: 
-            os.system("clear")
-            print("Please enter an integer!\n")
-        except KeyboardInterrupt:
-            print("\nexiting...")
-            sys.exit()
+    # jobs = [f for f in listdir("jobs") if isfile(join("jobs", f))]
+    selected_jobs = []
+    prefix = "jobs"
+    while True:
+        os.system("clear")
+        valid = False
+        jobs = [f for f in listdir(prefix)]
+        while not valid:
+            print("Select a Job:\n" + "-" * 35)
+            print("[0] all")
+            for i in range(len(jobs)):
+                print("[{}] {}".format(i+1, jobs[i]))
+            print("Selection: ")
+            try: 
+                opt = int(input())
+                if opt == 0:
+                    return [os.path.join(dp, f) for dp, dn, filenames in os.walk(prefix) for f in filenames if os.path.splitext(f)[1] == '.json']
+                if opt > 0 and opt <= len(jobs):
+                    if isfile(join(prefix, jobs[opt-1])):
+                        return [prefix + "/" + jobs[opt-1]]
+                    prefix += "/" + jobs[opt-1]
+                    valid = True
+            except ValueError: 
+                os.system("clear")
+                print("Please enter an integer!\n")
+            except KeyboardInterrupt:
+                print("\nexiting...")
+                sys.exit()
     return 0
 
 def keysToLower(test):
@@ -63,6 +73,7 @@ def checkIfParamExists(test, key1, key2, error_msg=""):
 
 def run_test(test, size, global_test_settings, additional_flags, parse):
     if parse == True:
+        test.update(global_test_settings)
         if size != 0:
             if "--input-dim-x" in test or "-nx" in test:
                 print("Warning: Nx is overridden by size!")
@@ -103,32 +114,29 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
                 checkIfParamExists(test, "-p2", "--partition2", "Invalid test: P2 not specified")
                 ranks = test["-p1"] * test["-p2"]
         test["ranks"] = ranks
+    else:
+        test["-nx"] = size
+        test["-ny"] = size
+        test["-nz"] = size
 
     command = "mpiexec -n " + str(test["ranks"])
     if additional_flags != "":
         command += " " + additional_flags
     command += " " + test["name"].lower()
 
-    for key in global_test_settings:
-        if global_test_settings[key] == True:
-            command += " " + key 
-        elif type(global_test_settings[key]) != type(True):
-            command += " " + key + " " + str(global_test_settings[key])
-
     for key in test:
-        if key != "name":
+        if key != "name" and key != "ranks":
             if type(test[key]) == type(True) and test[key] == True:
                 command += " " + key 
             elif type(test[key]) != type(True):
                 command += " " + key + " " + str(test[key])
-    
+    print(command)
     os.system(command)
 
 if len(sys.argv) == 1:
     opt = menu_main()
     if opt == 0:
-        job = select_job()
-        filename = "../jobs/" + job
+        jobs = select_job()
 else:
     opt = int(sys.argv[1])
     filename = "../jobs/" + sys.argv[2] + ".json"
@@ -141,19 +149,20 @@ elif hostname == "krypton":
 else:
     os.chdir("build")
 print()
-
 if opt == 0:
-    with open(filename) as f:
-        data = json.load(f)
+    for job in jobs:
+        filename = "../" + job
+        with open(filename) as f:
+            data = json.load(f)
 
-    for s in data["size"]:
-        print("Starting computation for size {}".format(s))
-        count = 0
-        for test in data["tests"]:
-            print("-> Executing test {}".format(count))
-            run_test(test, s, data["global_test_settings"], data["additional-flags"], s==data["size"][0])
-            count += 1
-            print()
+        for s in data["size"]:
+            print("Starting computation for size {}".format(s))
+            count = 0
+            for test in data["tests"]:
+                print("-> Executing test {}".format(count))
+                run_test(test, s, data["global_test_settings"], data["additional-flags"], s==data["size"][0])
+                count += 1
+                print()
 
 elif opt == 1:
     print("todo")

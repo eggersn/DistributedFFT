@@ -3,39 +3,52 @@
 #include "mpicufft_slab.hpp"
 
 
-/** \class MPIcuFFT_Pencil_Opt1
+/** \class MPIcuFFT_Slab_Opt1
     \section Visualisation
-    \image html graphics/Pencil_Opt1.png
-    The above example illustrates the procedure for P1 = P2 = 3. The pencil highlighted in green is (0, 2), i.e., \a pidx_i = 0 and \a pidx_j = 2.
-    The global redistributions are highlighted in red and blue, while the local transformations (due to the stride and dist settings of the cuFFT plans) are visualized in violet.
+    \image html graphics/Slab_Default_Opt1.png
+    The above example illustrates the procedure for P = 3. Each slab is processed by a single rank (e.g. the green slab by rank 0). At first, the FFT is computed in z- and y- direction, where the 
+    coordinate system is transformed as specified by the cuFFT plan. After the global redistribution, the remaining FFT in x-direction is computed as well. Using a second transformation of the 
+    coordinate system, the layout of the output data is the same as the layout of the input data.
     \section Details
     There are a few technical details to consider when using this option:
     - Required memory space (besides workspace required by cuFFT):
-        -# If MPI is not CUDA-aware:
-            - For both redistribution, an additional send- and recv-buffer (on host memory) is required.
-            - An additional buffer is needed, which contains the received data (on device memory) and serves as the input for the second and third FFT.
-        -# If MPI is CUDA-aware:
-            - Due to the local transformations, we do not require a send buffer in this case.
+      -# Send Method: \a Sync or \a Streams:
+        - An additional send-buffer is only required if MPI is not CUDA-aware (since the area highlighted in red is continuous).
+        - An additional recv- and temp-buffer is required, since a 2D memcpy is needed in order to format the received data.
+        - Depending on whether MPI is CUDA-aware, the send- and recv-buffer are allocated on device or host memory.
+        - The temp-buffer is always allocated on device memory and can be used as the input for the FFT in x-direction.
+      -# Send Method: \a MPI_Types:
+        - Same as above, only that an additional recv-buffer can be omitted if MPI is CUDA-aware.
     - Required cudaMemcpy operations for each send/recv/local transpose:
-        -# First redistribution:
-            - send: 1D memcpy (only if MPI is not CUDA-aware)
-            - recv: 2D (or 3D) memcpy
-        -# Second redistribution:
-            - send: 1D memcpy (only if MPI is not CUDA-aware)
-            - recv: 2D (or 3D) memcpy
-    - For the three different 1D-FFT's, we use the following cuFFT plans (with cufftMakePlanMay64)
-        -# z-direction: A single plan with:
-            - istride = 1, idist = Nz
-            - ostride = input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i], odist = 1
-            - batch = input_dim.size_x[pidx_i] * input_dim.size_y[pidx_j]
-        -# y-direction: A single plan with:
-            - istride = 1, idist = Ny
-            - ostride = transposed_dim.size_z[pidx_j]*transposed_dim.size_x[pidx_i], odist = 1
-            - batch = transposed_dim.size_z[pidx_j]*transposed_dim.size_x[pidx_i]
-        -# x-direction: A single plan with:
-            - istride = 1, idist = Nx
-            - ostride = output_dim.size_z[pidx_j]*output_dim.size_y[pidx_i], odist = 1
-            - batch = output_dim.size_z[pidx_j]*output_dim.size_y[pidx_i]
+      -# Send Method: \a Sync or \a Streams:
+        - send: 1D memcpy (only if MPI is not CUDA-aware)
+        - recv: 2D (or 3D) memcpy
+      -# Send Method: \a MPI_Types:
+        - send & recv: 1D memcpy (only if MPI is not CUDA-aware)
+        - Beware: CUDA-aware MPI + \a MPI_Types might result in an enormous performance loss
+    - For the two different FFT's, we use the following cuFFT plans (with cufftMakePlanMay64):
+      -# zy-direction: 
+        - istride = 1, inembed[1] = Nz, idist = Nz*Ny
+        - ostride = input_sizes_x[pidx], onembed[1] = Nz/2+1, odist = 1
+        - batch = input_sizes_x[pidx]
+      -# x-direction:
+        - istride = 1, idist = Nx
+        - ostride = (Nz/2+1)*output_sizes_y[pidx], odist = 1
+        - batch = (Nz/2+1)*output_sizes_y[pidx]
+    \section Communication_Methods
+    There are two available communication methods:
+      -# Peer2Peer MPI Communication:
+      Here, the MPI procedures \a MPI_Isend and \a MPI_Irecv are used for non-blocking communication between the different ranks. As can be seen in \ref Visualization, each rank has to receive
+      a non-continuous region (highlighted in red) to rank 2. Therefore, the receiving procedure has to perform a cudaMemcpy2D before it can start computing the FFT in x-direction.
+      To interleave cudaMemcpy2D with MPI_Irecv, there are two available options:
+        -# \a Sync (default): Receive the data via MPI_Waitany and perform a 2D memcpy thereafter. 
+        -# (\a Streams): Same as Sync, except that for non CUDA-aware MPI the copy is copied in small batches to the send buffer. 
+        -# \a MPI_Type: Here, we avoid the 2D memcpy altogether and use MPI_Type_vector to receive a non-continuous data region.
+      -# All2All MPI Communication:
+      Here, the MPI procedures \a MPI_Alltoallv (for \a Sync) and \a MPI_Alltoallw (for \a MPI_Type) are used for global communication between all ranks. As above, there are multiple options to
+      prepare the sending procedure:
+        -# \a Sync (default): Copy the non-continuous regions in a seperated recv-buffer. After \a MPI_Alltoallv is complete, the data is copied to the temp-buffer in batches (each time with cudaMemcpy2D)
+        -# \a MPI_Type: Again, MPI_Type_vector can be used to avoid the 2D memcpy altogether.        
 */
 template<typename T> class MPIcuFFT_Slab_Opt1 : public MPIcuFFT_Slab<T> {
 public: 

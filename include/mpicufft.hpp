@@ -13,7 +13,7 @@
 This library implements different methods for distributed FFT computation on heterogeneous GPU Systems. \n
 In general, we assume that the input data is aligned as [z][y][x] (such that the data is continuous in z-direction). The various implementations can be grouped into:
 
-- \subpage MPIcuFFT_Slab \n
+- \subpage Slab_Decomposition \n
     Here the global input data \f$N_x \times N_y \times N_z\f$ is split in x-direction. Therefore, we assume that each process starts with 
     input data of size \f$\frac{N_x}{P} \times N_y \times N_z\f$. \n
     The default procedure for slab decomposition is the following:

@@ -114,9 +114,9 @@ ReferenceParams parseParams(int argc, char *argv[]) {
       params.iterations = 1;
    params.warmup_rounds = StringToInt(getValueOfParam(argc, argv, "--warmup-rounds", "-w"));
    params.iterations += params.warmup_rounds;
-   params.cuda_aware = checkFlag(argc, argv, "--cuda-aware", "-c");
+   params.cuda_aware = checkFlag(argc, argv, "--cuda_aware", "-c");
    params.double_prec = checkFlag(argc, argv, "--double_prec", "-d");
-   params.benchmark_dir = getValueOfParam(argc, argv, "--benchmark-dir", "-b");
+   params.benchmark_dir = getValueOfParam(argc, argv, "--benchmark_dir", "-b");
    if (params.benchmark_dir.compare("") == 0)
       params.benchmark_dir = "../benchmarks";
 

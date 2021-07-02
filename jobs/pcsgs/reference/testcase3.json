@@ -1,0 +1,44 @@
+{
+    "size": [32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512],
+    "additional-flags": "--hostfile ../hostfile --map-by node",
+    "global_test_settings": {
+        "--testcase": 3,
+        "--warmup-rounds": 10,
+        "--iterations": 100,
+        "-p": 4,
+        "--benchmark_dir": "../benchmarks_pcsgs",
+        "--double_prec": true
+    },
+    "tests": [
+        {
+            "name": "Reference",
+            "--opt": 0,
+            "--cuda_aware": false
+        },
+        {
+            "name": "Reference",
+            "--opt": 1,
+            "--cuda_aware": false
+        },
+        {
+            "name": "Reference",
+            "--opt": 2,
+            "--cuda_aware": true
+        },
+        {
+            "name": "Reference",
+            "--opt": 0,
+            "--cuda_aware": true
+        },
+        {
+            "name": "Reference",
+            "--opt": 1,
+            "--cuda_aware": true
+        },
+        {
+            "name": "Reference",
+            "--opt": 2,
+            "--cuda_aware": true
+        }
+    ]
+}

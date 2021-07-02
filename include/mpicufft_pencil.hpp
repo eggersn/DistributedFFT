@@ -17,7 +17,7 @@
 
 /** \class MPIcuFFT_Pencil 
     \section Visualisation
-    \image html graphics/Pencil_Default.png
+    \image html graphics/Pencil.png
     The above example illustrates the procedure for P1 = P2 = 3. The pencil highlighted in green is (0, 2), i.e., \a pidx_i = 0 and \a pidx_j = 2.
     \section Details
     There are a few technical details to consider when using this option:
@@ -164,20 +164,20 @@ protected:
     using MPIcuFFT<T>::initialized;
     using MPIcuFFT<T>::fft3d;
 
-    GlobalSize *global_size; //! Specifies Nx, Ny and Nz as the global input dimensions
-    Partition *partition; //! Specifies P1 and P2
+    GlobalSize *global_size;
+    Partition *partition;
 
-    size_t pidx_i; //! Index of node in P1-direction
-    size_t pidx_j; //! Index of node in P2-direction
+    size_t pidx_i;
+    size_t pidx_j;
 
-    size_t ws_c2c_0; //! Workspace of a single batched 1D FFT in y-direction.
-    size_t num_of_streams; //! Number of batched 1D FFT's in y-direction (see \ref Details)
+    size_t ws_c2c_0; 
+    size_t num_of_streams;
 
-    std::vector<cudaStream_t> streams; //! For each batched 1D FFT in y-direction, we use a stream. The streams are reused for the sending procedures.
+    std::vector<cudaStream_t> streams;
 
-    cufftHandle planR2C; //! cuFFT plan for the 1D FFT in z-direction
-    std::vector<cufftHandle> planC2C_0; //! cuFFT plans for the 1D FFT in y-direction (planC2C_0.size() == num_of_streams)
-    cufftHandle planC2C_1; //! cuFFT plan for the 1D FFT in x-direction
+    cufftHandle planR2C; 
+    std::vector<cufftHandle> planC2C_0;
+    cufftHandle planC2C_1; 
 
     std::vector<MPI_Request> send_req;
     std::vector<MPI_Request> recv_req;
@@ -186,7 +186,7 @@ protected:
     Partition_Dimensions transposed_dim;
     Partition_Dimensions output_dim;
 
-    Timer *timer; //! Used for the benchmarks
+    Timer *timer;
 
     std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "First Transpose (First Send)", "First Transpose (Packing)", "First Transpose (Start Local Transpose)", 
         "First Transpose (Start Receive)", "First Transpose (Finished Receive)", "1D FFT Y-Direction", "Second Transpose (Preparation)",

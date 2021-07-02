@@ -74,7 +74,6 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
     long long onembed[2] = {1, static_cast<long long>(output_size_z)};
     
     // For the forward FFT, where we can use the default data layout (thus the NULL pointer, see cuFFT doc for more details)
-    // Execution order: (1) -> (3)
     CUFFT_CALL(cufftMakePlanMany64(planR2C, 2, &n[1], inembed, 1, input_size_z*input_size_y, 
         onembed, input_sizes_x[pidx], 1, cuFFT<T>::R2Ctype, batch, &ws_r2c));
     // Here, the offset of two subsequent elements (x-axis) have an offset of output_sizes_y[pidx]*output_size_z.
