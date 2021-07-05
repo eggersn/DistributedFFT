@@ -191,6 +191,9 @@ int Tests_Slab_Random_Z_Then_YX<T>::coordinate(const int world_size, const int r
         CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     }
 
+    MPI_Comm temp;
+    MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, 0, &temp);
+
     for (int i = 0; i < runs; i++) {
         send_req.resize(world_size, MPI_REQUEST_NULL);
         recv_req.resize(world_size, MPI_REQUEST_NULL);

@@ -40,6 +40,21 @@ protected:
     static void CUDART_CB MPIsend_Callback(void *data);
     void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
+    //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Communication(void *complex_);
+    //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Streams(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Communication(void *complex_);
+    //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Sync(void *complex_);
+    //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_MPIType(void *complex_);
+
     using MPIcuFFT<T>::config;
     using MPIcuFFT<T>::comm;
 
@@ -85,6 +100,21 @@ protected:
       Timer *timer;
 
     std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "Transpose (First Send)", "Transpose (Packing)", 
-        "Transpose (Start Local Transpose)",  "Transpose (Start Receive)", "Transpose (Finished Receive)", 
+        "Transpose (Start Local Transpose)",  "Transpose (Start Receive)", "Transpose (Finished Receive)", "Transpose (Start All2All)", "Transpose (Finished All2All)",
         "2D FFT Y-X-Direction", "Run complete"};
+
+    // For Peer2Peer Streams
+    std::thread mpisend_thread;
+    Callback_Params_Base base_params;
+    std::vector<Callback_Params> params_array;
+
+    // For MPI_Type send method
+    std::vector<MPI_Datatype> MPI_PENCILS;
+    std::vector<MPI_Datatype> MPI_RECV;
+
+    // For All2All Communication
+    std::vector<int> sendcounts;
+    std::vector<int> sdispls;
+    std::vector<int> recvcounts;
+    std::vector<int> rdispls;
 };
