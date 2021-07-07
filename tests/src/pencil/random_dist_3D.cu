@@ -223,6 +223,9 @@ int Tests_Pencil_Random_3D<T>::coordinate(const int world_size, const int runs) 
         CUDA_CALL(cudaMallocHost((void **)&recv_ptr, Nx*Ny*(Nz/2+1)*sizeof(C_t)));
     }
 
+    MPI_Comm temp;
+    MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, 0, &temp);
+
     for (int i = 0; i < runs; i++) {
         //random initialization of full Nx*Ny*Nz array
         this->initializeRandArray(in_d, Nx, Ny);

@@ -133,18 +133,46 @@ protected:
         this->MPIsend_Thread_SecondCallback(*params, ptr);
     }
 
-    //! \brief Computes the global rank of the sending and receiving ranks relevant for the first global redistribution
-    void commOrder_FirstTranspose();
-    //! \brief Computes the global rank of the sending and receiving ranks relevant for the second global redistribution
-    void commOrder_SecondTranspose();
+    //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Communication_FirstTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Communication_FirstTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Sync_FirstTranspose(void *complex_);
+    //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_MPIType_FirstTranspose(void *complex_);
+
+    //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Communication_SecondTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Sync_SecondTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Streams_SecondTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_MPIType_SecondTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Communication_SecondTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Sync_SecondTranspose(void *complex_);
+    //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_MPIType_SecondTranspose(void *complex_);
 
     using MPIcuFFT<T>::config;
     using MPIcuFFT<T>::comm;
+    MPI_Comm comm1;
+    MPI_Comm comm2;
 
     using MPIcuFFT<T>::pidx;
     using MPIcuFFT<T>::pcnt;
 
-    using MPIcuFFT<T>::comm_order;
+    std::vector<int> comm_order1;
+    std::vector<int> comm_order2;
 
     using MPIcuFFT<T>::domainsize;
     using MPIcuFFT<T>::fft_worksize;
@@ -186,9 +214,35 @@ protected:
     Partition_Dimensions transposed_dim;
     Partition_Dimensions output_dim;
 
+    // For Peer2Peer Streams
+    std::thread mpisend_thread1;
+    std::thread mpisend_thread2;
+    Callback_Params_Base base_params;
+    std::vector<Callback_Params> params_array1;
+    std::vector<Callback_Params> params_array2;
+
+    // For MPI_Type
+    std::vector<MPI_Datatype> MPI_SND1;
+    std::vector<MPI_Datatype> MPI_RECV1;
+    std::vector<MPI_Datatype> MPI_SND2;
+    std::vector<MPI_Datatype> MPI_RECV2;
+
+    // For All2All Communication
+    std::vector<int> sendcounts1;
+    std::vector<int> sdispls1;
+    std::vector<int> recvcounts1;
+    std::vector<int> rdispls1;
+
+    std::vector<int> sendcounts2;
+    std::vector<int> sdispls2;
+    std::vector<int> recvcounts2;
+    std::vector<int> rdispls2;
+
     Timer *timer;
 
-    std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "First Transpose (First Send)", "First Transpose (Packing)", "First Transpose (Start Local Transpose)", 
-        "First Transpose (Start Receive)", "First Transpose (Finished Receive)", "1D FFT Y-Direction", "Second Transpose (Preparation)",
-        "Second Transpose (First Send)", "Second Transpose (Packing)", "Second Transpose (Start Local Transpose)", "Second Transpose (Start Receive)", "Second Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
+    std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "First Transpose (First Send)", "First Transpose (Packing)", 
+        "First Transpose (Start Local Transpose)",  "First Transpose (Start Receive)", "First Transpose (Finished Receive)", "Transpose (Start All2All)", 
+        "Transpose (Finished All2All)", "1D FFT Y-Direction", 
+        "Second Transpose (Preparation)", "Second Transpose (First Send)", "Second Transpose (Packing)", "Second Transpose (Start Local Transpose)", 
+        "Second Transpose (Start Receive)", "Second Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
 };

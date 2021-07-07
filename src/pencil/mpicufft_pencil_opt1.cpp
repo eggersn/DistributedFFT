@@ -101,6 +101,23 @@ void MPIcuFFT_Pencil_Opt1<T>::initFFT(GlobalSize *global_size_, Partition *parti
         streams.push_back(stream);
     }
 
+    // Create MPI_comms for first and second transpose
+    MPI_Comm_split(comm, pidx_i, pidx_j, &comm1);
+    MPI_Comm_split(comm, pidx_j, pidx_i, &comm2);
+
+    // Set comm_order for first and second transpose
+    comm_order1.clear();
+    for (int j = 1; j < partition->P2; j++)
+        comm_order1.push_back((pidx_j+j)%partition->P2);
+
+    comm_order2.clear();
+    for (int i = 1; i < partition->P1; i++)
+        comm_order2.push_back((pidx_i+i)%partition->P1);
+
+    // send and recv requests
+    send_req.resize(std::max(partition->P1, partition->P2), MPI_REQUEST_NULL);
+    recv_req.resize(std::max(partition->P1, partition->P2), MPI_REQUEST_NULL);
+
     // Make FFT plan
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
@@ -181,6 +198,19 @@ void MPIcuFFT_Pencil_Opt1<T>::initFFT(GlobalSize *global_size_, Partition *parti
 
     if (allocate)
         this->setWorkArea();
+
+    if (!cuda_aware) {
+        for (int i = 0; i < comm_order1.size(); i++){
+            size_t p_j = comm_order1[i];
+            Callback_Params params = {&base_params, p_j};
+            params_array1.push_back(params);
+        }
+        for (int i = 0; i < partition->P1; i++){
+            size_t p_i = comm_order2[i];
+            Callback_Params params = {&base_params, p_i};
+            params_array2.push_back(params);
+        }
+    }
 
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("init");
@@ -286,28 +316,6 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
         *                                                       First Global Transpose
         *  *********************************************************************************************************************** */
 
-        // In the first global transpose, batches of P2 processes each communicate with each other
-        if (!send_req.empty() || !recv_req.empty()){
-            send_req.assign(std::min(send_req.size(), partition->P2), MPI_REQUEST_NULL);
-            recv_req.assign(std::min(recv_req.size(), partition->P2), MPI_REQUEST_NULL);
-        }
-        send_req.resize(partition->P2, MPI_REQUEST_NULL);
-        recv_req.resize(partition->P2, MPI_REQUEST_NULL);
-
-        // Determine comm_order of first transpose
-        this->commOrder_FirstTranspose();
-
-        Callback_Params_Base base_params;
-        std::vector<Callback_Params> params_array;
-
-        if (!cuda_aware) {
-            for (int i = 0; i < comm_order.size(); i++){
-                size_t p_j = comm_order[i] % partition->P2;
-                Callback_Params params = {&base_params, p_j};
-                params_array.push_back(params);
-            }
-        }
-
         // Synchronize first 1D FFT (z-direction)
         CUDA_CALL(cudaDeviceSynchronize());
 
@@ -316,13 +324,13 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
         if (!cuda_aware)
             mpisend_thread1 = std::thread(&MPIcuFFT_Pencil_Opt1<T>::MPIsend_Thread_FirstCallback, this, std::ref(base_params), send_ptr);
 
-        for (size_t i = 0; i < comm_order.size(); i++){
-            size_t p_j = comm_order[i] % partition->P2;
+        for (size_t i = 0; i < comm_order1.size(); i++){
+            size_t p_j = comm_order1[i];
 
             // Start non-blocking MPI recv
             MPI_Irecv(&recv_ptr[transposed_dim.size_x[pidx_i]*input_dim.start_y[p_j]*transposed_dim.size_z[pidx_j]],
                 sizeof(C_t)*transposed_dim.size_x[pidx_i]*input_dim.size_y[p_j]*transposed_dim.size_z[pidx_j], MPI_BYTE,
-                comm_order[i], p_j, comm, &recv_req[p_j]);
+                p_j, p_j, comm1, &recv_req[p_j]);
 
             size_t oslice = transposed_dim.start_z[p_j]*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i];
             if (!cuda_aware) {
@@ -333,14 +341,14 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
                     cudaMemcpyDeviceToHost, streams[p_j]));
 
                 // After copy is complete, MPI starts a non-blocking send operation
-                CUDA_CALL(cudaLaunchHostFunc(streams[p_j], this->MPIsend_Callback, (void *)&params_array[i]));
+                CUDA_CALL(cudaLaunchHostFunc(streams[p_j], this->MPIsend_Callback, (void *)&params_array1[i]));
             } else {
                 if (i == 0)
                     timer->stop_store("First Transpose (First Send)");
 
                 MPI_Isend(&complex[oslice], 
                     sizeof(C_t)*transposed_dim.size_z[p_j]*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i], MPI_BYTE,
-                    comm_order[i], pidx_j, comm, &send_req[p_j]);
+                    p_j, pidx_j, comm1, &send_req[p_j]);
             }            
         }
 
@@ -415,18 +423,6 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
 
         /*** Hide preparation-phase by synchronizing later ***/
 
-        // Determine comm_order of second transpose
-        this->commOrder_SecondTranspose();
-
-        if (!cuda_aware) {
-            params_array.clear();
-            for (int i = 0; i < pcnt; i++){
-                size_t p_i = (comm_order[i] - pidx_j) / partition->P2;
-                Callback_Params params = {&base_params, p_i};
-                params_array.push_back(params);
-            }
-        }
-
         // Synchronization and barrier of second 1D-FFT
         if (!cuda_aware) {
             mpisend_thread1.join();
@@ -434,26 +430,18 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
         }
         CUDA_CALL(cudaDeviceSynchronize());
 
-        // In the second global transpose, batches of P1 processes each communicate with each other
-        if (!send_req.empty() || !recv_req.empty()){
-            send_req.assign(std::min(send_req.size(), partition->P1), MPI_REQUEST_NULL);
-            recv_req.assign(std::min(recv_req.size(), partition->P1), MPI_REQUEST_NULL);
-        }
-        send_req.resize(partition->P1, MPI_REQUEST_NULL);
-        recv_req.resize(partition->P1, MPI_REQUEST_NULL);
-
         std::thread mpisend_thread2;
         if (!cuda_aware)
             mpisend_thread2 = std::thread(&MPIcuFFT_Pencil_Opt1<T>::MPIsend_Thread_SecondCallback, this, std::ref(base_params), send_ptr);
         timer->stop_store("Second Transpose (Preparation)");
 
-        for (size_t i = 0; i < comm_order.size(); i++){
-            size_t p_i = (comm_order[i] - pidx_j) / partition->P2;
+        for (size_t i = 0; i < comm_order2.size(); i++){
+            size_t p_i = comm_order2[i];
 
             // Start non-blocking MPI recv
             MPI_Irecv(&recv_ptr[transposed_dim.start_x[p_i]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]], 
                 sizeof(C_t)*transposed_dim.size_x[p_i]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], MPI_BYTE,
-                comm_order[i], p_i, comm, &recv_req[p_i]);
+                p_i, p_i, comm2, &recv_req[p_i]);
 
             size_t oslice = transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*output_dim.start_y[p_i];
             if (!cuda_aware) {
@@ -462,13 +450,13 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
                     cudaMemcpyDeviceToHost, streams[p_i]));
 
                 // After copy is complete, MPI starts a non-blocking send operation
-                CUDA_CALL(cudaLaunchHostFunc(streams[p_i], this->MPIsend_Callback, (void *)&params_array[i]));
+                CUDA_CALL(cudaLaunchHostFunc(streams[p_i], this->MPIsend_Callback, (void *)&params_array2[i]));
             } else {
                 if (i == 0)
                     timer->stop_store("Second Transpose (First Send)");
 
                 MPI_Isend(&complex[oslice], sizeof(C_t)*transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*output_dim.size_y[p_i],
-                    MPI_BYTE, comm_order[i], pidx_i, comm, &send_req[p_i]);
+                    MPI_BYTE, p_i, pidx_i, comm2, &send_req[p_i]);
             }
         }
         

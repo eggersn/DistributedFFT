@@ -39,11 +39,14 @@ protected:
 
     using MPIcuFFT_Pencil<T>::config;
     using MPIcuFFT_Pencil<T>::comm;
+    using MPIcuFFT_Pencil<T>::comm1;
+    using MPIcuFFT_Pencil<T>::comm2;
 
     using MPIcuFFT_Pencil<T>::pidx;
     using MPIcuFFT_Pencil<T>::pcnt;
 
-    using MPIcuFFT_Pencil<T>::comm_order;
+    using MPIcuFFT_Pencil<T>::comm_order1;
+    using MPIcuFFT_Pencil<T>::comm_order2;
 
     using MPIcuFFT_Pencil<T>::domainsize;
     using MPIcuFFT_Pencil<T>::fft_worksize;
@@ -81,6 +84,10 @@ protected:
     using MPIcuFFT_Pencil<T>::input_dim;
     using MPIcuFFT_Pencil<T>::transposed_dim;
     using MPIcuFFT_Pencil<T>::output_dim;
+
+    Callback_Params_Base base_params;
+    std::vector<Callback_Params> params_array1;
+    std::vector<Callback_Params> params_array2;
 
     using MPIcuFFT_Pencil<T>::timer;
 

@@ -71,4 +71,6 @@ struct Configurations {
     CommunicationMethod comm_method;
     SendMethod send_method;
     std::string benchmark_dir;
+    CommunicationMethod comm_method2;
+    SendMethod send_method2;
 };

@@ -15,11 +15,13 @@ void printHelp() {
    printf(" --partition1 [-p1]: \tSpecifies the number of partitions in x-direction.\n");
    printf(" --partition2 [-p2]: \tSpecifies the number of partitions in y-direction.\n");
    printf("Options (optional):\n");
-   printf(" --comm-method [-comm]: Specifies whether to use \"Peer2Peer\" or \"All2All\" MPI communication.\n");
-   printf(" --send-method [-snd]: \tThere are 3 available selections:\n");
+   printf(" --comm-method1 [-comm1]: Specifies whether to use \"Peer2Peer\" or \"All2All\" MPI communication.\n");
+   printf(" --send-method1 [-snd1]: There are 3 available selections:\n");
    printf("\t1. Sync: \tThis is the default option. Here, we use cudaDeviceSync before calling MPI_Isend for each receiving rank.\n");
    printf("\t2. Streams: \tUses cudaStreams for cudaMemcpyAsync along with cudaCallHostFunc to notify a second thread to call MPI_Isend. This option requires MPI_THREAD_MULTIPLE.\n");
    printf("\t3. MPI_Type: \tUses MPI_Datatype to avoid using cudaMemcpy2D. If MPI is not CUDA-aware, the sender still has to perform a cudaMemcpy1D (D->H).\n");
+   printf(" --comm-method2 [-comm2]: Same as --comm-method1 for the second global redistribution.\n");
+   printf(" --send-method2 [-snd2]: Same as --send-method1 for the second global redistribution.\n");
    printf(" --testcase [-t]: \tSpecifies which test should be executed.\n");
    printf("   Available selections are:\n");
    printf("\t--testcase 0:\tEach rank generates a random input of size (Nx/P1) x (Ny/P1) x Nz. Here, P1*P2 = P must hold.\n");
@@ -38,7 +40,7 @@ void printHelp() {
    printf("Example: \n");
    printf("\"mpirun -n 4 pencil -nx 256 -ny 256 -nz 256 -p1 2 -p2 2 -snd Streams -o 1 -i 10 -c -b ../new_benchmarks\"\n");
    printf("Here, four MPI processes are started which execute the default testcase using option 1. Each rank start with input size 128x128x256. A sending rank uses the \"Streams\" method.");
-   printf(" CUDA-aware MPI is enabled, the algorithm performs 10 iterations of the testcase, and the benchmark results are saved under ../new_benchmarks (relative to the build dir).");
+   printf(" CUDA-aware MPI is enabled, the algorithm performs 10 iterations of the testcase, and the benchmark results are saved under ../new_benchmarks (relative to the build dir).\n");
 }
 
 struct PencilParams {
@@ -52,11 +54,13 @@ struct PencilParams {
    bool cuda_aware;
    bool double_prec;
    std::string benchmark_dir;
-   CommunicationMethod comm_method;
-   SendMethod send_method;
+   CommunicationMethod comm_method1;
+   SendMethod send_method1;
+   CommunicationMethod comm_method2;
+   SendMethod send_method2;
 };
 
-std::string getValueOfParam(int argc, char *argv[], std::string longdesc, std::string shortdesc) {
+std::string getValueOfParam(int argc, char *argv[], const std::string &longdesc, const std::string &shortdesc) {
    for (int i = 0; i < argc; i++) {
       if (std::string(argv[i]).compare(longdesc) == 0 || std::string(argv[i]).compare(shortdesc) == 0)
          return std::string(argv[i+1]);
@@ -64,7 +68,7 @@ std::string getValueOfParam(int argc, char *argv[], std::string longdesc, std::s
    return "";
 }
 
-bool checkFlag(int argc, char *argv[], std::string longdesc, std::string shortdesc) {
+bool checkFlag(int argc, char *argv[], const std::string &longdesc, const std::string &shortdesc) {
    for (int i = 0; i < argc; i++) {
       if (std::string(argv[i]).compare(longdesc) == 0 || std::string(argv[i]).compare(shortdesc) == 0)
          return true;
@@ -72,7 +76,7 @@ bool checkFlag(int argc, char *argv[], std::string longdesc, std::string shortde
    return false;
 }
 
-size_t StringToSize_t(std::string str, bool req=false, std::string error="") {
+size_t StringToSize_t(const std::string &str, bool req=false, const std::string &error="") {
    if (str.compare("") == 0) {
       if (req)
          throw std::runtime_error(error);
@@ -86,7 +90,7 @@ size_t StringToSize_t(std::string str, bool req=false, std::string error="") {
    return val;
 }
 
-int StringToInt(std::string str, bool req=false, std::string error="") {
+int StringToInt(const std::string &str, bool req=false, const std::string &error="") {
    if (str.compare("") == 0) {
       if (req)
          throw std::runtime_error(error);
@@ -99,6 +103,26 @@ int StringToInt(std::string str, bool req=false, std::string error="") {
    sstream >> val;
    return val;
 } 
+
+CommunicationMethod parseCommMethod(const std::string &comm_method_str) {
+   if (comm_method_str.compare("Peer2Peer") == 0 || comm_method_str.compare("") == 0)
+      return Peer2Peer;
+   else if (comm_method_str.compare("All2All") == 0)
+      return All2All;
+   else 
+      throw std::runtime_error("Invalid communication method.");
+}
+
+SendMethod parseSendMethod(const std::string &send_method_str) {
+   if (send_method_str.compare("Sync") == 0 || send_method_str.compare("") == 0)
+      return Sync;
+   else if (send_method_str.compare("Streams") == 0)
+      return Streams;
+   else if (send_method_str.compare("MPI_Type") == 0)
+      return MPI_Type;
+   else 
+      throw std::runtime_error("Invalid send method.");
+}
 
 PencilParams parseParams(int argc, char *argv[]) {
    PencilParams params;
@@ -126,23 +150,15 @@ PencilParams parseParams(int argc, char *argv[]) {
    if (params.benchmark_dir.compare("") == 0)
       params.benchmark_dir = "../benchmarks";
 
-   std::string comm_method_str = getValueOfParam(argc, argv, "--comm-method", "-comm");
-   if (comm_method_str.compare("Peer2Peer"))
-      params.comm_method = Peer2Peer;
-   else if (comm_method_str.compare("All2All"))
-      params.comm_method = All2All;
-   else 
-      throw std::runtime_error("Invalid communication method.");
+   std::string comm_method_str = getValueOfParam(argc, argv, "--comm-method1", "-comm1");
+   params.comm_method1 = parseCommMethod(comm_method_str);
+   comm_method_str = getValueOfParam(argc, argv, "--comm-method2", "-comm2");
+   params.comm_method2 = parseCommMethod(comm_method_str);
 
-   std::string send_method_str = getValueOfParam(argc, argv, "--send-method", "-snd");
-   if (send_method_str.compare("Sync"))
-      params.send_method = Sync;
-   else if (send_method_str.compare("Streams"))
-      params.send_method = Streams;
-   else if (send_method_str.compare("MPI_Type"))
-      params.send_method = MPI_Type;
-   else 
-      throw std::runtime_error("Invalid send method.");
+   std::string send_method_str = getValueOfParam(argc, argv, "--send-method1", "-snd1");
+   params.send_method1 = parseSendMethod(send_method_str);
+   send_method_str = getValueOfParam(argc, argv, "--send-method2", "-snd2");
+   params.send_method2 = parseSendMethod(send_method_str);
 
    // Check selected testcase and option
    params.testcase = StringToInt(getValueOfParam(argc, argv, "--testcase", "-t"));
@@ -165,7 +181,7 @@ int main(int argc, char *argv[])
       PencilParams params = parseParams(argc, argv);
       params.cuda_aware = params.cuda_aware * MPIX_Query_cuda_support();
 
-      Configurations config = {params.cuda_aware, params.warmup_rounds, params.comm_method, params.send_method, params.benchmark_dir};
+      Configurations config = {params.cuda_aware, params.warmup_rounds, params.comm_method1, params.send_method1, params.benchmark_dir, params.comm_method2, params.send_method2};
 
       if (params.double_prec) {
          Tests_Pencil_Random<double> *test;
