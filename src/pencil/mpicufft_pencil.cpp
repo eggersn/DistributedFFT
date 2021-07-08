@@ -48,7 +48,8 @@ void MPIcuFFT_Pencil<T>::initFFT(GlobalSize *global_size_, Partition *partition_
     partition = partition_;
     mkdir((config.benchmark_dir +  "/pencil").c_str(), 0777);
     std::stringstream ss;
-    ss << config.benchmark_dir <<  "/pencil/test_0_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+    ss << config.benchmark_dir <<  "/pencil/test_0_" << config.comm_method << "_" << config.send_method;
+    ss << "_" << config.comm_method2 << "_" << onfig.send_method2 << "_" << global_size->Nx;
     ss << "_" << cuda_aware << "_" << partition->P1 << "_" << partition->P2 << ".csv";
     std::string filename = ss.str();
     timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);
@@ -188,7 +189,19 @@ void MPIcuFFT_Pencil<T>::initFFT(GlobalSize *global_size_, Partition *partition_
     // 2. recv buffer (if cuda aware)
     // 3. send buffer (if cuda aware)
     // 4. actual workspace (slot 2 if not cuda aware)
-    worksize_d = fft_worksize + (fft3d ? 0 : (cuda_aware ? 3*domainsize : domainsize ));
+    worksize_d = fft_worksize;
+    if (!fft3d) {
+        if (cuda_aware) {
+            if (config.send_method == MPI_Type && config.send_method2 == MPI_Type)
+                worksize_d += domainsize; // temp_ptr
+            else if (config.send_method == MPI_Type)
+                worksize_d += 2*domainsize; // second send methods needs temp_ptr and send_ptr on device memory
+            else    
+                worksize_d += 3*domainsize; // first send method requires all temp_ptr, recv_ptr and send_ptr
+        } else {
+            worksize_d += domainsize; //temp_ptr
+        }
+    }
     // if not cuda aware, then recv and send buffer are on the host side
     worksize_h = (cuda_aware || fft3d ? 0 : 2*domainsize);
 
@@ -321,8 +334,9 @@ void MPIcuFFT_Pencil<T>::setWorkArea(void *device, void *host){
     }
 
     // mem_d stores pointer to all (above described) workspaces (temp, recv, send, actual)
+    size_t offset = cuda_aware ? (config.send_method == MPI_Type ? (config.send_method2 == MPI_Type ? 1 : 2) : 3) : 1;
     mem_d.clear();
-    for (size_t i = 0; i < 1 + (fft3d ? 0 : (cuda_aware ? 3 : 1)); i++)
+    for (size_t i = 0; i < 1 + (fft3d ? 0 : (offset)); i++)
         mem_d.push_back(&static_cast<char*>(workarea_d)[i*domainsize]);
     
     if (fft3d) {
@@ -330,7 +344,6 @@ void MPIcuFFT_Pencil<T>::setWorkArea(void *device, void *host){
     } else if (!fft3d) {
         // The second 1D FFT (y-direction) is split into multiple streams,
         // therefore each one has its own workspace
-        size_t offset = cuda_aware ? 3 : 1;
         for (size_t s = 1; s < num_of_streams; s++)
             mem_d.push_back(&static_cast<char*>(workarea_d)[offset*domainsize+s*ws_c2c_0]);
 
@@ -384,7 +397,6 @@ void MPIcuFFT_Pencil<T>::MPIsend_Callback(void *data) {
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_) {
-    printf("1. Peer2Peer Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -453,7 +465,6 @@ void MPIcuFFT_Pencil<T>::MPIsend_Thread_FirstCallback(Callback_Params_Base &base
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_) {
-    printf("1. Peer2Peer Streams\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -494,7 +505,6 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, void *
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_) {
-    printf("1. Peer2Peer MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -605,7 +615,6 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Communication_FirstTranspose(void *complex_) 
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::All2All_Sync_FirstTranspose(void *complex_) {
-    printf("1. All2All Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr, *send_ptr, *temp_ptr; 
@@ -678,7 +687,6 @@ void MPIcuFFT_Pencil<T>::All2All_Sync_FirstTranspose(void *complex_) {
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::All2All_MPIType_FirstTranspose(void *complex_) {
-    printf("1. All2All MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr, *send_ptr, *temp_ptr;
@@ -728,14 +736,13 @@ void MPIcuFFT_Pencil<T>::All2All_Communication_FirstTranspose(void *complex_) {
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::Peer2Peer_Sync_SecondTranspose(void *complex_, void *recv_ptr_) {
-    printf("2. Peer2Peer Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
 
     C_t *send_ptr;
     if (cuda_aware)
-        send_ptr = cuFFT<T>::complex(mem_d[2]);
+        send_ptr = cuFFT<T>::complex(mem_d[1]);
     else 
         send_ptr = cuFFT<T>::complex(mem_h[1]);
 
@@ -795,14 +802,13 @@ void MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback(Callback_Params_Base &bas
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, void *recv_ptr_) {
-    printf("2. Peer2Peer Streams\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
 
     C_t *send_ptr;
     if (cuda_aware)
-        send_ptr = cuFFT<T>::complex(mem_d[2]);
+        send_ptr = cuFFT<T>::complex(mem_d[1]);
     else 
         send_ptr = cuFFT<T>::complex(mem_h[1]);
 
@@ -829,7 +835,6 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, void 
 
         CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_i]));
         // After copy is complete, MPI starts a non-blocking send operation
-        // printf("DEBUG(%p): p=%d\n", &base_params.mutex, params_array[i].p);
         CUDA_CALL(cudaLaunchHostFunc(streams[p_i], this->MPIsend_Callback, (void *)&params_array2[i]));
     }
     mpisend_thread2 = std::thread(&MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback, this, std::ref(base_params), send_ptr);
@@ -837,7 +842,6 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, void 
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::Peer2Peer_MPIType_SecondTranspose(void *complex_, void *recv_ptr_) {
-    printf("2. Peer2Peer MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -871,7 +875,7 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Communication_SecondTranspose(void *complex_)
     C_t *recv_ptr, *temp_ptr;
     temp_ptr = cuFFT<T>::complex(mem_d[0]);
     if (cuda_aware)
-        recv_ptr = cuFFT<T>::complex(mem_d[1]);
+        recv_ptr = temp_ptr;
     else 
         recv_ptr = cuFFT<T>::complex(mem_h[0]);
 
@@ -883,7 +887,6 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Communication_SecondTranspose(void *complex_)
         this->Peer2Peer_MPIType_SecondTranspose(complex_, (void *)recv_ptr);
 
     timer->stop_store("Second Transpose (Start Local Transpose)");
-    C_t *temp1_ptr = cuda_aware ? recv_ptr : temp_ptr;
     // Transpose local block and copy it to the recv buffer
     // Here, we use the recv buffer instead of the temp buffer, as the received data is already correctly aligned
     {
@@ -891,7 +894,7 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Communication_SecondTranspose(void *complex_)
         cpy_params.srcPos = make_cudaPos(0, output_dim.start_y[pidx_i], 0);
         cpy_params.srcPtr = make_cudaPitchedPtr(complex, sizeof(C_t)*transposed_dim.size_z[pidx_j], transposed_dim.size_z[pidx_j], transposed_dim.size_y[0]);
         cpy_params.dstPos = make_cudaPos(0, 0, transposed_dim.start_x[pidx_i]);
-        cpy_params.dstPtr = make_cudaPitchedPtr(temp1_ptr, sizeof(C_t)*output_dim.size_z[pidx_j], output_dim.size_z[pidx_j], output_dim.size_y[pidx_i]);
+        cpy_params.dstPtr = make_cudaPitchedPtr(temp_ptr, sizeof(C_t)*output_dim.size_z[pidx_j], output_dim.size_z[pidx_j], output_dim.size_y[pidx_i]);
         cpy_params.extent = make_cudaExtent(sizeof(C_t)*transposed_dim.size_z[pidx_j], output_dim.size_y[pidx_i], transposed_dim.size_x[pidx_i]);
         cpy_params.kind   = cudaMemcpyDeviceToDevice;
 
@@ -912,7 +915,7 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Communication_SecondTranspose(void *complex_)
                 break;
             
             // At this point, we received data of one of the P1-1 other relevant processes
-            CUDA_CALL(cudaMemcpyAsync(&temp1_ptr[transposed_dim.start_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]],
+            CUDA_CALL(cudaMemcpyAsync(&temp_ptr[transposed_dim.start_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]],
                 &recv_ptr[transposed_dim.start_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]], 
                 sizeof(C_t)*transposed_dim.size_x[p]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], cudaMemcpyHostToDevice, 
                 streams[(pidx_i + partition->P1 - p) % partition->P1])); // TODO: check if this is the best stream for selection!
@@ -936,15 +939,14 @@ void MPIcuFFT_Pencil<T>::Peer2Peer_Communication_SecondTranspose(void *complex_)
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::All2All_Sync_SecondTranspose(void *complex_) {
-    printf("2. Peer2Peer Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
 
     C_t *recv_ptr, *send_ptr, *temp_ptr;
     temp_ptr = cuFFT<T>::complex(mem_d[0]);
     if (cuda_aware) {
-        recv_ptr = cuFFT<T>::complex(mem_d[1]);
-        send_ptr = cuFFT<T>::complex(mem_d[2]);
+        recv_ptr = temp_ptr;
+        send_ptr = cuFFT<T>::complex(mem_d[1]);
 
     } else {
         recv_ptr = cuFFT<T>::complex(mem_h[0]);
@@ -970,7 +972,6 @@ void MPIcuFFT_Pencil<T>::All2All_Sync_SecondTranspose(void *complex_) {
         CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_i]));
     }
 
-    C_t *temp1_ptr = cuda_aware ? recv_ptr : temp_ptr;
     // Transpose local block and copy it to the recv buffer
     // Here, we use the recv buffer instead of the temp buffer, as the received data is already correctly aligned
     {
@@ -978,7 +979,7 @@ void MPIcuFFT_Pencil<T>::All2All_Sync_SecondTranspose(void *complex_) {
         cpy_params.srcPos = make_cudaPos(0, output_dim.start_y[pidx_i], 0);
         cpy_params.srcPtr = make_cudaPitchedPtr(complex, sizeof(C_t)*transposed_dim.size_z[pidx_j], transposed_dim.size_z[pidx_j], transposed_dim.size_y[0]);
         cpy_params.dstPos = make_cudaPos(0, 0, transposed_dim.start_x[pidx_i]);
-        cpy_params.dstPtr = make_cudaPitchedPtr(temp1_ptr, sizeof(C_t)*output_dim.size_z[pidx_j], output_dim.size_z[pidx_j], output_dim.size_y[pidx_i]);
+        cpy_params.dstPtr = make_cudaPitchedPtr(temp_ptr, sizeof(C_t)*output_dim.size_z[pidx_j], output_dim.size_z[pidx_j], output_dim.size_y[pidx_i]);
         cpy_params.extent = make_cudaExtent(sizeof(C_t)*transposed_dim.size_z[pidx_j], output_dim.size_y[pidx_i], transposed_dim.size_x[pidx_i]);
         cpy_params.kind   = cudaMemcpyDeviceToDevice;
 
@@ -1012,13 +1013,12 @@ void MPIcuFFT_Pencil<T>::All2All_Sync_SecondTranspose(void *complex_) {
 
 template<typename T>
 void MPIcuFFT_Pencil<T>::All2All_MPIType_SecondTranspose(void *complex_) {
-    printf("2. Peer2Peer MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr, *send_ptr, *temp_ptr;
     temp_ptr = cuFFT<T>::complex(mem_d[0]);
     if (cuda_aware) {
-        recv_ptr = cuFFT<T>::complex(mem_d[1]);
+        recv_ptr = temp_ptr;
         send_ptr = complex;
     } else {
         recv_ptr = cuFFT<T>::complex(mem_h[0]);
@@ -1073,16 +1073,9 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
             return; 
         }
 
-        C_t *recv_ptr, *send_ptr, *temp_ptr; 
+        C_t *temp_ptr; 
   
         temp_ptr = cuFFT<T>::complex(mem_d[0]);
-        if (cuda_aware) {
-            recv_ptr = cuFFT<T>::complex(mem_d[1]);
-            send_ptr = cuFFT<T>::complex(mem_d[2]);
-        } else {
-            recv_ptr = cuFFT<T>::complex(mem_h[0]);
-            send_ptr = cuFFT<T>::complex(mem_h[1]);
-        }
 
         /* ***********************************************************************************************************************
         *                                                       First Global Transpose
@@ -1127,7 +1120,6 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
         *  *********************************************************************************************************************** */
 
         timer->stop_store("Second Transpose (Preparation)");
-        C_t *temp1_ptr = cuda_aware ? recv_ptr : temp_ptr;
 
         if (config.comm_method2 == Peer2Peer)
             this->Peer2Peer_Communication_SecondTranspose((void *) complex);
@@ -1135,7 +1127,7 @@ void MPIcuFFT_Pencil<T>::execR2C(void *out, const void *in, int d) {
             this->All2All_Communication_SecondTranspose((void *) complex);
 
         // Compute the 1D FFT in x-direction
-        CUFFT_CALL(cuFFT<T>::execC2C(planC2C_1, temp1_ptr, complex, CUFFT_FORWARD));
+        CUFFT_CALL(cuFFT<T>::execC2C(planC2C_1, temp_ptr, complex, CUFFT_FORWARD));
         CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("1D FFT X-Direction");
         if (config.comm_method2 == Peer2Peer) {

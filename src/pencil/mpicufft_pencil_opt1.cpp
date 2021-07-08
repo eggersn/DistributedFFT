@@ -52,7 +52,8 @@ void MPIcuFFT_Pencil_Opt1<T>::initFFT(GlobalSize *global_size_, Partition *parti
 
     mkdir((config.benchmark_dir +  "/pencil").c_str(), 0777);
     std::stringstream ss;
-    ss << config.benchmark_dir <<  "/pencil/test_1_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+    ss << config.benchmark_dir <<  "/pencil/test_1_" << config.comm_method << "_" << config.send_method;
+    ss << "_" << config.comm_method2 << "_" << onfig.send_method2 << "_" << global_size->Nx;
     ss << "_" << cuda_aware << "_" << partition->P1 << "_" << partition->P2 << ".csv";
     std::string filename = ss.str();
     timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);
@@ -192,7 +193,17 @@ void MPIcuFFT_Pencil_Opt1<T>::initFFT(GlobalSize *global_size_, Partition *parti
     // 2. recv buffer (if cuda aware)
     // 3. actual workspace (second slot if not cuda aware)
     // Note that we do not have to use a send buffer, if MPI is cuda_aware ~> reduced memory space when compared to the default variant
-    worksize_d = fft_worksize + (fft3d ? 0 : (cuda_aware ? 2*domainsize : domainsize ));
+    worksize_d = fft_worksize;
+    if (!fft3d) {
+        if (cuda_aware) {
+            if (config.send_method == MPI_Type && config.send_method2 == MPI_Type)
+                worksize_d += domainsize;
+            else 
+                worksize_d += 2*domainsize;
+        } else {
+            worksize_d += domainsize;
+        }
+    }
     // if not cuda aware, then recv and send buffer are on the host side
     worksize_h = (cuda_aware || fft3d ? 0 : 2*domainsize);
 
@@ -312,14 +323,14 @@ void MPIcuFFT_Pencil_Opt1<T>::setWorkArea(void *device, void *host){
     }
 
     // mem_d stores pointer to all (above described) workspaces (temp, recv, actual)
+    size_t offset = cuda_aware ? (config.send_method == MPI_Type && config.send_method2 == MPI_Type ? 1 : 2) : 1;
     mem_d.clear();
-    for (size_t i = 0; i < 1 + (fft3d ? 0 : (cuda_aware ? 2 : 1)); i++)
+    for (size_t i = 0; i < 1 + (fft3d ? 0 : (offset)); i++)
         mem_d.push_back(&static_cast<char*>(workarea_d)[i*domainsize]);
     
     if (fft3d) {
         CUFFT_CALL(cufftSetWorkArea(planR2C, mem_d[0]));
     } else if (!fft3d) {
-        size_t offset = cuda_aware ? 2 : 1;
 
         // Since each computation R2C, C2C_0 and C2C_1 is split by a global transpose,
         // the same workspace can be reused
@@ -361,7 +372,6 @@ void MPIcuFFT_Pencil_Opt1<T>::setWorkArea(void *device, void *host){
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_) {
-    printf("1. Peer2Peer Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -397,7 +407,6 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_FirstTranspose(void *complex_, void
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_) {
-    printf("1. Peer2Peer Streams\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -439,7 +448,6 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, v
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_) {
-    printf("1. Peer2Peer MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -568,7 +576,6 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_FirstTranspose(void* complex_) {
-    printf("1. All2All Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;
@@ -607,7 +614,6 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_FirstTranspose(void* complex_) {
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_FirstTranspose(void* complex_) {
-    printf("1. All2All MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;
@@ -651,7 +657,6 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Communication_FirstTranspose(void* complex
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_SecondTranspose(void *complex_, void* recv_ptr_) {
-    printf("2. Peer2Peer Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -686,8 +691,6 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_SecondTranspose(void *complex_, voi
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, void* recv_ptr_) {
-    printf("1. Peer2Peer Streams\n");
-
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -726,7 +729,6 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, 
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_SecondTranspose(void *complex_, void* recv_ptr_) {
-    printf("2. Peer2Peer MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -853,7 +855,6 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_) {
-    printf("2. All2All Sync\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;
@@ -893,7 +894,6 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_) {
 
 template<typename T>
 void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_SecondTranspose(void *complex_) {
-    printf("2. All2All MPI_Type\n");
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;

@@ -94,7 +94,7 @@ void MPIcuFFT_Slab_Z_Then_YX_Opt1<T>::initFFT(GlobalSize *global_size, bool allo
 
     // worksize_d is split into 3 parts:
     // 1. space for received data, 2. space for transmitted data, 3. actual workspace (see "mem_d")
-    worksize_d = fft_worksize + (fft3d ? 0 : 2*domainsize);
+    worksize_d = fft_worksize + (fft3d ? 0 : (config.send_method == MPI_Type || !cuda_aware ? domainsize : 2*domainsize));
     // analogously for the host worksize, if mpi is not cuda-aware
     worksize_h = (cuda_aware || fft3d ? 0 : 2*domainsize);
 

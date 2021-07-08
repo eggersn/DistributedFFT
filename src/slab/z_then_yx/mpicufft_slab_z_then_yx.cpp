@@ -127,7 +127,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::initFFT(GlobalSize *global_size, bool allocate)
 
     // worksize_d is split into 3 parts:
     // 1. space for received data, 2. space for transmitted data, 3. actual workspace (see "mem_d")
-    worksize_d = fft_worksize + (fft3d ? 0 : 2*domainsize);
+    worksize_d = fft_worksize + (fft3d ? 0 : (config.send_method == MPI_Type || !cuda_aware ? domainsize : 2*domainsize));
     // analogously for the host worksize, if mpi is not cuda-aware
     worksize_h = (cuda_aware || fft3d ? 0 : 2*domainsize);
 
@@ -203,14 +203,14 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::setWorkArea(void *device, void *host) {
     }
 
     mem_d.clear();
-    for (size_t i=0; i< 1 + (fft3d ? 0 : (cuda_aware ? 2 : 1)); ++i) 
+    for (size_t i=0; i< 1 + (fft3d ? 0 : (!cuda_aware || config.send_method == MPI_Type ? 1 : 2)); ++i) 
         mem_d.push_back(&static_cast<char*>(workarea_d)[i*domainsize]);
     
     if (fft3d) {
         CUFFT_CALL(cufftSetWorkArea(planR2C, mem_d[0]));
     } else {
-        CUFFT_CALL(cufftSetWorkArea(planR2C, mem_d[cuda_aware ? 2 : 1]));
-        CUFFT_CALL(cufftSetWorkArea(planC2C, mem_d[cuda_aware ? 2 : 1]));
+        CUFFT_CALL(cufftSetWorkArea(planR2C, mem_d[!cuda_aware || config.send_method == MPI_Type ? 1 : 2]));
+        CUFFT_CALL(cufftSetWorkArea(planC2C, mem_d[!cuda_aware || config.send_method == MPI_Type ? 1 : 2]));
     } 
         
     if (host && allocated_h) {
