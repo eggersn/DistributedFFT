@@ -1,0 +1,428 @@
+{
+    "size": [32, 64, 128, 256, 512],
+    "additional-flags": "--hostfile ../hostfile --map-by node",
+    "global_test_settings": {
+        "--opt": 0,
+        "--warmup-rounds": 10,
+        "--iterations": 100,
+        "-p1": 2,
+        "-p2": 2,
+        "--benchmark_dir": "../benchmarks_pcsgs",
+        "--double_prec": true,
+        "--testcase": 0
+    },
+    "tests": [
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        },  
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        },       
+    
+
+
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": true
+        },  
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "Streams",
+            "--cuda_aware": true
+        }, 
+
+
+
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        },  
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "Peer2Peer",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }, 
+
+
+
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        },  
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "Sync",
+            "--cuda_aware": true
+        }, 
+
+
+
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "Streams",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "Peer2Peer",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "Sync",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        },  
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Pencil",
+            "-comm1": "All2All",
+            "-snd1": "MPI_Type",
+            "-comm2": "All2All",
+            "-snd2": "MPI_Type",
+            "--cuda_aware": true
+        }
+    ]
+}

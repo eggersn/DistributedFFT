@@ -1,0 +1,75 @@
+{
+    "size": [32, 64, 128, 256, 512],
+    "additional-flags": "",
+    "global_test_settings": {
+        "--opt": 1,
+        "--warmup-rounds": 10,
+        "--iterations": 100,
+        "-p": 4,
+        "--benchmark_dir": "../benchmarks_krypton",
+        "--double_prec": true,
+        "--sequence": "Z_Then_YX"
+    },
+    "tests": [
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "Sync",
+            "--cuda_aware": true
+        },
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "Streams",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "Streams",
+            "--cuda_aware": true
+        },
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "MPI_Type",
+            "--cuda_aware": true
+        },
+        {
+            "name": "Slab",
+            "-comm": "All2All",
+            "-snd": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Slab",
+            "-comm": "All2All",
+            "-snd": "Sync",
+            "--cuda_aware": true
+        },
+        {
+            "name": "Slab",
+            "-comm": "All2All",
+            "-snd": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Slab",
+            "-comm": "All2All",
+            "-snd": "MPI_Type",
+            "--cuda_aware": true
+        }
+    ]
+}
