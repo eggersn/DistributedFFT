@@ -37,6 +37,36 @@ protected:
         MPIcuFFT_Pencil<T>::MPIsend_Thread_SecondCallback_Base((void*)&params, ptr);
     }
 
+    //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Communication_FirstTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Communication_FirstTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Sync_FirstTranspose(void *complex_);
+    //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_MPIType_FirstTranspose(void *complex_);
+
+    //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Communication_SecondTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Sync_SecondTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_Streams_SecondTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
+    virtual void Peer2Peer_MPIType_SecondTranspose(void *complex_, void *recv_ptr_);
+    //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Communication_SecondTranspose(void *complex_);
+    //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_Sync_SecondTranspose(void *complex_);
+    //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
+    virtual void All2All_MPIType_SecondTranspose(void *complex_);
+
     using MPIcuFFT_Pencil<T>::config;
     using MPIcuFFT_Pencil<T>::comm;
     using MPIcuFFT_Pencil<T>::comm1;
@@ -85,11 +115,31 @@ protected:
     using MPIcuFFT_Pencil<T>::transposed_dim;
     using MPIcuFFT_Pencil<T>::output_dim;
 
+    using MPIcuFFT_Pencil<T>::timer;
+
+    using MPIcuFFT_Pencil<T>::section_descriptions;
+
+    // For Peer2Peer Streams
+    std::thread mpisend_thread1;
+    std::thread mpisend_thread2;
     Callback_Params_Base base_params;
     std::vector<Callback_Params> params_array1;
     std::vector<Callback_Params> params_array2;
 
-    using MPIcuFFT_Pencil<T>::timer;
+    // For MPI_Type
+    std::vector<MPI_Datatype> MPI_SND1;
+    std::vector<MPI_Datatype> MPI_RECV1;
+    std::vector<MPI_Datatype> MPI_SND2;
+    std::vector<MPI_Datatype> MPI_RECV2;
 
-    using MPIcuFFT_Pencil<T>::section_descriptions;
+    // For All2All Communication
+    std::vector<int> sendcounts1;
+    std::vector<int> sdispls1;
+    std::vector<int> recvcounts1;
+    std::vector<int> rdispls1;
+
+    std::vector<int> sendcounts2;
+    std::vector<int> sdispls2;
+    std::vector<int> recvcounts2;
+    std::vector<int> rdispls2;
 };
