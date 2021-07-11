@@ -49,7 +49,7 @@ void MPIcuFFT_Pencil<T>::initFFT(GlobalSize *global_size_, Partition *partition_
     mkdir((config.benchmark_dir +  "/pencil").c_str(), 0777);
     std::stringstream ss;
     ss << config.benchmark_dir <<  "/pencil/test_0_" << config.comm_method << "_" << config.send_method;
-    ss << "_" << config.comm_method2 << "_" << onfig.send_method2 << "_" << global_size->Nx;
+    ss << "_" << config.comm_method2 << "_" << config.send_method2 << "_" << global_size->Nx;
     ss << "_" << cuda_aware << "_" << partition->P1 << "_" << partition->P2 << ".csv";
     std::string filename = ss.str();
     timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);
