@@ -959,15 +959,9 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
             return; 
         }
 
-        C_t *recv_ptr, *send_ptr, *temp_ptr; 
+        C_t *temp_ptr; 
   
         temp_ptr = cuFFT<T>::complex(mem_d[0]);
-        if (cuda_aware) {
-            recv_ptr = cuFFT<T>::complex(mem_d[1]);
-        } else {
-            recv_ptr = cuFFT<T>::complex(mem_h[0]);
-            send_ptr = cuFFT<T>::complex(mem_h[1]);
-        }
 
         /* ***********************************************************************************************************************
         *                                                       First Global Transpose

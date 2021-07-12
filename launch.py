@@ -138,8 +138,10 @@ if len(sys.argv) == 1:
     if opt == 0:
         jobs = select_job()
 else:
+    jobs = []
+    opt = 0
     for i in range(1, len(sys.argv)):
-        jobs.append("../jobs/" + sys.argv[i] + ".json")
+        jobs.append("jobs/" + sys.argv[i] + ".json")
 
 hostname = os.uname()[1]
 if hostname[0:6] == "pcsgs0":
