@@ -1,4 +1,0 @@
-export SCOREP_TIMER="gettimeofday"
-export SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--cuda"
-export SCOREP_CUDA_ENABLE=yes
-export SCOREP_ENABLE_TRACING=true

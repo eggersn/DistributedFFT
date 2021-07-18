@@ -1,6 +1,6 @@
 {
     "size": [32, 64, 128, 256, 512],
-    "additional-flags": "--hostfile ../hostfile --map-by node",
+    "additional-flags": "--hostfile ../mpi/hostfile_pcsgs --map-by node",
     "global_test_settings": {
         "--opt": 0,
         "--warmup-rounds": 0,
