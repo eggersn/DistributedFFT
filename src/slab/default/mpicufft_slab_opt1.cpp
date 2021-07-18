@@ -18,7 +18,7 @@ template<typename T>
 void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partition, bool allocate) {
   mkdir((config.benchmark_dir +  "/slab_default").c_str(), 0777);
   std::stringstream ss;
-  ss << config.benchmark_dir <<  "/slab_default/test_1_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+  ss << config.benchmark_dir <<  "/slab_default/test_1_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx << "_" << global_size->Ny << "_" << global_size->Nz;
   ss << "_" << cuda_aware << "_" << pcnt << ".csv";
   std::string filename = ss.str();
   timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);

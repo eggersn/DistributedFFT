@@ -55,7 +55,7 @@ template<typename T>
 void MPIcuFFT_Slab_Z_Then_YX<T>::initFFT(GlobalSize *global_size, bool allocate) {
     mkdir((config.benchmark_dir +  "/slab_z_then_yx").c_str(), 0777);
     std::stringstream ss;
-    ss << config.benchmark_dir <<  "/slab_z_then_yx/test_0_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx;
+    ss << config.benchmark_dir <<  "/slab_z_then_yx/test_0_" << config.comm_method << "_" << config.send_method << "_" << global_size->Nx << "_" << global_size->Ny << "_" << global_size->Nz;
     ss << "_" << cuda_aware << "_" << pcnt << ".csv";
     std::string filename = ss.str();
     timer = new Timer(comm, 0, pcnt, pidx, section_descriptions, filename);

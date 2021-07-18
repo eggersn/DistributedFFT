@@ -82,9 +82,14 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
             if "--input-dim-z" in test or "-nz" in test:
                 print("Warning: Nz is overridden by size!")
 
-            test["-nx"] = size
-            test["-ny"] = size
-            test["-nz"] = size
+            if type(size) == list:
+                test["-nx"] = size[0]
+                test["-ny"] = size[1]
+                test["-nz"] = size[2]
+            else:
+                test["-nx"] = size
+                test["-ny"] = size
+                test["-nz"] = size
 
         convertKey(test, "--testcase", "-t")
         
@@ -115,9 +120,14 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
                 ranks = test["-p1"] * test["-p2"]
         test["ranks"] = ranks
     else:
-        test["-nx"] = size
-        test["-ny"] = size
-        test["-nz"] = size
+        if type(size) == list:
+            test["-nx"] = size[0]
+            test["-ny"] = size[1]
+            test["-nz"] = size[2]
+        else:
+            test["-nx"] = size
+            test["-ny"] = size
+            test["-nz"] = size
 
     command = "mpiexec -n " + str(test["ranks"])
     if additional_flags != "":

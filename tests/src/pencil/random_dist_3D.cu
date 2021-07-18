@@ -85,6 +85,8 @@ int Tests_Pencil_Random_3D<T>::testcase0(const int opt, const int runs){
     CUDA_CALL(cudaGetDeviceCount(&dev_count));
     CUDA_CALL(cudaSetDevice(rank % dev_count));
 
+    printf("[%d] gpu %d", rank, rank%dev_count);
+
     size_t pidx_i = rank / P2;
     size_t pidx_j = rank % P2;
         

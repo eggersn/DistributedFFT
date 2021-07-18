@@ -1,5 +1,5 @@
 {
-    "size": [32, 64, 128],
+    "size": [64, [64, 64, 128]],
     "additional-flags": "",
     "global_test_settings": {
         "--opt": 0,
