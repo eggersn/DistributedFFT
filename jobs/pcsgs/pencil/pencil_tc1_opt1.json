@@ -1,5 +1,5 @@
 {
-    "size": [32, 64, 128, 256, 512],
+    "size": [128, [128, 128, 256], [128, 256, 256], 256, [256, 256, 512], [256, 512, 512], 512, [512, 512, 1024], [512, 1024, 1024]],
     "additional-flags": "--hostfile ../mpi/hostfile_pcsgs --map-by node",
     "global_test_settings": {
         "--opt": 1,
