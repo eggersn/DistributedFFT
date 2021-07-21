@@ -7,19 +7,17 @@ import matplotlib.pyplot as plt
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
 send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type": 2}]
 
-prefix = "../../benchmarks_temp/slab_default"
+prefix = "../../benchmarks_krypton/slab_z_then_yx"
 opt = 0
 P = 4
 cuda_aware = True
 prec = "double"
 
-title = "Slab Decomposition (Krypton)"
-
 count = 0
 labels = []
 legend_labels = []
 
-sizes = ["256_256_256", "512_256_256", "256_512_256", "256_256_512"]
+sizes = ["128_128_128", "128_128_256", "128_256_256", "256_256_256", "256_256_512", "256_512_512", "512_512_512", "512_512_1024", "512_1024_1024", "1024_1024_1024"]
 
 with open('out.csv', mode='w') as out_file:
     writer = csv.writer(out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -33,6 +31,7 @@ with open('out.csv', mode='w') as out_file:
             x_vals = sizes
             mean_vals = [0 for x in x_vals]
             sd_vals = [0 for x in x_vals]
+            max_vals = [[] for x in x_vals]
             f_count = 0
             for f in files:
                 for i in range(0, len(sizes)):
@@ -42,10 +41,14 @@ with open('out.csv', mode='w') as out_file:
                 with open(join(prefix, f)) as csv_file:
                     csv_reader = csv.reader(csv_file, delimiter=',')
                     line_counter = 0
+                    max_val = []
                     for row in csv_reader:
                         if len(row) > 0 and row[0] == "Run complete":
                             mean_vals[f_count] += sum([float(x) for x in row[1:-1]])
+                            if sum(max_val) < sum([float(x) for x in row[1:-1]]):
+                                max_val = [float(x) for x in row[1:-1]]
                             line_counter += 1
+                    max_vals[f_count] = max_val
                     mean_vals[f_count] /= (line_counter*P)
                     
                 with open(join(prefix, f)) as csv_file:
@@ -58,12 +61,14 @@ with open('out.csv', mode='w') as out_file:
                     sd_vals[f_count] /= (line_counter-1)
 
             writer.writerow([str(comm1), str(snd1)] + mean_vals)
+            writer.writerow([str(comm1), str(snd1)] + sd_vals)
 
             print(count)
             print(comm1 + " " + snd1)
             print(x_vals)
             print(mean_vals)
             print(sd_vals)
+            print(max_vals)
             print()
 
             count += 1
