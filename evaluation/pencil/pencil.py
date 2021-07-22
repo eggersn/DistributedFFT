@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
 send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type": 2}]
 
-prefix = "../../benchmarks_pcsgs/pencil"
-opt = 1
+prefix = "../../benchmarks/pcsgs/pencil"
+opt = 0
 P1 = 2; P2 = 2
 cuda_aware = True
 prec = "double"
