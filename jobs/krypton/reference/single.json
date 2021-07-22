@@ -1,0 +1,16 @@
+{
+    "size": [128, [128, 128, 256], [128, 256, 256], 256, [256, 256, 512], [256, 512, 512], 512, [512, 512, 1024], [512, 1024, 1024], 1024],
+    "additional-flags": "--hostfile ../mpi/hostfile_krypton --rankfile ../mpi/rankfile_krypton",
+    "global_test_settings": {
+        "--warmup-rounds": 10,
+        "--iterations": 100,
+        "-p": 1,
+        "--benchmark_dir": "../benchmarks_krypton",
+        "--double_prec": true
+    },
+    "tests": [
+        {
+            "name": "Slab"
+        }
+    ]
+}
