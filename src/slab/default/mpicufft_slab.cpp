@@ -538,12 +538,11 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
   using C_t = typename cuFFT<T>::C_t;
   R_t *real    = cuFFT<T>::real(in);
   C_t *complex = cuFFT<T>::complex(out);
+  timer->start();
   if (fft3d) {
     CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
     CUDA_CALL(cudaDeviceSynchronize());
   } else {
-    timer->start();
-    
     // compute 2d FFT 
     CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
 
@@ -569,9 +568,8 @@ void MPIcuFFT_Slab<T>::execR2C(void *out, const void *in) {
         mpisend_thread.join();
       MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
     }
-
-    timer->stop_store("Run complete");
   }
+  timer->stop_store("Run complete");
   cudaProfilerStop();
   if (config.warmup_rounds == 0) 
       timer->gather();
