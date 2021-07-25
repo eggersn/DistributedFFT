@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-x_vals = [r"$128^3$", r"$128^2 \times 256$", r"$128 \times 256^2$", r"$256^3$", r"$256^2 \times 512$", r"$256 \times 512^2$", r"$512^3$", r"$512^2 \times 1024$", r"$512 \times 1024^2$"]
+x_vals = [r"$128^3$", r"$128^2 \times 256$", r"$128 \times 256^2$", r"$256^3$", r"$256^2 \times 512$", r"$256 \times 512^2$", r"$512^3$", r"$512^2 \times 1024$", r"$512 \times 1024^2$", r"$1024^3$"]
 
 # pcsgs
 # y_vals = [
@@ -36,16 +36,20 @@ y_vals = [
 # [0.3953, 0.7326, 1.4746, 3.1498, 7.4521, 16.4230, 32.8572, 68.0527, 155.8264, 302.40018],
 # [0.3427, 0.6831, 1.3874, 3.0574, 7.0121, 15.5847, 32.2413, 70.0283, 153.2492, 307.5333025],
 # [1.0204, 1.3587, 1.9262, 3.6406, 5.2576, 8.6689, 24.2949, 34.3805, 78.1835, 261.3697],
-# [0.4211, 0.6782, 1.2039, 2.2691, 4.3046, 8.4441, 16.7861, 36.8559, 88.9093, 216.5879]]
+# [0.4211, 0.6782, 1.2039, 2.2691, 4.3046, 8.4441, 16.7861, 36.8559, 88.9093, 216.5879],
+# [0.2532, 0.4688, 0.9055, 1.7703, 3.4846, 7.5770, 15.3916, 30.4036, 64.2797]]
 
-title = "Best Selection [PCSGS, cuda_aware]"
-legend = ["Slab", "Slab (Opt1)", "Slab Z_Then_YX", "Slab Z_Then_YX (Opt1)", "Pencil", "Pencil (Opt1)"]
+title = "Best Selection [Krypton, cuda_aware]"
+legend = ["Slab", "Slab (Opt1)", "Slab Z_Then_YX", "Slab Z_Then_YX (Opt1)", "Pencil", "Pencil (Opt1)", "Reference (Single GPU)"]
 
 labels = []
-for y in y_vals:
-    label, = plt.plot(x_vals, y, "D-", zorder=3, linewidth=3, markersize=10)
+for y in y_vals[:len(y_vals)-1]:
+    print(y)
+    label, = plt.plot(x_vals[0:len(y_vals[0])], y, "D-", zorder=3, linewidth=3, markersize=10)
     labels.append(label)
 
+label, = plt.plot(x_vals[0:len(y_vals[-1])], y_vals[-1], "D-", zorder=3, linewidth=3, markersize=10)
+labels.append(label)
 
 plt.title(title, fontsize=22)
 plt.xlabel("Size", fontsize=20)
@@ -58,12 +62,15 @@ plt.yscale('log', base=10)
 plt.show()
 plt.close()
 
-title = "Best Selection; Difference to Slab [PCSGS, cuda_aware]"
+title = "Best Selection; Difference to Slab [Krypton, cuda_aware]"
 labels = []
-for y in y_vals:
-    label, = plt.plot(x_vals, [y_vals[0][i]-y[i] for i in range(0, len(y))], "D-", zorder=3, linewidth=3, markersize=10)
+for y in y_vals[:len(y_vals)-1]:
+    print([y_vals[0][i]-y[i] for i in range(0, len(y))])
+    label, = plt.plot(x_vals[0:len(y_vals[0])], [y_vals[0][i]-y[i] for i in range(0, len(y))], "D-", zorder=3, linewidth=3, markersize=10)
     labels.append(label)
 
+label, = plt.plot(x_vals[0:len(y_vals[-1])], [y_vals[0][i]-y_vals[-1][i] for i in range(0, len(y_vals[-1]))], "D-", zorder=3, linewidth=3, markersize=10)
+labels.append(label)
 
 plt.title(title, fontsize=22)
 plt.xlabel("Size", fontsize=20)
@@ -72,5 +79,5 @@ plt.legend(labels, legend, prop={"size":16})
 plt.xticks(fontsize=16)
 plt.yticks(fontsize=16)
 plt.grid(zorder=0, color="grey")
-# plt.yscale('symlog', base=10)
+plt.yscale('symlog', base=10)
 plt.show()
