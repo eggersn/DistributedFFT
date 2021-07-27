@@ -149,21 +149,21 @@ def generateHostfile(hosts, id=0):
     # assume same hardware for all workers
     cpus = multiprocessing.cpu_count()
 
-    with open("./mpi/hostfile_{}".format(id), "w") as f:
+    with open("../mpi/hostfile_{}".format(id), "w") as f:
         for host in hosts:
             f.write("{}\tslots={}\n".format(host, cpus))
         f.close()
-    return "./mpi/hostfile_{}".format(id)
+    return "../mpi/hostfile_{}".format(id)
 
 def generateRankfile(hosts, gpus, affinity, id=0):
     rank = 0
-    with open("./mpi/rankfile_{}".format(id), "w") as f:
+    with open("../mpi/rankfile_{}".format(id), "w") as f:
         for host in hosts:
             for gpu in range(0, gpus):
                 f.write("rank {}={} \tslot={}\n".format(rank, host, affinity[gpu]))
                 rank += 1
         f.close()
-    return "./mpi/rankfile_{}".format(id)
+    return "../mpi/rankfile_{}".format(id)
 
 def main():
     parser = argparse.ArgumentParser(description='Launch script for the performance benchmarks.')
@@ -174,12 +174,20 @@ def main():
     parser.add_argument('--id', metavar="n", type=str, nargs=1, dest="id", help="Identifier for host- and rankfile in the ./mpi folder. Is required for parallel execution of tests (using this script) to avoid ambiguity.")
     parser.add_argument('--gpus', metavar="n", type=int, nargs=1, dest="gpus", help="Number of GPUs per node.")
     parser.add_argument('--affinity', metavar="c", type=str, nargs='+', dest="affinity", help="List of cores for GPU to bind to. The list has to be of length --gpus. Example: \"--affinity 0:0-9 1:20-29\". Here the first rank is assinged to cores 0-9 on socket 0 for GPU0 and the second rank is assinged to cores 20-29 on socket 1 for GPU1.")
+    parser.add_argument('--build_dir', metavar="d", type=str, nargs=1, dest="build_dir", help="Path to build directory (default: ./build).")
+
 
     args = parser.parse_args()
     hostfile = ""
     rankfile = ""
 
+    if args.build_dir != None:
+        os.chdir(args.build_dir[0])
+    else:
+        os.chdir("build")
+
     if args.hosts != None:
+        args.hosts = list(dict.fromkeys(args.hosts))
         if args.id != None:
             hostfile = generateHostfile(args.hosts, args.id[0])
         else:
@@ -199,7 +207,7 @@ def main():
         if opt == 0:
             jobs = select_job()
     else:
-        jobs = ["jobs/" + job for job in args.jobs]
+        jobs = ["../jobs/" + job for job in args.jobs]
 
         
     if opt == 0:
@@ -208,9 +216,10 @@ def main():
             with open(filename) as f:
                 data = json.load(f)
 
-            program_args = args.global_params[0].split(" ")
-            for i in range(0, len(program_args), 2):
-                data["global_test_settings"][program_args[i]] = program_args[i+1]
+            if args.global_params != None:
+                program_args = args.global_params[0].split(" ")
+                for i in range(0, len(program_args), 2):
+                    data["global_test_settings"][program_args[i]] = program_args[i+1]
 
             if args.mpi_params != None:
                 data["additional-flags"] += " " + args.mpi_params[0]

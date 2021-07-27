@@ -1,11 +1,11 @@
 {
     "size": [128, [128, 128, 256], [128, 256, 256], 256, [256, 256, 512], [256, 512, 512], 512, [512, 512, 1024], [512, 1024, 1024], 1024],
-    "additional-flags": "--report-bindings --mca btl self,vader,openib",
+    "additional-flags": "",
     "global_test_settings": {
         "--opt": 0,
         "--warmup-rounds": 10,
         "--iterations": 20,
-        "-p": 4,
+        "-p": 16,
         "--benchmark_dir": "../benchmarks/bwunicluster",
         "--double_prec": true
     },
