@@ -2,7 +2,9 @@ import json
 import os, sys
 from os import listdir
 from os.path import isfile, join
-
+import argparse
+import multiprocessing
+import re
 
 def menu_main():
     valid = False
@@ -143,42 +145,94 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
     print(command)
     os.system(command)
 
-if len(sys.argv) == 1:
-    opt = menu_main()
-    if opt == 0:
-        jobs = select_job()
-else:
-    jobs = []
+def generateHostfile(hosts, id=0):
+    # assume same hardware for all workers
+    cpus = multiprocessing.cpu_count()
+
+    with open("./mpi/hostfile_{}".format(id), "w") as f:
+        for host in hosts:
+            f.write("{}\tslots={}\n".format(host, cpus))
+        f.close()
+    return "./mpi/hostfile_{}".format(id)
+
+def generateRankfile(hosts, gpus, affinity, id=0):
+    rank = 0
+    with open("./mpi/rankfile_{}".format(id), "w") as f:
+        for host in hosts:
+            for gpu in range(0, gpus):
+                f.write("rank {}={} \tslot={}\n".format(rank, host, affinity[gpu]))
+                rank += 1
+        f.close()
+    return "./mpi/rankfile_{}".format(id)
+
+def main():
+    parser = argparse.ArgumentParser(description='Launch script for the performance benchmarks.')
+    parser.add_argument('--jobs', metavar="j1", type=str, nargs='+', dest='jobs', help='A list of jobs (located in the ./jobs folder), where individual jobs are seperated by spaces. Example \"--jobs home/slab/zy_then_x.json home/slab/z_then_yx.json\"')
+    parser.add_argument('--global_params', metavar="p", type=str, nargs=1, dest="global_params", help="Params passed to slab, pencil or reference MPI call.")
+    parser.add_argument('--mpi_params', metavar="p", type=str, nargs=1, dest="mpi_params", help="Params passed to MPI.")
+    parser.add_argument('--hosts', metavar="h1", type=str, nargs='+', dest='hosts', help='A list of hostnames seperated by spaces, specifying which hosts to use for MPI execution.')
+    parser.add_argument('--id', metavar="n", type=str, nargs=1, dest="id", help="Identifier for host- and rankfile in the ./mpi folder. Is required for parallel execution of tests (using this script) to avoid ambiguity.")
+    parser.add_argument('--gpus', metavar="n", type=int, nargs=1, dest="gpus", help="Number of GPUs per node.")
+    parser.add_argument('--affinity', metavar="c", type=str, nargs='+', dest="affinity", help="List of cores for GPU to bind to. The list has to be of length --gpus. Example: \"--affinity 0:0-9 1:20-29\". Here the first rank is assinged to cores 0-9 on socket 0 for GPU0 and the second rank is assinged to cores 20-29 on socket 1 for GPU1.")
+
+    args = parser.parse_args()
+    hostfile = ""
+    rankfile = ""
+
+    if args.hosts != None:
+        if args.id != None:
+            hostfile = generateHostfile(args.hosts, args.id[0])
+        else:
+            hostfile = generateHostfile(args.hosts)
+
+        if (args.gpus != None) and (args.affinity != None) and (args.gpus[0] == len(args.affinity)):
+            if args.id != None:
+                rankfile = generateRankfile(args.hosts, args.gpus[0], args.affinity, args.id[0])
+            else:
+                rankfile = generateRankfile(args.hosts, args.gpus[0], args.affinity)
+        elif (args.gpus != None) or (args.affinity != None):
+            raise ValueError('Arguments --gpus and --affinity do not fit together! See --help for more information.')
+
     opt = 0
-    for i in range(1, len(sys.argv)):
-        jobs.append("jobs/" + sys.argv[i] + ".json")
+    if args.jobs == None:
+        opt = menu_main()
+        if opt == 0:
+            jobs = select_job()
+    else:
+        jobs = ["jobs/" + job for job in args.jobs]
 
-hostname = os.uname()[1]
-if hostname[0:6] == "pcsgs0":
-    os.chdir("build_pcsgs")
-elif hostname == "krypton":
-    os.chdir("build_krypton")
-else:
-    os.chdir("build")
-print()
-if opt == 0:
-    for job in jobs:
-        filename = "../" + job
-        with open(filename) as f:
-            data = json.load(f)
+        
+    if opt == 0:
+        for job in jobs:
+            filename = job
+            with open(filename) as f:
+                data = json.load(f)
 
-        for s in data["size"]:
-            print("Starting computation for size {}".format(s))
-            count = 0
-            for test in data["tests"]:
-                print("-> Executing test {}".format(count))
-                run_test(test, s, data["global_test_settings"], data["additional-flags"], s==data["size"][0])
-                count += 1
-                print()
+            program_args = args.global_params[0].split(" ")
+            for i in range(0, len(program_args), 2):
+                data["global_test_settings"][program_args[i]] = program_args[i+1]
 
-elif opt == 1:
-    print("todo")
-else:
-    print("todo")
+            if args.mpi_params != None:
+                data["additional-flags"] += " " + args.mpi_params[0]
 
-    
+            if hostfile != "" and re.match("--hostfile", data["additional-flags"]):
+                raise ValueError('Error in job {}: Hostfile is specified even though it is newly generated, aborting...'.format(job))
+            elif hostfile != "":
+                data["additional-flags"] += " " + "--hostfile {}".format(hostfile)
+            if rankfile != "" and re.match("--rankfile", data["additional-flags"]):
+                raise ValueError('Error in job {}: Rankfile is specified even though it is newly generated, aborting...'.format(job))
+            elif rankfile != "":
+                data["additional-flags"] += " " + "--rankfile {}".format(rankfile)
+
+            for s in data["size"]:
+                print("Starting computation for size {}".format(s))
+                count = 0
+                for test in data["tests"]:
+                    print("-> Executing test {}".format(count))
+                    run_test(test, s, data["global_test_settings"], data["additional-flags"], s==data["size"][0])
+                    count += 1
+                    print()
+
+
+if __name__ == "__main__":
+    main()
