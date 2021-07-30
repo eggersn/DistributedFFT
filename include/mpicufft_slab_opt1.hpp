@@ -60,6 +60,7 @@ public:
     }
 
     void execR2C(void *out, const void *in);
+    void execC2R(void *out, const void *in);
 protected:
   struct Callback_Params_Base {
     std::mutex mutex;
@@ -75,13 +76,13 @@ protected:
   static void CUDART_CB MPIsend_Callback(void *data);
   void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
-  void Peer2Peer_Communication(void *complex_);
-  void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
-  void Peer2Peer_Streams(void *complex_, void *recv_ptr_);
-  void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
-  void All2All_Communication(void *complex_);
-  void All2All_Sync(void *complex_);
-  void All2All_MPIType(void *complex_);
+  void Peer2Peer_Communication(void *complex_, bool forward=true);
+  void Peer2Peer_Sync(void *complex_, void *recv_ptr_, bool forward=true);
+  void Peer2Peer_Streams(void *complex_, void *recv_ptr_, bool forward=true);
+  void Peer2Peer_MPIType(void *complex_, void *recv_ptr_, bool forward=true);
+  void All2All_Communication(void *complex_, bool forward=true);
+  void All2All_Sync(void *complex_, bool forward=true);
+  void All2All_MPIType(void *complex_, bool forward=true);
 
   using MPIcuFFT_Slab<T>::config;  
   using MPIcuFFT_Slab<T>::comm;
@@ -111,6 +112,8 @@ protected:
 
   using MPIcuFFT_Slab<T>::planR2C;
   using MPIcuFFT_Slab<T>::planC2C;
+  using MPIcuFFT_Slab<T>::planC2R;
+  cufftHandle planC2C_inv;
 
   using MPIcuFFT_Slab<T>::input_sizes_x;
   using MPIcuFFT_Slab<T>::input_start_x;
@@ -145,4 +148,6 @@ protected:
   using MPIcuFFT_Slab<T>::sdispls;
   using MPIcuFFT_Slab<T>::recvcounts;
   using MPIcuFFT_Slab<T>::rdispls;
+
+  using MPIcuFFT_Slab<T>::forward;
 };

@@ -139,7 +139,7 @@ SlabParams parseParams(int argc, char *argv[]) {
 
    // Check selected testcase and option
    params.testcase = StringToInt(getValueOfParam(argc, argv, "--testcase", "-t"));
-   if (params.testcase < 0 || params.testcase > 1)
+   if (params.testcase < 0 || params.testcase > 2)
       throw std::runtime_error("Invalid testcase.");
    params.opt = StringToInt(getValueOfParam(argc, argv, "--opt", "-o"));
    if (params.opt < 0 || params.opt > 1)

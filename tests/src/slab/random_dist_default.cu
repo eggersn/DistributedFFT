@@ -36,17 +36,35 @@ namespace Difference_Slab_Default {
             array1[i].y -= array2[i].y;
         }
     }
+
+    __global__ void differenceFloatInv(cuFFT<float>::R_t* array1, cuFFT<float>::R_t* array2, int n, cuFFT<float>::R_t scalar){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i] -= scalar * array2[i];
+        }
+    }
+    
+    __global__ void differenceDoubleInv(cuFFT<double>::R_t* array1, cuFFT<double>::R_t* array2, int n, cuFFT<double>::R_t scalar){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i] -= scalar * array2[i];
+        }
+    }
     
     template<typename T> 
     struct Difference { 
         static decltype(differenceFloat)* difference;
+        static decltype(differenceFloatInv)* differenceInv;
     };
     template<typename T> decltype(differenceFloat)* Difference<T>::difference = differenceFloat;
+    template<typename T> decltype(differenceFloatInv)* Difference<T>::differenceInv = differenceFloatInv;
     
     template<> struct Difference<double> { 
+        static decltype(differenceDoubleInv)* differenceInv;
         static decltype(differenceDouble)* difference;
     };
     decltype(differenceDouble)* Difference<double>::difference = differenceDouble;    
+    decltype(differenceDoubleInv)* Difference<double>::differenceInv = differenceDoubleInv;    
 }
 
 template<typename T> 
@@ -55,6 +73,8 @@ int Tests_Slab_Random_Default<T>::run(const int testcase, const int opt, const i
         return this->testcase0(opt, runs);
     else if (testcase == 1)
         return this->testcase1(opt, runs);
+    else if (testcase == 2)
+        return this->testcase2(opt, runs);
     return -1;
 }
 
@@ -362,6 +382,89 @@ int Tests_Slab_Random_Default<T>::compute(const int rank, const int world_size, 
     }
     
     CUDA_CALL(cudaFree(in_d));
+    CUDA_CALL(cudaFree(out_d));
+
+    delete mpicuFFT;
+    return 0;
+}
+
+template<typename T> 
+int Tests_Slab_Random_Default<T>::testcase2(const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+    int provided;
+    cublasHandle_t handle;
+    //initialize MPI
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
+    size_t N1=Nx/world_size;
+    size_t N2=Ny/world_size;
+    if (rank < Nx%world_size)
+        N1++;
+    if (rank < Ny%world_size)
+        N2++;
+
+    R_t *in_d, *inv_d;
+    R_t *in_h, *inv_h;
+    C_t *out_d;
+
+    size_t out_size = std::max(N1*Ny*(Nz/2+1), Nx*N2*(Nz/2+1));
+
+    //allocate memory (device)
+    CUDA_CALL(cudaMalloc((void **)&in_d, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&inv_d, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMallocHost((void **)&in_h, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMallocHost((void **)&inv_h, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+    
+    MPIcuFFT_Slab<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Slab_Opt1<T>(config, MPI_COMM_WORLD, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Slab<T>(config, MPI_COMM_WORLD, world_size);
+        
+
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, true);
+    CUBLAS_CALL(cublasCreate(&handle));
+    
+    //execute
+    for (int i = 0; i < runs; i++){
+        this->initializeRandArray(in_d, N1);
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execR2C(out_d, in_d);
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execC2R(inv_d, out_d);
+        MPI_Barrier(MPI_COMM_WORLD);
+        //compare difference
+        Difference_Slab_Default::Difference<T>::differenceInv<<<(N1*Ny*Nz)/1024+1, 1024>>>(inv_d, in_d, N1*Ny*Nz, Nx*Ny*Nz);
+        T sum = 0;
+        CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, N1*Ny*Nz, inv_d, 1, &sum));
+        std::cout << "Result " << rank << ": " << sum << std::endl;
+    }
+    
+    CUBLAS_CALL(cublasDestroy(handle));
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(in_d));
+    CUDA_CALL(cudaFree(inv_d));
     CUDA_CALL(cudaFree(out_d));
 
     delete mpicuFFT;

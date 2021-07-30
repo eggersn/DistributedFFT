@@ -3,8 +3,8 @@
 #SBATCH --exclusive
 #SBATCH --gres=gpu:8
 #SBATCH --ntasks 16
-#SBATCH --gpus-per-task=1
-#SBATCH --cpus-per-task=2
+#SBATCH --nodes 2
+#SBATCH --ntasks-per-node 8
 #SBATCH --time=00:30:00
 #SBATCH --job-name=gpu8_slab
 #SBATCH --output=gpu8_slab.%j.out
@@ -15,12 +15,8 @@ module load devel/cuda/11.0
 module load devel/cmake/3.18
 module load mpi/openmpi/4.1
 
-# mpi configuration
-export OMPI_MCA_btl_openib_allow_ib=1
-export OMPI_MCA_btl_openib_if_include="mlx5_0:1"
-
 # determine hosts
-HOSTS=`mpirun -n 4 hostname | sort -n | sed -r "s/\.localdomain//"`
+HOSTS=`mpirun -n 16 hostname | sort -n | sed -r "s/\.localdomain//"`
 
 HOST16=`echo $HOSTS | tr "\n" "," | sed "s/,$//" | sed "s/,/ /g"`
 HOST8x0=`echo $HOSTS | head -n 8 | tr "\n" "," | sed "s/,$//" | sed "s/,/ /g"`

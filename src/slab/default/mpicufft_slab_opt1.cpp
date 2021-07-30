@@ -50,21 +50,25 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
   domainsize = sizeof(C_t) * std::max(input_sizes_x[pidx]*input_size_y*((input_size_z/2) + 1), output_size_x*output_sizes_y[pidx]*output_size_z);
   
   //sizes of the different workspaces
-  size_t ws_r2c, ws_c2c;
+  size_t ws_r2c, ws_c2c, ws_c2c_inv, ws_c2r;
   
   CUFFT_CALL(cufftCreate(&planR2C));
   CUFFT_CALL(cufftSetAutoAllocation(planR2C, 0));
+  CUFFT_CALL(cufftCreate(&planC2R));
+  CUFFT_CALL(cufftSetAutoAllocation(planC2R, 0));
   
   if (fft3d) { // combined 3d fft, in case only one mpi process is used
     CUFFT_CALL(cufftMakePlan3d(planR2C, global_size->Nx, global_size->Ny, global_size->Nz, cuFFT<T>::R2Ctype, &ws_r2c));
-
-    fft_worksize = ws_r2c;
+    CUFFT_CALL(cufftMakePlan3d(planC2R, global_size->Nx, global_size->Ny, global_size->Nz, cuFFT<T>::C2Rtype, &ws_c2r));
+    fft_worksize = std::max(ws_r2c, ws_c2r);
   } else { // 2d slab decomposition fft
     size_t batch = input_sizes_x[pidx];
     
     //here, an additional C2C transform is needed
     CUFFT_CALL(cufftCreate(&planC2C));
     CUFFT_CALL(cufftSetAutoAllocation(planC2C, 0));
+    CUFFT_CALL(cufftCreate(&planC2C_inv));
+    CUFFT_CALL(cufftSetAutoAllocation(planC2C_inv, 0));
     
     // For the forward FFT, we start with with a 2D transform in y,z direction. Afterwards, 
     // we compute a 1D transform for the x-axis.
@@ -80,8 +84,14 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
     // Assumption: Data Layout [x][y][z]
     CUFFT_CALL(cufftMakePlanMany64(planC2C, 1, n, inembed, 1, output_size_x, 
         onembed, output_size_z*output_sizes_y[pidx], 1, cuFFT<T>::C2Ctype, output_sizes_y[pidx]*output_size_z, &ws_c2c));
+
+    CUFFT_CALL(cufftMakePlanMany64(planC2C_inv, 1, n, onembed, output_size_z*output_sizes_y[pidx], 1, 
+        inembed, 1, output_size_x, cuFFT<T>::C2Ctype, output_sizes_y[pidx]*output_size_z, &ws_c2c_inv));
+
+    CUFFT_CALL(cufftMakePlanMany64(planC2R, 2, &n[1], onembed, input_sizes_x[pidx], 1, 
+        inembed, 1, input_size_z*input_size_y, cuFFT<T>::C2Rtype, batch, &ws_c2r));
     
-    fft_worksize = std::max(ws_r2c, ws_c2c);;
+    fft_worksize = std::max(std::max(ws_r2c, ws_c2c), std::max(ws_c2r, ws_c2c_inv));
   }
   
   if (fft_worksize < domainsize) 
@@ -93,21 +103,17 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
   // analogously for the host worksize, if mpi is not cuda-aware
   worksize_h = (cuda_aware || fft3d ? 0 : 2*domainsize);
 
-  if (allocate) 
+  if (allocate) {
     this->setWorkArea();
+    if (!fft3d)
+      CUFFT_CALL(cufftSetWorkArea(planC2C_inv, mem_d[!cuda_aware || config.send_method == MPI_Type ? 1 : 2]));
+  }
 
   if (config.comm_method == Peer2Peer) {
     if (config.send_method == Streams) {
-      /* We are interested in sending the block via MPI as soon as possible.
-      *  If MPI is compiled with the cuda_aware flag, then we are able to send the block directly from device memory.
-      *  Otherwise, we need to copy the data to host memory first. Directly after the stream is done copying, a second
-      *  thread is notified (via cudaLauchHostFunc) which calls MPI_Isendv.
-      */
-      if (!cuda_aware) {
-        for (int i = 0; i < pcnt; i++){
-          Callback_Params params = {&base_params, i};
-          params_array.push_back(params);
-        }
+      for (int i = 0; i < pcnt; i++){
+        Callback_Params params = {&base_params, i};
+        params_array.push_back(params);
       }
     } else if (config.send_method == MPI_Type) {
       MPI_PENCILS = std::vector<MPI_Datatype>(pcnt);
@@ -173,182 +179,226 @@ void MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread(Callback_Params_Base &base_params, vo
 
     int p = base_params.comm_ready.back();
     base_params.comm_ready.pop_back();
-    size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
 
     if (i == 0)
       timer->stop_store("Transpose (First Send)");
 
-    MPI_Isend(&send_ptr[oslice], 
-              sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
-              p, pidx, comm, &(send_req[p]));
+    if (forward) {
+      size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
+      MPI_Isend(&send_ptr[oslice], 
+                sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
+                p, pidx, comm, &(send_req[p]));
+    } else {
+      size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
+      MPI_Isend(&send_ptr[oslice], input_sizes_x[p]*output_size_z*output_sizes_y[pidx]*sizeof(C_t), 
+        MPI_BYTE, p, pidx, comm, &send_req[p]); 
+    }
     lk.unlock();
   }
-  timer->stop_store("Transpose (Packing)");
 }
 
 template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Sync(void *complex_, void *recv_ptr_) {
+void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Sync(void *complex_, void *recv_ptr_, bool forward) {
   using C_t = typename cuFFT<T>::C_t;
   C_t *complex = cuFFT<T>::complex(complex_);
   C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
   C_t *send_ptr;
 
-  if (cuda_aware) {
-    send_ptr = complex;
+  if (forward) {
+    if (cuda_aware) {
+      send_ptr = complex;
+    } else {
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+      CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
+      CUDA_CALL(cudaDeviceSynchronize());
+    }
+    timer->stop_store("Transpose (Packing)");
+
+    for (auto p : comm_order) { 
+      // start non-blocking receive for rank p
+      MPI_Irecv((&recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]]),
+      sizeof(C_t)*input_sizes_x[p]*output_size_z*output_sizes_y[pidx], MPI_BYTE,
+      p, p, comm, &(recv_req[p]));
+
+      size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
+
+      if (p == comm_order[0])
+          timer->stop_store("Transpose (First Send)");
+
+      // complex can be used directly as send buffer
+      MPI_Isend(&send_ptr[oslice], 
+        sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
+        p, pidx, comm, &(send_req[p]));
+    }
   } else {
-    send_ptr = cuFFT<T>::complex(mem_h[0]);
-    CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
-    CUDA_CALL(cudaDeviceSynchronize());
+    C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    if (cuda_aware)
+      send_ptr = cuFFT<T>::complex(mem_d[1]);
+    else
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+
+    for (auto p : comm_order) {
+      MPI_Irecv(&recv_ptr[input_sizes_x[pidx]*output_size_z*output_start_y[p]],
+        sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, p, p, comm, &recv_req[p]);
+
+      size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
+      CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[oslice], sizeof(C_t)*input_sizes_x[p],
+              &temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x, 
+              sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
+              cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost));
+
+      CUDA_CALL(cudaDeviceSynchronize());
+
+      if (p == comm_order[0])
+          timer->stop_store("Transpose (First Send)");
+
+      MPI_Isend(&send_ptr[oslice], input_sizes_x[p]*output_size_z*output_sizes_y[pidx]*sizeof(C_t), 
+        MPI_BYTE, p, pidx, comm, &send_req[p]);      
+    }
+    timer->stop_store("Transpose (Packing)");
   }
+}
 
-  for (auto p : comm_order) { 
-        // start non-blocking receive for rank p
-        MPI_Irecv((&recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]]),
-        sizeof(C_t)*input_sizes_x[p]*output_size_z*output_sizes_y[pidx], MPI_BYTE,
-        p, p, comm, &(recv_req[p]));
+template<typename T> 
+void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Streams(void *complex_, void *recv_ptr_, bool forward) {
+  using C_t = typename cuFFT<T>::C_t;
+  C_t *complex = cuFFT<T>::complex(complex_);
+  C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
+  C_t *send_ptr;
 
-        size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
+  if (forward) {
+    if (!cuda_aware) 
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
 
+    for (auto p : comm_order) { 
+      // start non-blocking receive for rank p
+      MPI_Irecv((&recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]]),
+          sizeof(C_t)*input_sizes_x[p]*output_size_z*output_sizes_y[pidx], MPI_BYTE,
+          p, p, comm, &(recv_req[p]));
+
+      size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
+
+      if (!cuda_aware) {
+        // data is aligned correctly, but it has to be copied to host memory first
+        CUDA_CALL(cudaMemcpyAsync(&send_ptr[oslice], &complex[oslice], 
+            sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], 
+            cudaMemcpyDeviceToHost, streams[p]));
+
+        // Callback function for the specific stream
+        CUDA_CALL(cudaLaunchHostFunc(streams[p], this->MPIsend_Callback, (void *)&params_array[p]));
+      } else {
         if (p == comm_order[0])
-            timer->stop_store("Transpose (First Send)");
+          timer->stop_store("Transpose (First Send)");
 
         // complex can be used directly as send buffer
-        MPI_Isend(&send_ptr[oslice], 
-          sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
-          p, pidx, comm, &(send_req[p]));
+        MPI_Isend(&complex[oslice], 
+            sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
+            p, pidx, comm, &(send_req[p]));
+      }
+    }   
+    // Thread which is used to send the MPI messages
+    if (!cuda_aware)
+        mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
+  } else {
+    C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    if (cuda_aware)
+      send_ptr = cuFFT<T>::complex(mem_d[1]);
+    else
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+
+    for (auto p : comm_order) {
+      MPI_Irecv(&recv_ptr[input_sizes_x[pidx]*output_size_z*output_start_y[p]],
+        sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, p, p, comm, &recv_req[p]);
+
+      size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
+      CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[oslice], sizeof(C_t)*input_sizes_x[p],
+              &temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x, 
+              sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
+              cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
+
+      // Callback function for the specific stream
+      CUDA_CALL(cudaLaunchHostFunc(streams[p], this->MPIsend_Callback, (void *)&params_array[p]));    
     }
+    timer->stop_store("Transpose (Packing)");
+    // Thread which is used to send the MPI messages
+    mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
+  }
 }
 
 template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Streams(void *complex_, void *recv_ptr_) {
+void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_MPIType(void *complex_, void *recv_ptr_, bool forward) {
   using C_t = typename cuFFT<T>::C_t;
   C_t *complex = cuFFT<T>::complex(complex_);
   C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
   C_t *send_ptr;
 
-  if (!cuda_aware) 
-    send_ptr = cuFFT<T>::complex(mem_h[0]);
+  if (forward) {
+    if (cuda_aware) {
+      send_ptr = complex;
+    } else {
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+      CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
+      CUDA_CALL(cudaDeviceSynchronize());
+    }
 
-  for (auto p : comm_order) { 
-    // start non-blocking receive for rank p
-    MPI_Irecv((&recv_ptr[input_start_x[p]*output_size_z*output_sizes_y[pidx]]),
-        sizeof(C_t)*input_sizes_x[p]*output_size_z*output_sizes_y[pidx], MPI_BYTE,
-        p, p, comm, &(recv_req[p]));
+    for (auto p : comm_order) { 
+      // start non-blocking receive for rank p
+      MPI_Irecv(&recv_ptr[input_start_x[p]], 1, MPI_PENCILS[p], p, p, comm, &recv_req[p]);
 
-    size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
+      size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
+
+      if (p == comm_order[0])
+          timer->stop_store("Transpose (First Send)");
+
+      // complex can be used directly as send buffer
+      MPI_Isend(&send_ptr[oslice], 
+        sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
+        p, pidx, comm, &(send_req[p]));
+    }
+  } else {
+    C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    if (cuda_aware)
+      send_ptr = temp_ptr;
+    else
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+
+    timer->stop_store("Transpose (Packing)");
 
     if (!cuda_aware) {
-      // data is aligned correctly, but it has to be copied to host memory first
-      CUDA_CALL(cudaMemcpyAsync(&send_ptr[oslice], &complex[oslice], 
-          sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], 
-          cudaMemcpyDeviceToHost, streams[p]));
+      CUDA_CALL(cudaMemcpyAsync(send_ptr, temp_ptr, output_size_x*output_size_z*output_sizes_y[pidx]*sizeof(C_t), cudaMemcpyDeviceToHost));
+      CUDA_CALL(cudaDeviceSynchronize());
+    }
 
-      // Callback function for the specific stream
-      CUDA_CALL(cudaLaunchHostFunc(streams[p], this->MPIsend_Callback, (void *)&params_array[p]));
-    } else {
+    for (auto p : comm_order) {
+      MPI_Irecv(&recv_ptr[input_sizes_x[pidx]*output_size_z*output_start_y[p]],
+        sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, p, p, comm, &recv_req[p]);
+
       if (p == comm_order[0])
         timer->stop_store("Transpose (First Send)");
 
-      // complex can be used directly as send buffer
-      MPI_Isend(&complex[oslice], 
-          sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
-          p, pidx, comm, &(send_req[p]));
+      MPI_Isend(&send_ptr[input_start_x[p]], 1, MPI_PENCILS[p], p, pidx, comm, &send_req[p]);      
     }
-  }   
-  // Thread which is used to send the MPI messages
-  if (!cuda_aware)
-      mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
-}
-
-template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_MPIType(void *complex_, void *recv_ptr_) {
-  using C_t = typename cuFFT<T>::C_t;
-  C_t *complex = cuFFT<T>::complex(complex_);
-  C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
-  C_t *send_ptr;
-
-  if (cuda_aware) {
-    send_ptr = complex;
-  } else {
-    send_ptr = cuFFT<T>::complex(mem_h[0]);
-    CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
-    CUDA_CALL(cudaDeviceSynchronize());
-  }
-
-  for (auto p : comm_order) { 
-    // start non-blocking receive for rank p
-    MPI_Irecv(&recv_ptr[input_start_x[p]], 1, MPI_PENCILS[p], p, p, comm, &recv_req[p]);
-
-    size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
-
-    if (p == comm_order[0])
-        timer->stop_store("Transpose (First Send)");
-
-    // complex can be used directly as send buffer
-    MPI_Isend(&send_ptr[oslice], 
-      sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
-      p, pidx, comm, &(send_req[p]));
   }
 }
 
 template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_) {
+void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_, bool forward) {
   using C_t = typename cuFFT<T>::C_t;
   C_t *complex = cuFFT<T>::complex(complex_);
   C_t *recv_ptr, *temp_ptr;
   temp_ptr = cuFFT<T>::complex(mem_d[0]);
 
-  recv_req[pidx] = MPI_REQUEST_NULL;
-  send_req[pidx] = MPI_REQUEST_NULL;
+  if (forward) {
+    if (config.send_method == MPI_Type) {
+      if (cuda_aware)
+        recv_ptr = temp_ptr;
+      else 
+        recv_ptr = cuFFT<T>::complex(mem_h[1]);
 
-  if (config.send_method == MPI_Type) {
-    if (cuda_aware)
-      recv_ptr = temp_ptr;
-    else 
-      recv_ptr = cuFFT<T>::complex(mem_h[1]);
+      this->Peer2Peer_MPIType(complex_, (void *) recv_ptr);
 
-    this->Peer2Peer_MPIType(complex_, (void *) recv_ptr);
+      timer->stop_store("Transpose (Start Local Transpose)");
 
-    timer->stop_store("Transpose (Start Local Transpose)");
-
-    // transpose local block
-    size_t oslice = output_size_z*output_start_y[pidx]*input_sizes_x[pidx];
-
-    CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[pidx]], sizeof(C_t)*output_size_x,
-          &complex[oslice], sizeof(C_t)*input_sizes_x[pidx], 
-          sizeof(C_t)*input_sizes_x[pidx], output_size_z*output_sizes_y[pidx],
-          cudaMemcpyDeviceToDevice, streams[pidx]));
-
-    timer->stop_store("Transpose (Start Receive)");
-    MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
-    if (!cuda_aware) {
-      if (pidx > 0)
-        CUDA_CALL(cudaMemcpy2DAsync(temp_ptr, sizeof(C_t)*output_size_x,
-            recv_ptr, sizeof(C_t)*output_size_x, 
-            sizeof(C_t)*input_start_x[pidx], output_size_z*output_sizes_y[pidx],
-            cudaMemcpyHostToDevice, streams[0]));
-      if (pidx < pcnt - 1) {
-        CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[pidx+1]], sizeof(C_t)*output_size_x,
-            &recv_ptr[input_start_x[pidx+1]], sizeof(C_t)*output_size_x, 
-            sizeof(C_t)*(output_size_x-input_start_x[pidx+1]), output_size_z*output_sizes_y[pidx],
-            cudaMemcpyHostToDevice, streams[pidx+1]));
-      }
-    }
-    CUDA_CALL(cudaDeviceSynchronize());
-    timer->stop_store("Transpose (Finished Receive)");
-  } else {
-    if (cuda_aware)
-      recv_ptr = cuFFT<T>::complex(mem_d[1]);
-    else 
-      recv_ptr = cuFFT<T>::complex(mem_h[1]);
-
-    if (config.send_method == Sync) 
-      this->Peer2Peer_Sync(complex_, (void *) recv_ptr);
-    else if (config.send_method == Streams)
-      this->Peer2Peer_Streams(complex_, (void *) recv_ptr);
-
-    timer->stop_store("Transpose (Start Local Transpose)");
-    { 
       // transpose local block
       size_t oslice = output_size_z*output_start_y[pidx]*input_sizes_x[pidx];
 
@@ -356,104 +406,246 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_) {
             &complex[oslice], sizeof(C_t)*input_sizes_x[pidx], 
             sizeof(C_t)*input_sizes_x[pidx], output_size_z*output_sizes_y[pidx],
             cudaMemcpyDeviceToDevice, streams[pidx]));
+
+      timer->stop_store("Transpose (Start Receive)");
+      MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
+      if (!cuda_aware) {
+        if (pidx > 0)
+          CUDA_CALL(cudaMemcpy2DAsync(temp_ptr, sizeof(C_t)*output_size_x,
+              recv_ptr, sizeof(C_t)*output_size_x, 
+              sizeof(C_t)*input_start_x[pidx], output_size_z*output_sizes_y[pidx],
+              cudaMemcpyHostToDevice, streams[0]));
+        if (pidx < pcnt - 1) {
+          CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[pidx+1]], sizeof(C_t)*output_size_x,
+              &recv_ptr[input_start_x[pidx+1]], sizeof(C_t)*output_size_x, 
+              sizeof(C_t)*(output_size_x-input_start_x[pidx+1]), output_size_z*output_sizes_y[pidx],
+              cudaMemcpyHostToDevice, streams[pidx+1]));
+        }
+      }
+      CUDA_CALL(cudaDeviceSynchronize());
+      timer->stop_store("Transpose (Finished Receive)");
+    } else {
+      if (cuda_aware)
+        recv_ptr = cuFFT<T>::complex(mem_d[1]);
+      else 
+        recv_ptr = cuFFT<T>::complex(mem_h[1]);
+
+      if (config.send_method == Sync) 
+        this->Peer2Peer_Sync(complex_, (void *) recv_ptr);
+      else if (config.send_method == Streams)
+        this->Peer2Peer_Streams(complex_, (void *) recv_ptr);
+
+      timer->stop_store("Transpose (Start Local Transpose)");
+      { 
+        // transpose local block
+        size_t oslice = output_size_z*output_start_y[pidx]*input_sizes_x[pidx];
+
+        CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[pidx]], sizeof(C_t)*output_size_x,
+              &complex[oslice], sizeof(C_t)*input_sizes_x[pidx], 
+              sizeof(C_t)*input_sizes_x[pidx], output_size_z*output_sizes_y[pidx],
+              cudaMemcpyDeviceToDevice, streams[pidx]));
+      }
+
+      timer->stop_store("Transpose (Start Receive)");
+      int p;
+      do {
+          MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
+          if (p == MPI_UNDEFINED) 
+              break;
+
+          size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
+
+          CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x,
+              &recv_ptr[oslice], sizeof(C_t)*input_sizes_x[p], 
+              sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
+              cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
+      } while(p != MPI_UNDEFINED);
+      CUDA_CALL(cudaDeviceSynchronize());
+      timer->stop_store("Transpose (Finished Receive)");
+    }
+  } else {
+    C_t *copy_ptr = complex;
+    if (cuda_aware)
+      recv_ptr = complex;
+    else 
+      recv_ptr = cuFFT<T>::complex(mem_h[1]);
+
+    if (config.send_method == Sync)
+      this->Peer2Peer_Sync(complex_, (void *)recv_ptr, false);
+    else if (config.send_method == Streams)
+      this->Peer2Peer_Streams(complex_, (void *)recv_ptr, false);
+    else
+      this->Peer2Peer_MPIType(complex_, (void *)recv_ptr, false);
+
+    // local transpose
+    timer->stop_store("Transpose (Start Local Transpose)");
+    {
+      size_t oslice = output_start_y[pidx]*output_size_z*input_sizes_x[pidx];
+
+      CUDA_CALL(cudaMemcpy2DAsync(&copy_ptr[oslice], sizeof(C_t)*input_sizes_x[pidx], 
+              &temp_ptr[input_start_x[pidx]], sizeof(C_t)*output_size_x,
+              sizeof(C_t)*input_sizes_x[pidx], output_size_z*output_sizes_y[pidx],
+              cudaMemcpyDeviceToDevice, streams[pidx]));
     }
 
     timer->stop_store("Transpose (Start Receive)");
-    int p;
-    do {
+    if (!cuda_aware) { // copy received blocks to device
+      int p;
+      do {
         MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
-        if (p == MPI_UNDEFINED) 
-            break;
+        if (p == MPI_UNDEFINED)
+          break;
 
-        size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
-
-        CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x,
-            &recv_ptr[oslice], sizeof(C_t)*input_sizes_x[p], 
-            sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
-            cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
-    } while(p != MPI_UNDEFINED);
+        CUDA_CALL(cudaMemcpyAsync(&copy_ptr[output_start_y[p]*output_size_z*input_sizes_x[pidx]],
+                                  &recv_ptr[output_start_y[p]*output_size_z*input_sizes_x[pidx]],
+                                  output_sizes_y[p]*output_size_z*input_sizes_x[pidx]*sizeof(C_t), cudaMemcpyHostToDevice, streams[p]));
+      } while(p != MPI_UNDEFINED);
+    } else { // just wait for all receives
+      MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
+    }
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("Transpose (Finished Receive)");
   }
 }
 
 template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::All2All_Sync(void *complex_) {
+void MPIcuFFT_Slab_Opt1<T>::All2All_Sync(void *complex_, bool forward) {
   using C_t = typename cuFFT<T>::C_t;
   C_t *complex = cuFFT<T>::complex(complex_);
   C_t *recv_ptr, *send_ptr, *temp_ptr;
 
-  temp_ptr = cuFFT<T>::complex(mem_d[0]);
-  if (cuda_aware) {
-    send_ptr = complex;
-    recv_ptr = cuFFT<T>::complex(mem_d[1]);
-  } else {
-    send_ptr = cuFFT<T>::complex(mem_h[0]);
-    recv_ptr = cuFFT<T>::complex(mem_h[1]);
-    CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
-    CUDA_CALL(cudaDeviceSynchronize());
-  }
-  timer->stop_store("Transpose (Packing)");
-
-  timer->stop_store("Transpose (Start All2All)");
-  MPI_Alltoallv(send_ptr, sendcounts.data(), sdispls.data(), MPI_BYTE, 
-                recv_ptr, recvcounts.data(), rdispls.data(), MPI_BYTE, comm);
-  timer->stop_store("Transpose (Finished All2All)");
-
-  for (int p = 0; p < pcnt; p++) {
-    size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
-
-    CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x,
-        &recv_ptr[oslice], sizeof(C_t)*input_sizes_x[p], 
-        sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
-        cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
-  }  
-  CUDA_CALL(cudaDeviceSynchronize());
-  timer->stop_store("Transpose (Finished Receive)");
-}
-
-template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::All2All_MPIType(void *complex_) {
-  using C_t = typename cuFFT<T>::C_t;
-  C_t *complex = cuFFT<T>::complex(complex_);
-  C_t *recv_ptr, *send_ptr, *temp_ptr;
-
-  temp_ptr = cuFFT<T>::complex(mem_d[0]);
-  if (cuda_aware) {
-    send_ptr = complex;
-    recv_ptr = temp_ptr;
-  } else {
-    send_ptr = cuFFT<T>::complex(mem_h[0]);
-    recv_ptr = cuFFT<T>::complex(mem_h[1]);
-    CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
-    CUDA_CALL(cudaDeviceSynchronize());
-  }
-  timer->stop_store("Transpose (Packing)");
-
-  timer->stop_store("Transpose (Start All2All)");
-  MPI_Alltoallw(send_ptr, sendcounts.data(), sdispls.data(), MPI_SND.data(), 
-                recv_ptr, recvcounts.data(), rdispls.data(), MPI_PENCILS.data(), comm);
-  timer->stop_store("Transpose (Finished All2All)");
-
-  if (!cuda_aware) {
-      CUDA_CALL(cudaMemcpyAsync(temp_ptr, recv_ptr, output_size_z*output_sizes_y[pidx]*output_size_x*sizeof(C_t), cudaMemcpyHostToDevice));
+  if (forward) {
+    temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    if (cuda_aware) {
+      send_ptr = complex;
+      recv_ptr = cuFFT<T>::complex(mem_d[1]);
+    } else {
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+      recv_ptr = cuFFT<T>::complex(mem_h[1]);
+      CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
       CUDA_CALL(cudaDeviceSynchronize());
+    }
+    timer->stop_store("Transpose (Packing)");
+
+    timer->stop_store("Transpose (Start All2All)");
+    MPI_Alltoallv(send_ptr, sendcounts.data(), sdispls.data(), MPI_BYTE, 
+                  recv_ptr, recvcounts.data(), rdispls.data(), MPI_BYTE, comm);
+    timer->stop_store("Transpose (Finished All2All)");
+
+    for (int p = 0; p < pcnt; p++) {
+      size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
+
+      CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x,
+          &recv_ptr[oslice], sizeof(C_t)*input_sizes_x[p], 
+          sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
+          cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
+    }  
+    CUDA_CALL(cudaDeviceSynchronize());
+    timer->stop_store("Transpose (Finished Receive)");
+  } else {
+    C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    C_t *copy_ptr = complex;
+    if (cuda_aware) {
+      send_ptr = cuFFT<T>::complex(mem_d[1]);
+      recv_ptr = complex; // = copy_ptr
+    } else {
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+      recv_ptr = cuFFT<T>::complex(mem_h[1]);
+    }
+
+    for (int p = 0; p < pcnt; p++) {
+      size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
+      CUDA_CALL(cudaMemcpy2DAsync(&send_ptr[oslice], sizeof(C_t)*input_sizes_x[p],
+              &temp_ptr[input_start_x[p]], sizeof(C_t)*output_size_x, 
+              sizeof(C_t)*input_sizes_x[p], output_size_z*output_sizes_y[pidx],
+              cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyDeviceToHost, streams[p]));
+    }
+    CUDA_CALL(cudaDeviceSynchronize());
+    timer->stop_store("Transpose (Packing)");
+
+    timer->stop_store("Transpose (Start All2All)");
+    MPI_Alltoallv(send_ptr, recvcounts.data(), rdispls.data(), MPI_BYTE, 
+                  recv_ptr, sendcounts.data(), sdispls.data(), MPI_BYTE, comm);
+    timer->stop_store("Transpose (Finished All2All)");
+
+    if (!cuda_aware) {
+      CUDA_CALL(cudaMemcpyAsync(copy_ptr, recv_ptr, input_sizes_x[pidx]*output_size_z*input_size_y*sizeof(C_t), cudaMemcpyHostToDevice));
+      CUDA_CALL(cudaDeviceSynchronize());
+    }
+    timer->stop_store("Transpose (Finished Receive)");
   }
-  timer->stop_store("Transpose (Finished Receive)");
 }
 
 template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::All2All_Communication(void *complex_) {
+void MPIcuFFT_Slab_Opt1<T>::All2All_MPIType(void *complex_, bool forward) {
+  using C_t = typename cuFFT<T>::C_t;
+  C_t *complex = cuFFT<T>::complex(complex_);
+  C_t *recv_ptr, *send_ptr, *temp_ptr;
+
+  if (forward) {
+    temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    if (cuda_aware) {
+      send_ptr = complex;
+      recv_ptr = temp_ptr;
+    } else {
+      send_ptr = cuFFT<T>::complex(mem_h[0]);
+      recv_ptr = cuFFT<T>::complex(mem_h[1]);
+      CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
+      CUDA_CALL(cudaDeviceSynchronize());
+    }
+    timer->stop_store("Transpose (Packing)");
+
+    timer->stop_store("Transpose (Start All2All)");
+    MPI_Alltoallw(send_ptr, sendcounts.data(), sdispls.data(), MPI_SND.data(), 
+                  recv_ptr, recvcounts.data(), rdispls.data(), MPI_PENCILS.data(), comm);
+    timer->stop_store("Transpose (Finished All2All)");
+
+    if (!cuda_aware) {
+        CUDA_CALL(cudaMemcpyAsync(temp_ptr, recv_ptr, output_size_z*output_sizes_y[pidx]*output_size_x*sizeof(C_t), cudaMemcpyHostToDevice));
+        CUDA_CALL(cudaDeviceSynchronize());
+    }
+    timer->stop_store("Transpose (Finished Receive)");
+  } else {
+    temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    C_t *copy_ptr = complex;
+    if (cuda_aware) {
+      send_ptr = temp_ptr;
+      recv_ptr = complex;
+    } else {
+      send_ptr = cuFFT<T>::complex(mem_h[1]);
+      recv_ptr = cuFFT<T>::complex(mem_h[0]);
+      CUDA_CALL(cudaMemcpyAsync(send_ptr, temp_ptr, sizeof(C_t)*output_size_z*output_sizes_y[pidx]*output_size_x, cudaMemcpyDeviceToHost));
+      CUDA_CALL(cudaDeviceSynchronize());
+    }
+    timer->stop_store("Transpose (Packing)");
+
+    timer->stop_store("Transpose (Start All2All)");
+    MPI_Alltoallw(send_ptr, recvcounts.data(), rdispls.data(), MPI_PENCILS.data(), 
+                  recv_ptr, sendcounts.data(), sdispls.data(), MPI_SND.data(), comm);
+    timer->stop_store("Transpose (Finished All2All)");
+
+    if (!cuda_aware) {
+        CUDA_CALL(cudaMemcpyAsync(copy_ptr, recv_ptr, input_sizes_x[pidx]*input_size_y*output_size_z*sizeof(C_t), cudaMemcpyHostToDevice));
+        CUDA_CALL(cudaDeviceSynchronize());
+    }
+    timer->stop_store("Transpose (Finished Receive)");
+  }
+}
+
+template<typename T> 
+void MPIcuFFT_Slab_Opt1<T>::All2All_Communication(void *complex_, bool forward) {
   if (config.send_method == Sync)
-    this->All2All_Sync(complex_);
+    this->All2All_Sync(complex_, forward);
   else 
-    this->All2All_MPIType(complex_);
+    this->All2All_MPIType(complex_, forward);
 }
 
 template<typename T> 
 void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
   if (!initialized) 
     return;
+
+  forward = true;
 
   using R_t = typename cuFFT<T>::R_t;
   using C_t = typename cuFFT<T>::C_t;
@@ -500,6 +692,55 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
       timer->gather();
   else 
       config.warmup_rounds--;
+}
+
+template<typename T> 
+void MPIcuFFT_Slab_Opt1<T>::execC2R(void *out, const void *in) {
+  if (!initialized) 
+    return;
+
+  forward = false;
+
+  using R_t = typename cuFFT<T>::R_t;
+  using C_t = typename cuFFT<T>::C_t;
+
+  C_t *complex = cuFFT<T>::complex(in);
+  R_t *real    = cuFFT<T>::real(out);
+
+  timer->start();
+  if (fft3d) {
+    CUFFT_CALL(cuFFT<T>::execC2R(planC2R, complex, real));
+    CUDA_CALL(cudaDeviceSynchronize());
+  } else {
+    C_t *temp_ptr, *copy_ptr;
+    temp_ptr = cuFFT<T>::complex(mem_d[0]);
+    copy_ptr = complex;
+
+    // compute 1d complex to complex FFT in x direction
+    CUFFT_CALL(cuFFT<T>::execC2C(planC2C_inv, complex, temp_ptr, CUFFT_INVERSE));
+    CUDA_CALL(cudaDeviceSynchronize());
+    timer->stop_store("1D FFT X-Direction");
+
+    if (config.comm_method == Peer2Peer) 
+      Peer2Peer_Communication((void *)complex, false);
+    else 
+      All2All_Communication((void *)complex, false);
+
+    CUFFT_CALL(cuFFT<T>::execC2R(planC2R, copy_ptr, real));
+    CUDA_CALL(cudaDeviceSynchronize());
+    timer->stop_store("2D FFT Y-Z-Direction");
+
+    if (config.comm_method == Peer2Peer) {
+      if (config.send_method == Streams)
+        mpisend_thread.join();
+      MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
+    }
+    timer->stop_store("Run complete");
+    if (config.warmup_rounds == 0) 
+        timer->gather();
+    else 
+        config.warmup_rounds--;
+  }
 }
 
 template class MPIcuFFT_Slab_Opt1<float>;

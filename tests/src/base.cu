@@ -16,4 +16,5 @@ __global__ void scaleUniformArrayDouble(cuFFT<double>::R_t* data_d, cuFFT<double
 
 decltype(curandGenerateUniformDouble)* Random_Tests<double>::generateUniform = curandGenerateUniformDouble;
 decltype(cublasDzasum)* Random_Tests<double>::cublasSum = cublasDzasum;
+decltype(cublasDasum)* Random_Tests<double>::cublasSumInv = cublasDasum;
 decltype(scaleUniformArrayDouble)* Random_Tests<double>::scaleUniformArray = scaleUniformArrayDouble;
