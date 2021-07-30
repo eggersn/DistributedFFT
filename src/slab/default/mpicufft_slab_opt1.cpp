@@ -12,7 +12,11 @@
     printf("Error %d at %s:%d\n",x,__FILE__,__LINE__);  \
     exit(EXIT_FAILURE); }} while(0)
 
-
+template<typename T>
+MPIcuFFT_Slab_Opt1<T>::~MPIcuFFT_Slab_Opt1() {
+  if (planC2C_inv)
+    CUFFT_CALL(cufftDestroy(planC2C_inv));
+}
 
 template<typename T>
 void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partition, bool allocate) {

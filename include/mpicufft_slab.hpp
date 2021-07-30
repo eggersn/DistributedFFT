@@ -8,7 +8,6 @@
 #include <thread> 
 #include <mutex>
 #include <condition_variable>
-#include "cufft.hpp"
 
 /*! \page Slab_Decomposition
     - ZY_Then_X (default)

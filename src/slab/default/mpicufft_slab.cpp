@@ -55,6 +55,7 @@ MPIcuFFT_Slab<T>::MPIcuFFT_Slab(Configurations config, MPI_Comm comm, int max_wo
 
   planR2C = 0;
   planC2C = 0;
+  planC2R = 0;
 
   for (int i = 1; i < pcnt; i++)
     comm_order.push_back((pidx + i) % pcnt);
@@ -72,6 +73,8 @@ MPIcuFFT_Slab<T>::~MPIcuFFT_Slab() {
         CUFFT_CALL(cufftDestroy(planR2C));
     if (planC2C) 
         CUFFT_CALL(cufftDestroy(planC2C));
+    if (planC2R) 
+        CUFFT_CALL(cufftDestroy(planC2R));
 
     delete timer;
 }
@@ -237,6 +240,7 @@ void MPIcuFFT_Slab<T>::setWorkArea(void *device, void *host) {
   
   if (fft3d) {
     CUFFT_CALL(cufftSetWorkArea(planR2C, mem_d[0]));
+    CUFFT_CALL(cufftSetWorkArea(planC2R, mem_d[0]));
   } else {
     CUFFT_CALL(cufftSetWorkArea(planR2C, mem_d[!cuda_aware || config.send_method == MPI_Type ? 1 : 2]));
     CUFFT_CALL(cufftSetWorkArea(planC2R, mem_d[!cuda_aware || config.send_method == MPI_Type ? 1 : 2]));
@@ -539,9 +543,6 @@ void MPIcuFFT_Slab<T>::Peer2Peer_Communication(void *complex_, bool forward) {
       recv_ptr = cuFFT<T>::complex(mem_h[0]);
       send_ptr = cuFFT<T>::complex(mem_h[1]);
     }
-
-    recv_req[pidx] = MPI_REQUEST_NULL;
-    send_req[pidx] = MPI_REQUEST_NULL;   
 
     if (config.send_method == MPI_Type) {
       if (cuda_aware)

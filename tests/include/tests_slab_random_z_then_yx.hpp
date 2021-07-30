@@ -9,6 +9,7 @@ public:
 protected:
     int testcase0(const int opt, const int runs);
     int testcase1(const int opt, const int runs);
+    int testcase2(const int opt, const int runs);
     int compute(const int rank, const int world_size, const int opt, const int runs);
     int coordinate(const int world_size, const int runs);
 

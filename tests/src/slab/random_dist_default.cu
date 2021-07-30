@@ -456,7 +456,12 @@ int Tests_Slab_Random_Default<T>::testcase2(const int opt, const int runs){
         Difference_Slab_Default::Difference<T>::differenceInv<<<(N1*Ny*Nz)/1024+1, 1024>>>(inv_d, in_d, N1*Ny*Nz, Nx*Ny*Nz);
         T sum = 0;
         CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, N1*Ny*Nz, inv_d, 1, &sum));
-        std::cout << "Result " << rank << ": " << sum << std::endl;
+        
+        double globalsum = 0;
+        double sum_d = static_cast<double>(sum);
+        MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        if (rank == 0)
+            std::cout << "Result: " << globalsum << std::endl;
     }
     
     CUBLAS_CALL(cublasDestroy(handle));

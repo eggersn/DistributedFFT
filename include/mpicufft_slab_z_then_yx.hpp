@@ -19,6 +19,7 @@ public:
     void setWorkArea(void *device=nullptr, void *host=nullptr);
 
     virtual void execR2C(void *out, const void *in);
+    virtual void execC2R(void *out, const void *in);
 
     inline void getInSize(size_t *isize) { isize[0] = input_sizes_x[pidx]; isize[1] = input_size_y; isize[2] = input_size_z; };
     inline void getInStart(size_t *istart) { istart[0] = input_start_x[pidx]; istart[1] = 0; istart[2] = 0; };
@@ -41,19 +42,19 @@ protected:
     void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
     //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Communication(void *complex_);
+    virtual void Peer2Peer_Communication(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Sync(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Streams(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Streams(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_MPIType(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Communication(void *complex_);
+    virtual void All2All_Communication(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Sync(void *complex_);
+    virtual void All2All_Sync(void *complex_, bool forward=true);
     //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_MPIType(void *complex_);
+    virtual void All2All_MPIType(void *complex_, bool forward=true);
 
     using MPIcuFFT<T>::config;
     using MPIcuFFT<T>::comm;
@@ -83,6 +84,7 @@ protected:
 
     cufftHandle planR2C;
     cufftHandle planC2C;
+    cufftHandle planC2R;
 
     std::vector<size_t> input_sizes_x;
     std::vector<size_t> input_start_x;
@@ -95,9 +97,9 @@ protected:
     std::vector<cudaStream_t> streams;
 
     size_t input_size_y, input_size_z;
-    size_t output_size_x, output_size_y;
+    size_t output_size_x, output_size_y, output_size_z;
 
-      Timer *timer;
+    Timer *timer;
 
     std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "Transpose (First Send)", "Transpose (Packing)", 
         "Transpose (Start Local Transpose)",  "Transpose (Start Receive)", "Transpose (Finished Receive)", "Transpose (Start All2All)", "Transpose (Finished All2All)",
@@ -117,4 +119,6 @@ protected:
     std::vector<int> sdispls;
     std::vector<int> recvcounts;
     std::vector<int> rdispls;
+
+    bool forward=true;
 };

@@ -54,6 +54,8 @@ template<typename T> class MPIcuFFT_Slab_Opt1 : public MPIcuFFT_Slab<T> {
 public: 
     MPIcuFFT_Slab_Opt1 (Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1) :
       MPIcuFFT_Slab<T>(config, comm, max_world_size) {}
+
+    ~MPIcuFFT_Slab_Opt1();
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true);
     void initFFT(GlobalSize *global_size, bool allocate=true) {
       this->initFFT(global_size, nullptr, allocate);
