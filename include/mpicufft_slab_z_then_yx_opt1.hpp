@@ -7,10 +7,13 @@ public:
     MPIcuFFT_Slab_Z_Then_YX_Opt1 (Configurations config, MPI_Comm comm=MPI_COMM_WORLD, int max_world_size=-1) :
         MPIcuFFT_Slab_Z_Then_YX<T>(config, comm, max_world_size) {}
 
+    ~MPIcuFFT_Slab_Z_Then_YX_Opt1();
+
     void initFFT(GlobalSize *global_size, Partition *partition, bool allocate=true) { initFFT(global_size, allocate); }
     void initFFT(GlobalSize *global_size, bool allocate=true);
 
     void execR2C(void *out, const void *in);
+    void execC2R(void *out, const void *in);
 
 protected:
     struct Callback_Params_Base {
@@ -27,13 +30,13 @@ protected:
     static void CUDART_CB MPIsend_Callback(void *data);
     void MPIsend_Thread(Callback_Params_Base &params, void *ptr);
 
-    void Peer2Peer_Communication(void *complex_);
-    void Peer2Peer_Sync(void *complex_, void *recv_ptr_);
-    void Peer2Peer_Streams(void *complex_, void *recv_ptr_);
-    void Peer2Peer_MPIType(void *complex_, void *recv_ptr_);
-    void All2All_Communication(void *complex_);
-    void All2All_Sync(void *complex_);
-    void All2All_MPIType(void *complex_);
+    void Peer2Peer_Communication(void *complex_, bool forward=true);
+    void Peer2Peer_Sync(void *complex_, void *recv_ptr_, bool forward=true);
+    void Peer2Peer_Streams(void *complex_, void *recv_ptr_, bool forward=true);
+    void Peer2Peer_MPIType(void *complex_, void *recv_ptr_, bool forward=true);
+    void All2All_Communication(void *complex_, bool forward=true);
+    void All2All_Sync(void *complex_, bool forward=true);
+    void All2All_MPIType(void *complex_, bool forward=true);
 
     using MPIcuFFT_Slab_Z_Then_YX<T>::config;
     using MPIcuFFT_Slab_Z_Then_YX<T>::comm;
@@ -63,6 +66,8 @@ protected:
 
     using MPIcuFFT_Slab_Z_Then_YX<T>::planR2C;
     using MPIcuFFT_Slab_Z_Then_YX<T>::planC2C;
+    using MPIcuFFT_Slab_Z_Then_YX<T>::planC2R;
+    cufftHandle planC2C_inv;
 
     using MPIcuFFT_Slab_Z_Then_YX<T>::input_sizes_x;
     using MPIcuFFT_Slab_Z_Then_YX<T>::input_start_x;
@@ -97,4 +102,6 @@ protected:
     using MPIcuFFT_Slab_Z_Then_YX<T>::sdispls;
     using MPIcuFFT_Slab_Z_Then_YX<T>::recvcounts;
     using MPIcuFFT_Slab_Z_Then_YX<T>::rdispls;
+
+    using MPIcuFFT_Slab_Z_Then_YX<T>::forward;
 };
