@@ -50,6 +50,56 @@ namespace Difference_Slab_Default {
             array1[i] -= scalar * array2[i];
         }
     }
+
+    __global__ void derivativeCoefficients(cuFFT<float>::C_t* out, int Nx, int Ny, int Nz, int Ny_offset, int N2){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if (i < Nx*N2*(Nz/2+1)) {
+            // get loop variables
+            int z = i % (Nz/2+1);
+            int y = (i-z)/(Nz/2+1) % N2;
+            int x = (i-z-y*(Nz/2+1)) / (N2*(Nz/2+1));
+
+            int k1 = 0, k2 = 0, k3 = 0;
+
+            if (x < Nx/2) k1 = x;
+            else if (x > (int)(Nx/2)) k1 = Nx - x;
+
+            if (y+Ny_offset < Ny/2) k2 = y+Ny_offset;
+            else if (y+Ny_offset > (int)(Ny/2)) k2 = Ny - y - Ny_offset;
+
+            if (z < Nz/2) k3 = z;
+
+            double scale = -powf(k1, 2)-powf(k2, 2)-powf(k3, 2);
+
+            out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].x = static_cast<float>(static_cast<double>(out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].x)*scale/sqrtf(Nx*Ny*Nz));
+            out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].y = static_cast<float>(static_cast<double>(out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].y)*scale/sqrtf(Nx*Ny*Nz));
+        }
+    }
+
+    __global__ void derivativeCoefficients(cuFFT<double>::C_t* out, int Nx, int Ny, int Nz, int Ny_offset, int N2){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if (i < Nx*N2*(Nz/2+1)) {
+            // get loop variables
+            int z = i % (Nz/2+1);
+            int y = (i-z)/(Nz/2+1) % N2;
+            int x = (i-z-y*(Nz/2+1)) / (N2*(Nz/2+1));
+
+            int k1 = 0, k2 = 0, k3 = 0;
+
+            if (x < Nx/2) k1 = x;
+            else if (x > (int)(Nx/2)) k1 = Nx - x;
+
+            if (y+Ny_offset < Ny/2) k2 = y+Ny_offset;
+            else if (y+Ny_offset > (int)(Ny/2)) k2 = Ny - y - Ny_offset;
+
+            if (z < Nz/2) k3 = z;
+
+            double scale = -powf(k1, 2)-powf(k2, 2)-powf(k3, 2);
+
+            out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].x = out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].x*scale/sqrtf(Nx*Ny*Nz);
+            out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].y = out[x*N2*(Nz/2+1)+y*(Nz/2+1)+z].y*scale/sqrtf(Nx*Ny*Nz);
+        }
+    }
     
     template<typename T> 
     struct Difference { 
@@ -75,6 +125,10 @@ int Tests_Slab_Random_Default<T>::run(const int testcase, const int opt, const i
         return this->testcase1(opt, runs);
     else if (testcase == 2)
         return this->testcase2(opt, runs);
+    else if (testcase == 3)
+        return this->testcase3(opt, runs);
+    else if (testcase == 4)
+        return this->testcase4(opt, runs);
     return -1;
 }
 
@@ -393,6 +447,74 @@ int Tests_Slab_Random_Default<T>::testcase2(const int opt, const int runs){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
     int provided;
+    //initialize MPI
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
+    size_t N1=Nx/world_size;
+    size_t N2=Ny/world_size;
+    if (rank < Nx%world_size)
+        N1++;
+    if (rank < Ny%world_size)
+        N2++;
+
+    R_t *inv_d;
+    C_t *out_d;
+
+    size_t out_size = std::max(N1*Ny*(Nz/2+1), Nx*N2*(Nz/2+1));
+
+    //allocate memory (device)
+    CUDA_CALL(cudaMalloc((void **)&inv_d, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+    
+    MPIcuFFT_Slab<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Slab_Opt1<T>(config, MPI_COMM_WORLD, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Slab<T>(config, MPI_COMM_WORLD, world_size);
+        
+
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, true);
+    
+    //execute
+    for (int i = 0; i < runs; i++){
+        this->initializeRandArray(out_d, 2*N1);
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execC2R(inv_d, out_d);
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+    
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(inv_d));
+    CUDA_CALL(cudaFree(out_d));
+
+    delete mpicuFFT;
+    return 0;
+}
+
+template<typename T> 
+int Tests_Slab_Random_Default<T>::testcase3(const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+    int provided;
     cublasHandle_t handle;
     //initialize MPI
     MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
@@ -462,6 +584,132 @@ int Tests_Slab_Random_Default<T>::testcase2(const int opt, const int runs){
         MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         if (rank == 0)
             std::cout << "Result: " << globalsum << std::endl;
+    }
+    
+    CUBLAS_CALL(cublasDestroy(handle));
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(in_d));
+    CUDA_CALL(cudaFree(inv_d));
+    CUDA_CALL(cudaFree(out_d));
+
+    delete mpicuFFT;
+    return 0;
+}
+
+template<typename T> 
+int Tests_Slab_Random_Default<T>::testcase4(const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+    int provided;
+    cublasHandle_t handle;
+    //initialize MPI
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
+    size_t N1=Nx/world_size;
+    size_t N2=Ny/world_size;
+    if (rank < Nx%world_size)
+        N1++;
+    if (rank < Ny%world_size)
+        N2++;
+
+    size_t Nx_offset = rank * Nx / world_size;
+    if (rank < Nx%world_size)
+        Nx_offset += rank;
+    else 
+        Nx_offset += Nx%world_size;
+
+    size_t Ny_offset = rank * Ny / world_size;
+    if (rank < Ny%world_size)
+        Ny_offset += rank;
+    else 
+        Ny_offset += Ny%world_size;
+
+    R_t *in_d, *inv_d;
+    R_t *in_h;
+    R_t *der_d, *der_h;
+    C_t *out_d, *out_h;
+
+    size_t out_size = std::max(N1*Ny*(Nz/2+1), Nx*N2*(Nz/2+1));
+
+    //allocate memory (device)
+    CUDA_CALL(cudaMalloc((void **)&in_d, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&inv_d, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMallocHost((void **)&in_h, N1*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+    CUDA_CALL(cudaMallocHost((void **)&out_h, out_size*sizeof(C_t)));
+    CUDA_CALL(cudaMalloc((void **)&der_d, N1*Ny*Nz*sizeof(C_t)));
+    CUDA_CALL(cudaMallocHost((void **)&der_h, N1*Ny*Nz*sizeof(C_t)));
+
+    for (int x = 0; x < N1; x++) {
+        for (int y = 0; y < Ny; y++) {
+            for (int z = 0; z < Nz; z++) {
+                in_h[x*Ny*Nz+y*Nz+z] = (T)(sin(2.0*M_PI*(Nx_offset+x)/Nx)*sin(2.0*M_PI*y/Ny)*sin(2.0*M_PI*z/Nz));
+            }
+        }
+    }
+
+    for (int x = 0; x < N1; x++) {
+        for (int y = 0; y < Ny; y++) {
+            for (int z = 0; z < Nz; z++) {
+                der_h[x*Ny*Nz+y*Nz+z] = -3.0*sqrt(Nx*Ny*Nz)*sin(2*M_PI*(x+Nx_offset)/Nx)*sin(2*M_PI*y/Ny)*sin(2*M_PI*z/Nz);
+            }
+        }
+    }
+
+    CUDA_CALL(cudaMemcpyAsync(in_d, in_h, N1*Ny*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
+    CUDA_CALL(cudaMemcpyAsync(der_d, der_h, N1*Ny*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
+    CUDA_CALL(cudaDeviceSynchronize());
+    
+    MPIcuFFT_Slab<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Slab_Opt1<T>(config, MPI_COMM_WORLD, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Slab<T>(config, MPI_COMM_WORLD, world_size);
+        
+
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, true);
+    CUBLAS_CALL(cublasCreate(&handle));
+    
+    //execute
+    for (int i = 0; i < runs; i++){
+        mpicuFFT->execR2C(out_d, in_d);
+
+        Difference_Slab_Default::derivativeCoefficients<<<(Nx*N2*(Nz/2+1))/1024+1, 1024>>>(out_d, Nx, Ny, Nz, Ny_offset, N2);
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execC2R(inv_d, out_d);
+
+        //compare difference
+        Difference_Slab_Default::Difference<T>::differenceInv<<<(N1*Ny*Nz)/1024+1, 1024>>>(inv_d, der_d, N1*Ny*Nz, 1);
+        T sum = 0;
+        CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, N1*Ny*Nz, inv_d, 1, &sum));
+        
+        double globalsum = 0;
+        double sum_d = static_cast<double>(sum);
+        MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        if (rank == 0)
+            std::cout << "Result: " << globalsum << std::endl;
+
+        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     CUBLAS_CALL(cublasDestroy(handle));
