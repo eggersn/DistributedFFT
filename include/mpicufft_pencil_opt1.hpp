@@ -38,34 +38,34 @@ protected:
     }
 
     //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Communication_FirstTranspose(void *complex_);
+    virtual void Peer2Peer_Communication_FirstTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Communication_FirstTranspose(void *complex_);
+    virtual void All2All_Communication_FirstTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Sync_FirstTranspose(void *complex_);
+    virtual void All2All_Sync_FirstTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_MPIType_FirstTranspose(void *complex_);
+    virtual void All2All_MPIType_FirstTranspose(void *complex_, bool forward=true);
 
     //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Communication_SecondTranspose(void *complex_);
+    virtual void Peer2Peer_Communication_SecondTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Sync_SecondTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Sync_SecondTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Streams_SecondTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Streams_SecondTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_MPIType_SecondTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_MPIType_SecondTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Communication_SecondTranspose(void *complex_);
+    virtual void All2All_Communication_SecondTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Sync_SecondTranspose(void *complex_);
+    virtual void All2All_Sync_SecondTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_MPIType_SecondTranspose(void *complex_);
+    virtual void All2All_MPIType_SecondTranspose(void *complex_, bool forward=true);
 
     using MPIcuFFT_Pencil<T>::config;
     using MPIcuFFT_Pencil<T>::comm;

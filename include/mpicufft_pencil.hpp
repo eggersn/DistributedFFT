@@ -82,6 +82,7 @@ public:
     *   - 1D FFT (x-direction): size(out) >= Nx*out_dim.size_y[pidx_i]*out_dim.size_z[pidx_j]
     */
     virtual void execR2C(void *out, const void *in) { this->execR2C(out, in, 3);}
+    virtual void execC2R(void *out, const void *in) { this->execC2R(out, in, 3);}
     /**
     * \brief Computes the FFT in its first d dimensions as illustrated by \ref Visualisation.
     * @param out is reused for each 1D cuFFT computation. Therefore is must hold that:
@@ -90,6 +91,7 @@ public:
     *   - 1D FFT (x-direction): size(out) >= Nx*out_dim.size_y[pidx_i]*out_dim.size_z[pidx_j]
     */
     virtual void execR2C(void *out, const void *in, int d);
+    virtual void execC2R(void *out, const void *in, int d);
     void getPartitionDimensions(Partition_Dimensions &input_dim_, Partition_Dimensions &transposed_dim_, Partition_Dimensions &output_dim_) {
         input_dim_ = input_dim;
         transposed_dim_ = transposed_dim;
@@ -134,34 +136,34 @@ protected:
     }
 
     //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Communication_FirstTranspose(void *complex_);
+    virtual void Peer2Peer_Communication_FirstTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Communication_FirstTranspose(void *complex_);
+    virtual void All2All_Communication_FirstTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Sync_FirstTranspose(void *complex_);
+    virtual void All2All_Sync_FirstTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_MPIType_FirstTranspose(void *complex_);
+    virtual void All2All_MPIType_FirstTranspose(void *complex_, bool forward=true);
 
     //! \brief This method implements the Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Communication_SecondTranspose(void *complex_);
+    virtual void Peer2Peer_Communication_SecondTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Sync_SecondTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Sync_SecondTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a Streams Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_Streams_SecondTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_Streams_SecondTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the \a MPI_Type Peer2Peer communication method described in \ref Communication_Methods. 
-    virtual void Peer2Peer_MPIType_SecondTranspose(void *complex_, void *recv_ptr_);
+    virtual void Peer2Peer_MPIType_SecondTranspose(void *complex_, void *recv_ptr_, bool forward=true);
     //! \brief This method implements the All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Communication_SecondTranspose(void *complex_);
+    virtual void All2All_Communication_SecondTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a Sync (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_Sync_SecondTranspose(void *complex_);
+    virtual void All2All_Sync_SecondTranspose(void *complex_, bool forward=true);
     //! \brief This method implements the \a MPI_Type (default) All2All communication method described in \ref Communication_Methods. 
-    virtual void All2All_MPIType_SecondTranspose(void *complex_);
+    virtual void All2All_MPIType_SecondTranspose(void *complex_, bool forward=true);
 
     using MPIcuFFT<T>::config;
     using MPIcuFFT<T>::comm;
@@ -204,6 +206,7 @@ protected:
     std::vector<cudaStream_t> streams;
 
     cufftHandle planR2C; 
+    cufftHandle planC2R; 
     std::vector<cufftHandle> planC2C_0;
     cufftHandle planC2C_1; 
 
@@ -245,4 +248,6 @@ protected:
         "Transpose (Finished All2All)", "1D FFT Y-Direction", 
         "Second Transpose (Preparation)", "Second Transpose (First Send)", "Second Transpose (Packing)", "Second Transpose (Start Local Transpose)", 
         "Second Transpose (Start Receive)", "Second Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
+
+    bool forward = true;
 };

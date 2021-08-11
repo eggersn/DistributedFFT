@@ -543,7 +543,6 @@ int Tests_Slab_Random_Default<T>::testcase3(const int opt, const int runs){
         N2++;
 
     R_t *in_d, *inv_d;
-    R_t *in_h, *inv_h;
     C_t *out_d;
 
     size_t out_size = std::max(N1*Ny*(Nz/2+1), Nx*N2*(Nz/2+1));
@@ -551,8 +550,6 @@ int Tests_Slab_Random_Default<T>::testcase3(const int opt, const int runs){
     //allocate memory (device)
     CUDA_CALL(cudaMalloc((void **)&in_d, N1*Ny*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&inv_d, N1*Ny*Nz*sizeof(R_t)));
-    CUDA_CALL(cudaMallocHost((void **)&in_h, N1*Ny*Nz*sizeof(R_t)));
-    CUDA_CALL(cudaMallocHost((void **)&inv_h, N1*Ny*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
     
     MPIcuFFT_Slab<T> *mpicuFFT;

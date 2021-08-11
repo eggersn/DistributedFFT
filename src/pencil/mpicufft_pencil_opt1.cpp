@@ -371,7 +371,7 @@ void MPIcuFFT_Pencil_Opt1<T>::setWorkArea(void *device, void *host){
 *  *********************************************************************************************************************** */
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_FirstTranspose(void *complex_, void *recv_ptr_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -406,7 +406,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_FirstTranspose(void *complex_, void
 } 
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, void *recv_ptr_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -447,7 +447,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, v
 } 
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_FirstTranspose(void *complex_, void *recv_ptr_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -480,7 +480,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_FirstTranspose(void *complex_, v
 } 
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *complex_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr, *temp_ptr; 
@@ -575,7 +575,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
 *  *********************************************************************************************************************** */
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_FirstTranspose(void* complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_FirstTranspose(void* complex_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;
@@ -613,7 +613,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_FirstTranspose(void* complex_) {
 }
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_FirstTranspose(void* complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_FirstTranspose(void* complex_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;
@@ -642,7 +642,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_FirstTranspose(void* complex_) {
 }
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::All2All_Communication_FirstTranspose(void* complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::All2All_Communication_FirstTranspose(void* complex_, bool forward) {
     if (config.send_method == Sync)
         this->All2All_Sync_FirstTranspose(complex_);
     else   
@@ -656,7 +656,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Communication_FirstTranspose(void* complex
 *  *********************************************************************************************************************** */
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_SecondTranspose(void *complex_, void* recv_ptr_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_SecondTranspose(void *complex_, void* recv_ptr_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -690,7 +690,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_SecondTranspose(void *complex_, voi
 }
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, void* recv_ptr_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, void* recv_ptr_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -728,7 +728,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, 
 }
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_SecondTranspose(void *complex_, void* recv_ptr_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_SecondTranspose(void *complex_, void* recv_ptr_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr = cuFFT<T>::complex(recv_ptr_);
@@ -760,7 +760,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_SecondTranspose(void *complex_, 
 }
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *complex_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *recv_ptr, *temp_ptr; 
@@ -854,7 +854,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
 *  *********************************************************************************************************************** */
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;
@@ -893,7 +893,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_) {
 }
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_SecondTranspose(void *complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_SecondTranspose(void *complex_, bool forward) {
     using C_t = typename cuFFT<T>::C_t;
     C_t *complex = cuFFT<T>::complex(complex_);
     C_t *send_ptr, *recv_ptr, *temp_ptr;
@@ -923,7 +923,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_SecondTranspose(void *complex_) {
 }
 
 template<typename T>
-void MPIcuFFT_Pencil_Opt1<T>::All2All_Communication_SecondTranspose(void *complex_) {
+void MPIcuFFT_Pencil_Opt1<T>::All2All_Communication_SecondTranspose(void *complex_, bool forward) {
     if (config.send_method2 == MPI_Type) 
         this->All2All_MPIType_SecondTranspose(complex_);
     else 

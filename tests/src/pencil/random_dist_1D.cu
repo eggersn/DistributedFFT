@@ -43,16 +43,34 @@ namespace Difference_Pencil_1D {
         }
     }
     
+    __global__ void differenceFloatInv(cuFFT<float>::R_t* array1, cuFFT<float>::R_t* array2, int n, cuFFT<float>::R_t scalar){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i] -= scalar * array2[i];
+        }
+    }
+    
+    __global__ void differenceDoubleInv(cuFFT<double>::R_t* array1, cuFFT<double>::R_t* array2, int n, cuFFT<double>::R_t scalar){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i < n) {
+            array1[i] -= scalar * array2[i];
+        }
+    }
+    
     template<typename T> 
     struct Difference { 
         static decltype(differenceFloat)* difference;
+        static decltype(differenceFloatInv)* differenceInv;
     };
     template<typename T> decltype(differenceFloat)* Difference<T>::difference = differenceFloat;
+    template<typename T> decltype(differenceFloatInv)* Difference<T>::differenceInv = differenceFloatInv;
     
     template<> struct Difference<double> { 
         static decltype(differenceDouble)* difference;
+        static decltype(differenceDoubleInv)* differenceInv;
     };
     decltype(differenceDouble)* Difference<double>::difference = differenceDouble;
+    decltype(differenceDoubleInv)* Difference<double>::differenceInv = differenceDoubleInv; 
 }
 
 template<typename T> 
@@ -61,6 +79,12 @@ int Tests_Pencil_Random_1D<T>::run(const int testcase, const int opt, const int 
         return this->testcase0(opt, runs);
     else if (testcase == 1)
         return this->testcase1(opt, runs);
+    else if (testcase == 2)
+        return this->testcase2(opt, runs);
+    else if (testcase == 3)
+        return this->testcase3(opt, runs);
+    else if (testcase == 4)
+        return this->testcase4(opt, runs);
     return -1;
 }
 
@@ -405,6 +429,107 @@ int Tests_Pencil_Random_1D<T>::compute(const int rank, const int world_size, con
         CUDA_CALL(cudaFreeHost(send_ptr));
     }
 
+    return 0;
+}
+
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::testcase2(const int opt, const int runs){
+    return 0;
+}
+
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::testcase3(const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+
+    int provided; 
+    cublasHandle_t handle;
+    //initialize MPI
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
+    size_t pidx_i = rank / P2;
+    size_t pidx_j = rank % P2;
+        
+    //initialize MPIcuFFT
+    MPIcuFFT_Pencil<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Pencil_Opt1<T>(config, MPI_COMM_WORLD, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Pencil<T>(config, MPI_COMM_WORLD, world_size);
+
+    Pencil_Partition partition(P1, P2);
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, &partition, true);
+
+    // Allocate Memory
+    Partition_Dimensions input_dim, transposed_dim, output_dim;
+    mpicuFFT->getPartitionDimensions(input_dim, transposed_dim, output_dim);
+
+    size_t out_size = input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1);
+
+    R_t *in_d, *inv_d;
+    C_t *out_d;
+    // C_t *out_h;
+
+    CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&inv_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+    CUBLAS_CALL(cublasCreate(&handle));
+    //allocate memory (host)
+    // out_h = (T *)calloc(out_size, sizeof(C_t));
+
+    for (int i = 0; i < runs; i++) {
+        this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execR2C(out_d, in_d, 1);
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execC2R(inv_d, out_d, 1);
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        //compare difference
+        Difference_Pencil_1D::Difference<T>::differenceInv<<<(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz)/1024+1, 1024>>>(inv_d, in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, Nz);
+        T sum = 0;
+        CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, inv_d, 1, &sum));
+        
+        double globalsum = 0;
+        double sum_d = static_cast<double>(sum);
+        MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        if (rank == 0)
+            std::cout << "Result: " << globalsum << std::endl;
+    }
+
+    // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
+
+    //do stuff with out_h / out_d
+
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(in_d));
+    CUDA_CALL(cudaFree(out_d));
+    // free(out_h);
+
+    return 0;
+}
+
+template<typename T> 
+int Tests_Pencil_Random_1D<T>::testcase4(const int opt, const int runs){
     return 0;
 }
 
