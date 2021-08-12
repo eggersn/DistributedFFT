@@ -1,5 +1,4 @@
 #include "mpicufft_slab_opt1.hpp"
-#include "cuda_profiler_api.h"
 #include "cufft.hpp"
 #include <cuda_runtime_api.h>
 
@@ -162,46 +161,6 @@ void MPIcuFFT_Slab_Opt1<T>::initFFT(GlobalSize *global_size, Partition *partitio
 }
 
 template<typename T> 
-void MPIcuFFT_Slab_Opt1<T>::MPIsend_Callback(void *data) {
-  struct Callback_Params *params = (Callback_Params *)data;
-  struct Callback_Params_Base *base_params = params->base_params;
-  {
-    std::lock_guard<std::mutex> lk(base_params->mutex);
-    base_params->comm_ready.push_back(params->p);
-  }
-  base_params->cv.notify_one();
-}
-
-template<typename T>
-void MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread(Callback_Params_Base &base_params, void *ptr) {
-  using C_t = typename cuFFT<T>::C_t;
-  C_t *send_ptr = (C_t *) ptr;
-
-  for (int i = 0; i < comm_order.size(); i++){
-    std::unique_lock<std::mutex> lk(base_params.mutex);
-    base_params.cv.wait(lk, [&base_params]{return !base_params.comm_ready.empty();});
-
-    int p = base_params.comm_ready.back();
-    base_params.comm_ready.pop_back();
-
-    if (i == 0)
-      timer->stop_store("Transpose (First Send)");
-
-    if (forward) {
-      size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
-      MPI_Isend(&send_ptr[oslice], 
-                sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
-                p, pidx, comm, &(send_req[p]));
-    } else {
-      size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
-      MPI_Isend(&send_ptr[oslice], input_sizes_x[p]*output_size_z*output_sizes_y[pidx]*sizeof(C_t), 
-        MPI_BYTE, p, pidx, comm, &send_req[p]); 
-    }
-    lk.unlock();
-  }
-}
-
-template<typename T> 
 void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Sync(void *complex_, void *recv_ptr_, bool forward) {
   using C_t = typename cuFFT<T>::C_t;
   C_t *complex = cuFFT<T>::complex(complex_);
@@ -264,6 +223,47 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Sync(void *complex_, void *recv_ptr_, bool
 }
 
 template<typename T> 
+void MPIcuFFT_Slab_Opt1<T>::MPIsend_Callback(void *data) {
+  struct Callback_Params *params = (Callback_Params *)data;
+  struct Callback_Params_Base *base_params = params->base_params;
+  {
+    std::lock_guard<std::mutex> lk(base_params->mutex);
+    base_params->comm_ready.push_back(params->p);
+  }
+  base_params->cv.notify_one();
+}
+
+template<typename T>
+void MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread(Callback_Params_Base &base_params, void *ptr) {
+  using C_t = typename cuFFT<T>::C_t;
+  C_t *send_ptr = (C_t *) ptr;
+
+  for (int i = 0; i < comm_order.size(); i++){
+    std::unique_lock<std::mutex> lk(base_params.mutex);
+    base_params.cv.wait(lk, [&base_params]{return !base_params.comm_ready.empty();});
+
+    int p = base_params.comm_ready.back();
+    base_params.comm_ready.pop_back();
+
+    if (i == 0)
+      timer->stop_store("Transpose (First Send)");
+
+    if (forward) {
+      size_t oslice = input_sizes_x[pidx]*output_size_z*output_start_y[p];
+      MPI_Isend(&send_ptr[oslice], 
+                sizeof(C_t)*input_sizes_x[pidx]*output_size_z*output_sizes_y[p], MPI_BYTE, 
+                p, pidx, comm, &(send_req[p]));
+    } else {
+      size_t oslice = input_start_x[p]*output_size_z*output_sizes_y[pidx];
+      MPI_Isend(&send_ptr[oslice], input_sizes_x[p]*output_size_z*output_sizes_y[pidx]*sizeof(C_t), 
+        MPI_BYTE, p, pidx, comm, &send_req[p]); 
+    }
+    lk.unlock();
+  }
+  timer->stop_store("Transpose (Packing)");
+}
+
+template<typename T> 
 void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Streams(void *complex_, void *recv_ptr_, bool forward) {
   using C_t = typename cuFFT<T>::C_t;
   C_t *complex = cuFFT<T>::complex(complex_);
@@ -271,8 +271,12 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Streams(void *complex_, void *recv_ptr_, b
   C_t *send_ptr;
 
   if (forward) {
-    if (!cuda_aware) 
+    if (!cuda_aware) {
       send_ptr = cuFFT<T>::complex(mem_h[0]);
+      // Thread which is used to send the MPI messages
+      mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
+
+    }
 
     for (auto p : comm_order) { 
       // start non-blocking receive for rank p
@@ -300,15 +304,15 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Streams(void *complex_, void *recv_ptr_, b
             p, pidx, comm, &(send_req[p]));
       }
     }   
-    // Thread which is used to send the MPI messages
-    if (!cuda_aware)
-        mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
   } else {
     C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
     if (cuda_aware)
       send_ptr = cuFFT<T>::complex(mem_d[1]);
     else
       send_ptr = cuFFT<T>::complex(mem_h[0]);
+
+    // Thread which is used to send the MPI messages
+    mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
 
     for (auto p : comm_order) {
       MPI_Irecv(&recv_ptr[input_sizes_x[pidx]*output_size_z*output_start_y[p]],
@@ -323,9 +327,6 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Streams(void *complex_, void *recv_ptr_, b
       // Callback function for the specific stream
       CUDA_CALL(cudaLaunchHostFunc(streams[p], this->MPIsend_Callback, (void *)&params_array[p]));    
     }
-    timer->stop_store("Transpose (Packing)");
-    // Thread which is used to send the MPI messages
-    mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
   }
 }
 
@@ -344,6 +345,7 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_MPIType(void *complex_, void *recv_ptr_, b
       CUDA_CALL(cudaMemcpyAsync(send_ptr, complex, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyDeviceToHost));
       CUDA_CALL(cudaDeviceSynchronize());
     }
+    timer->stop_store("Transpose (Packing)");
 
     for (auto p : comm_order) { 
       // start non-blocking receive for rank p
@@ -401,15 +403,17 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_, bool forward
 
       this->Peer2Peer_MPIType(complex_, (void *) recv_ptr);
 
-      timer->stop_store("Transpose (Start Local Transpose)");
 
       // transpose local block
-      size_t oslice = output_size_z*output_start_y[pidx]*input_sizes_x[pidx];
+      timer->stop_store("Transpose (Start Local Transpose)");
+      {
+        size_t oslice = output_size_z*output_start_y[pidx]*input_sizes_x[pidx];
 
-      CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[pidx]], sizeof(C_t)*output_size_x,
-            &complex[oslice], sizeof(C_t)*input_sizes_x[pidx], 
-            sizeof(C_t)*input_sizes_x[pidx], output_size_z*output_sizes_y[pidx],
-            cudaMemcpyDeviceToDevice, streams[pidx]));
+        CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[pidx]], sizeof(C_t)*output_size_x,
+              &complex[oslice], sizeof(C_t)*input_sizes_x[pidx], 
+              sizeof(C_t)*input_sizes_x[pidx], output_size_z*output_sizes_y[pidx],
+              cudaMemcpyDeviceToDevice, streams[pidx]));
+      }
 
       timer->stop_store("Transpose (Start Receive)");
       MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
@@ -439,9 +443,9 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_, bool forward
       else if (config.send_method == Streams)
         this->Peer2Peer_Streams(complex_, (void *) recv_ptr);
 
+      // transpose local block
       timer->stop_store("Transpose (Start Local Transpose)");
       { 
-        // transpose local block
         size_t oslice = output_size_z*output_start_y[pidx]*input_sizes_x[pidx];
 
         CUDA_CALL(cudaMemcpy2DAsync(&temp_ptr[input_start_x[pidx]], sizeof(C_t)*output_size_x,
@@ -614,7 +618,7 @@ void MPIcuFFT_Slab_Opt1<T>::All2All_MPIType(void *complex_, bool forward) {
     C_t *copy_ptr = complex;
     if (cuda_aware) {
       send_ptr = temp_ptr;
-      recv_ptr = complex;
+      recv_ptr = copy_ptr;
     } else {
       send_ptr = cuFFT<T>::complex(mem_h[1]);
       recv_ptr = cuFFT<T>::complex(mem_h[0]);
@@ -691,7 +695,6 @@ void MPIcuFFT_Slab_Opt1<T>::execR2C(void *out, const void *in) {
     }
     timer->stop_store("Run complete");
   }
-  cudaProfilerStop();
   if (config.warmup_rounds == 0) 
       timer->gather();
   else 

@@ -101,9 +101,18 @@ protected:
 
     Timer *timer;
 
-    std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "Transpose (First Send)", "Transpose (Packing)", 
-        "Transpose (Start Local Transpose)",  "Transpose (Start Receive)", "Transpose (Finished Receive)", "Transpose (Start All2All)", "Transpose (Finished All2All)",
-        "2D FFT Y-X-Direction", "Run complete"};
+    std::vector<std::string> section_descriptions = {
+        "init", 
+        "1D FFT Z-Direction", 
+        "Transpose (First Send)", 
+        "Transpose (Packing)", 
+        "Transpose (Start Local Transpose)", 
+        "Transpose (Start Receive)", 
+        "Transpose (Finished Receive)", 
+        "Transpose (Start All2All)", 
+        "Transpose (Finished All2All)",
+        "2D FFT Y-X-Direction", 
+        "Run complete"};
 
     // For Peer2Peer Streams
     std::thread mpisend_thread;

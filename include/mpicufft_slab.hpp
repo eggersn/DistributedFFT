@@ -189,8 +189,19 @@ protected:
   size_t output_size_x, output_size_z;    
 
   Timer *timer;
-  std::vector<std::string> section_descriptions = {"init", "2D FFT (Sync)", "2D FFT Y-Z-Direction", "Transpose (First Send)", "Transpose (Packing)", "Transpose (Start Local Transpose)", 
-    "Transpose (Start Receive)", "Transpose (Finished Receive)", "Transpose (Start All2All)", "Transpose (Finished All2All)", "1D FFT X-Direction", "Run complete"};
+  std::vector<std::string> section_descriptions = {
+    "init", 
+    "2D FFT (Sync)", 
+    "2D FFT Y-Z-Direction", 
+    "Transpose (First Send)", 
+    "Transpose (Packing)", 
+    "Transpose (Start Local Transpose)", 
+    "Transpose (Start Receive)", 
+    "Transpose (Finished Receive)", 
+    "Transpose (Start All2All)", 
+    "Transpose (Finished All2All)", 
+    "1D FFT X-Direction", 
+    "Run complete"};
 
   // For Peer2Peer Streams
   std::thread mpisend_thread;

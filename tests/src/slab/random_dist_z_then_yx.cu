@@ -125,6 +125,10 @@ int Tests_Slab_Random_Z_Then_YX<T>::run(const int testcase, const int opt, const
         return this->testcase1(opt, runs);
     else if (testcase == 2)
         return this->testcase2(opt, runs);
+    else if (testcase == 3)
+        return this->testcase3(opt, runs);
+    else if (testcase == 4)
+        return this->testcase4(opt, runs);
     return -1;
 }
 
@@ -178,11 +182,10 @@ int Tests_Slab_Random_Z_Then_YX<T>::testcase0(const int opt, const int runs){
     GlobalSize global_size(Nx, Ny, Nz);
     mpicuFFT->initFFT(&global_size, true);
     //execute
+    this->initializeRandArray(in_d, N1);
     for (int i = 0; i < runs; i++){
-        this->initializeRandArray(in_d, N1);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d);
-        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
@@ -482,11 +485,10 @@ int Tests_Slab_Random_Z_Then_YX<T>::testcase2(const int opt, const int runs){
     mpicuFFT->initFFT(&global_size, true);
     
     //execute
+    this->initializeRandArray(out_d, 2*N1);
     for (int i = 0; i < runs; i++){
-        this->initializeRandArray(out_d, 2*N1);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execC2R(inv_d, out_d);
-        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     //finalize
@@ -565,15 +567,24 @@ int Tests_Slab_Random_Z_Then_YX<T>::testcase3(const int opt, const int runs){
         MPI_Barrier(MPI_COMM_WORLD);
         //compare difference
         Difference_Slab_Z_Then_YX::Difference<T>::differenceInv<<<(N1*Ny*Nz)/1024+1, 1024>>>(inv_d, in_d, N1*Ny*Nz, Nx*Ny*Nz);
-        T sum = 0;
+        T sum = 0, max = 0;
         CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, N1*Ny*Nz, inv_d, 1, &sum));
+        int maxIndex;
+        CUBLAS_CALL(Random_Tests<T>::cublasMaxIndex(handle, N1*Ny*Nz, inv_d, 1, &maxIndex));
+        CUDA_CALL(cudaMemcpy(&max, inv_d+maxIndex-1, sizeof(T), cudaMemcpyDeviceToHost));
         
         double globalsum = 0;
+        double globalmax = 0;
         double sum_d = static_cast<double>(sum);
+        double max_d = static_cast<double>(max);
         MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        if (rank == 0)
-            std::cout << "Result: " << globalsum << std::endl;
-            
+        MPI_Allreduce(&max_d, &globalmax, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) {
+            std::cout << "Result (avg): " << globalsum / (Nx*Ny*Nz) << std::endl;
+            std::cout << "Result (max): " << globalmax << std::endl;
+        }
+
+        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     CUBLAS_CALL(cublasDestroy(handle));
@@ -689,14 +700,22 @@ int Tests_Slab_Random_Z_Then_YX<T>::testcase4(const int opt, const int runs){
 
         //compare difference
         Difference_Slab_Z_Then_YX::Difference<T>::differenceInv<<<(N1*Ny*Nz)/1024+1, 1024>>>(inv_d, der_d, N1*Ny*Nz, 1);
-        T sum = 0;
+        T sum = 0, max = 0;
         CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, N1*Ny*Nz, inv_d, 1, &sum));
+        int maxIndex;
+        CUBLAS_CALL(Random_Tests<T>::cublasMaxIndex(handle, N1*Ny*Nz, inv_d, 1, &maxIndex));
+        CUDA_CALL(cudaMemcpy(&max, inv_d+maxIndex-1, sizeof(T), cudaMemcpyDeviceToHost));
         
         double globalsum = 0;
+        double globalmax = 0;
         double sum_d = static_cast<double>(sum);
+        double max_d = static_cast<double>(max);
         MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        if (rank == 0)
-            std::cout << "Result: " << globalsum << std::endl;
+        MPI_Allreduce(&max_d, &globalmax, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) {
+            std::cout << "Result (avg): " << globalsum / (Nx*Ny*Nz) << std::endl;
+            std::cout << "Result (max): " << globalmax << std::endl;
+        }
 
         MPI_Barrier(MPI_COMM_WORLD);
     }

@@ -185,11 +185,10 @@ int Tests_Slab_Random_Default<T>::testcase0(const int opt, const int runs){
     mpicuFFT->initFFT(&global_size, true);
     
     //execute
+    this->initializeRandArray(in_d, N1);
     for (int i = 0; i < runs; i++){
-        this->initializeRandArray(in_d, N1);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d);
-        MPI_Barrier(MPI_COMM_WORLD);
     }
 
     // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
@@ -493,11 +492,10 @@ int Tests_Slab_Random_Default<T>::testcase2(const int opt, const int runs){
     mpicuFFT->initFFT(&global_size, true);
     
     //execute
+    this->initializeRandArray(out_d, 2*N1);
     for (int i = 0; i < runs; i++){
-        this->initializeRandArray(out_d, 2*N1);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execC2R(inv_d, out_d);
-        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     //finalize
@@ -573,14 +571,24 @@ int Tests_Slab_Random_Default<T>::testcase3(const int opt, const int runs){
         MPI_Barrier(MPI_COMM_WORLD);
         //compare difference
         Difference_Slab_Default::Difference<T>::differenceInv<<<(N1*Ny*Nz)/1024+1, 1024>>>(inv_d, in_d, N1*Ny*Nz, Nx*Ny*Nz);
-        T sum = 0;
+        T sum = 0, max = 0;
         CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, N1*Ny*Nz, inv_d, 1, &sum));
+        int maxIndex;
+        CUBLAS_CALL(Random_Tests<T>::cublasMaxIndex(handle, N1*Ny*Nz, inv_d, 1, &maxIndex));
+        CUDA_CALL(cudaMemcpy(&max, inv_d+maxIndex-1, sizeof(T), cudaMemcpyDeviceToHost));
         
         double globalsum = 0;
+        double globalmax = 0;
         double sum_d = static_cast<double>(sum);
+        double max_d = static_cast<double>(max);
         MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        if (rank == 0)
-            std::cout << "Result: " << globalsum << std::endl;
+        MPI_Allreduce(&max_d, &globalmax, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) {
+            std::cout << "Result (avg): " << globalsum / (Nx*Ny*Nz) << std::endl;
+            std::cout << "Result (max): " << globalmax << std::endl;
+        }
+
+        MPI_Barrier(MPI_COMM_WORLD);
     }
     
     CUBLAS_CALL(cublasDestroy(handle));
@@ -642,7 +650,7 @@ int Tests_Slab_Random_Default<T>::testcase4(const int opt, const int runs){
     R_t *in_d, *inv_d;
     R_t *in_h;
     R_t *der_d, *der_h;
-    C_t *out_d, *out_h;
+    C_t *out_d;
 
     size_t out_size = std::max(N1*Ny*(Nz/2+1), Nx*N2*(Nz/2+1));
 
@@ -651,7 +659,6 @@ int Tests_Slab_Random_Default<T>::testcase4(const int opt, const int runs){
     CUDA_CALL(cudaMalloc((void **)&inv_d, N1*Ny*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMallocHost((void **)&in_h, N1*Ny*Nz*sizeof(R_t)));
     CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
-    CUDA_CALL(cudaMallocHost((void **)&out_h, out_size*sizeof(C_t)));
     CUDA_CALL(cudaMalloc((void **)&der_d, N1*Ny*Nz*sizeof(C_t)));
     CUDA_CALL(cudaMallocHost((void **)&der_h, N1*Ny*Nz*sizeof(C_t)));
 
@@ -697,14 +704,22 @@ int Tests_Slab_Random_Default<T>::testcase4(const int opt, const int runs){
 
         //compare difference
         Difference_Slab_Default::Difference<T>::differenceInv<<<(N1*Ny*Nz)/1024+1, 1024>>>(inv_d, der_d, N1*Ny*Nz, 1);
-        T sum = 0;
+        T sum = 0, max = 0;
         CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, N1*Ny*Nz, inv_d, 1, &sum));
+        int maxIndex;
+        CUBLAS_CALL(Random_Tests<T>::cublasMaxIndex(handle, N1*Ny*Nz, inv_d, 1, &maxIndex));
+        CUDA_CALL(cudaMemcpy(&max, inv_d+maxIndex-1, sizeof(T), cudaMemcpyDeviceToHost));
         
         double globalsum = 0;
+        double globalmax = 0;
         double sum_d = static_cast<double>(sum);
+        double max_d = static_cast<double>(max);
         MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        if (rank == 0)
-            std::cout << "Result: " << globalsum << std::endl;
+        MPI_Allreduce(&max_d, &globalmax, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) {
+            std::cout << "Result (avg): " << globalsum / (Nx*Ny*Nz) << std::endl;
+            std::cout << "Result (max): " << globalmax << std::endl;
+        }
 
         MPI_Barrier(MPI_COMM_WORLD);
     }

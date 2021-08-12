@@ -29,11 +29,13 @@ int Tests_Slab_Random<T>::initializeRandArray(void* in_d, size_t N1){
     //create pseudo-random generator
     CURAND_CALL(curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT));
     //set seed of generator
-    // CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, 1234ULL));
+    CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, (unsigned long long) clock()));
     //get poisson samples
     CURAND_CALL(Random_Tests<T>::generateUniform(gen, real, N1*Ny*Nz));
 
     Random_Tests<T>::scaleUniformArray<<<(N1*Ny*Nz)/1024+1, 1024>>>(real, 255, N1*Ny*Nz);
+
+    CURAND_CALL(curandDestroyGenerator(gen));
 
     return 0;
 }
