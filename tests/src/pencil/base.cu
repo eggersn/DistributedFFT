@@ -35,6 +35,8 @@ int Tests_Pencil_Random<T>::initializeRandArray(void* in_d, size_t N1, size_t N2
 
     Random_Tests<T>::scaleUniformArray<<<(N1*N2*Nz)/1024+1, 1024>>>(real, 255, N1*N2*Nz);
 
+    CURAND_CALL(curandDestroyGenerator(gen));
+
     return 0;
 }
 

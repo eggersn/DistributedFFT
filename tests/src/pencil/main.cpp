@@ -140,9 +140,9 @@ PencilParams parseParams(int argc, char *argv[]) {
       throw std::runtime_error("Invalid FFT dimension.");
 
    params.iterations = StringToInt(getValueOfParam(argc, argv, "--iterations", "-i"));
-   if (params.iterations == 0)
-      params.iterations = 1;
    params.warmup_rounds = StringToInt(getValueOfParam(argc, argv, "--warmup-rounds", "-w"));
+   if (params.iterations == 0 && params.warmup_rounds == 0)
+      params.iterations = 1;
    params.iterations += params.warmup_rounds;
    params.cuda_aware = checkFlag(argc, argv, "--cuda_aware", "-c");
    params.double_prec = checkFlag(argc, argv, "--double_prec", "-d");

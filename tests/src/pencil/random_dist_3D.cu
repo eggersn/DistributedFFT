@@ -52,6 +52,56 @@ namespace Difference_Pencil_3D {
             array1[i] -= scalar * array2[i];
         }
     }
+
+    __global__ void derivativeCoefficients(cuFFT<float>::C_t* out, int Nx, int Ny, int Nz, int Nz_offset, int Ny_offset, int N1, int N2){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if (i < Nx*N2*N1) {
+            // get loop variables
+            int z = i % N1;
+            int y = (i-z)/N1 % N2;
+            int x = (i-z-y*N1) / (N1*N2);
+
+            int k1 = 0, k2 = 0, k3 = 0;
+
+            if (x < Nx/2) k1 = x;
+            else if (x > (int)(Nx/2)) k1 = Nx - x;
+
+            if (y+Ny_offset < Ny/2) k2 = y+Ny_offset;
+            else if (y+Ny_offset > (int)(Ny/2)) k2 = Ny - y - Ny_offset;
+
+            if (z+Nz_offset < Nz/2) k3 = z+Nz_offset;
+
+            double scale = -powf(k1, 2)-powf(k2, 2)-powf(k3, 2);
+
+            out[x*N2*N1+y*N1+z].x = static_cast<float>(static_cast<double>(out[x*N2*N1+y*N1+z].x)*scale/sqrtf(Nx*Ny*Nz));
+            out[x*N2*N1+y*N1+z].y = static_cast<float>(static_cast<double>(out[x*N2*N1+y*N1+z].y)*scale/sqrtf(Nx*Ny*Nz));
+        }
+    }
+
+    __global__ void derivativeCoefficients(cuFFT<double>::C_t* out, int Nx, int Ny, int Nz, int Nz_offset, int Ny_offset, int N1, int N2){
+        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if (i < Nx*N2*N1) {
+            // get loop variables
+            int z = i % N1;
+            int y = (i-z)/N1 % N2;
+            int x = (i-z-y*N1) / (N1*N2);
+
+            int k1 = 0, k2 = 0, k3 = 0;
+
+            if (x < Nx/2) k1 = x;
+            else if (x > (int)(Nx/2)) k1 = Nx - x;
+
+            if (y+Ny_offset < Ny/2) k2 = y+Ny_offset;
+            else if (y+Ny_offset > (int)(Ny/2)) k2 = Ny - y - Ny_offset;
+
+            if (z+Nz_offset < Nz/2) k3 = z+Nz_offset;
+
+            double scale = -powf(k1, 2)-powf(k2, 2)-powf(k3, 2);
+
+            out[x*N2*N1+y*N1+z].x = out[x*N2*N1+y*N1+z].x*scale/sqrtf(Nx*Ny*Nz);
+            out[x*N2*N1+y*N1+z].y = out[x*N2*N1+y*N1+z].y*scale/sqrtf(Nx*Ny*Nz);
+        }
+    }
     
     template<typename T> 
     struct Difference { 
@@ -109,8 +159,6 @@ int Tests_Pencil_Random_3D<T>::testcase0(const int opt, const int runs){
     CUDA_CALL(cudaGetDeviceCount(&dev_count));
     CUDA_CALL(cudaSetDevice(rank % dev_count));
 
-    printf("[%d] gpu %d", rank, rank%dev_count);
-
     size_t pidx_i = rank / P2;
     size_t pidx_j = rank % P2;
         
@@ -141,11 +189,10 @@ int Tests_Pencil_Random_3D<T>::testcase0(const int opt, const int runs){
     //allocate memory (host)
     // out_h = (T *)calloc(out_size, sizeof(C_t));
 
+    this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
     for (int i = 0; i < runs; i++) {
-        this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d);
-        MPI_Barrier(MPI_COMM_WORLD);
     }
 
     // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
@@ -441,6 +488,76 @@ int Tests_Pencil_Random_3D<T>::compute(const int rank, const int world_size, con
 
 template<typename T> 
 int Tests_Pencil_Random_3D<T>::testcase2(const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+
+    int provided; 
+    //initialize MPI
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
+    size_t pidx_i = rank / P2;
+    size_t pidx_j = rank % P2;
+        
+    //initialize MPIcuFFT
+    MPIcuFFT_Pencil<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Pencil_Opt1<T>(config, MPI_COMM_WORLD, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Pencil<T>(config, MPI_COMM_WORLD, world_size);
+
+    Pencil_Partition partition(P1, P2);
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, &partition, true);
+
+    // Allocate Memory
+    Partition_Dimensions input_dim, transposed_dim, output_dim;
+    mpicuFFT->getPartitionDimensions(input_dim, transposed_dim, output_dim);
+
+    size_t out_size = std::max(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1), transposed_dim.size_x[pidx_i]*transposed_dim.size_y[0]*transposed_dim.size_z[pidx_j]);
+    out_size = std::max(out_size, output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]);
+
+    R_t *inv_d;
+    C_t *out_d;
+    // C_t *out_h;
+
+    CUDA_CALL(cudaMalloc((void **)&inv_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+    //allocate memory (host)
+    // out_h = (T *)calloc(out_size, sizeof(C_t));
+
+    this->initializeRandArray(out_d, 2*input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+    for (int i = 0; i < runs; i++) {
+        MPI_Barrier(MPI_COMM_WORLD);
+        mpicuFFT->execC2R(inv_d, out_d);
+    }
+
+    // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
+
+    //do stuff with out_h / out_d
+
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(inv_d));
+    CUDA_CALL(cudaFree(out_d));
+    // free(out_h);
+
     return 0;
 }
 
@@ -512,14 +629,24 @@ int Tests_Pencil_Random_3D<T>::testcase3(const int opt, const int runs){
 
         //compare difference
         Difference_Pencil_3D::Difference<T>::differenceInv<<<(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz)/1024+1, 1024>>>(inv_d, in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, Nx*Ny*Nz);
-        T sum = 0;
+        T sum = 0, max = 0;
         CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, inv_d, 1, &sum));
+        int maxIndex;
+        CUBLAS_CALL(Random_Tests<T>::cublasMaxIndex(handle, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, inv_d, 1, &maxIndex));
+        CUDA_CALL(cudaMemcpy(&max, inv_d+maxIndex-1, sizeof(T), cudaMemcpyDeviceToHost));
         
         double globalsum = 0;
+        double globalmax = 0;
         double sum_d = static_cast<double>(sum);
+        double max_d = static_cast<double>(max);
         MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        if (rank == 0)
-            std::cout << "Result: " << globalsum << std::endl;
+        MPI_Allreduce(&max_d, &globalmax, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) {
+            std::cout << "Result (avg): " << globalsum / (Nx*Ny*Nz) << std::endl;
+            std::cout << "Result (max): " << globalmax << std::endl;
+        }
+
+        MPI_Barrier(MPI_COMM_WORLD);
     }
 
     // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
@@ -538,6 +665,127 @@ int Tests_Pencil_Random_3D<T>::testcase3(const int opt, const int runs){
 
 template<typename T> 
 int Tests_Pencil_Random_3D<T>::testcase4(const int opt, const int runs){
+    using R_t = typename cuFFT<T>::R_t;
+    using C_t = typename cuFFT<T>::C_t;
+
+    int provided; 
+    cublasHandle_t handle;
+    //initialize MPI
+    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+    if (provided < MPI_THREAD_MULTIPLE) {
+        printf("ERROR: The MPI library does not have full thread support\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    CUDA_CALL(cudaSetDevice(rank % dev_count));
+
+    size_t pidx_i = rank / P2;
+    size_t pidx_j = rank % P2;
+        
+    //initialize MPIcuFFT
+    MPIcuFFT_Pencil<T> *mpicuFFT;
+    if (opt == 1)
+        mpicuFFT = new MPIcuFFT_Pencil_Opt1<T>(config, MPI_COMM_WORLD, world_size);
+    else 
+        mpicuFFT = new MPIcuFFT_Pencil<T>(config, MPI_COMM_WORLD, world_size);
+
+    Pencil_Partition partition(P1, P2);
+    GlobalSize global_size(Nx, Ny, Nz);
+    mpicuFFT->initFFT(&global_size, &partition, true);
+
+    // Allocate Memory
+    Partition_Dimensions input_dim, transposed_dim, output_dim;
+    mpicuFFT->getPartitionDimensions(input_dim, transposed_dim, output_dim);
+
+    size_t out_size = std::max(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*(Nz/2+1), transposed_dim.size_x[pidx_i]*transposed_dim.size_y[0]*transposed_dim.size_z[pidx_j]);
+    out_size = std::max(out_size, output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]);
+
+    R_t *in_d, *inv_d, *der_d;
+    R_t *in_h, *der_h;
+    C_t *out_d;
+    // C_t *out_h;
+
+    CUDA_CALL(cudaMalloc((void **)&in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMallocHost((void **)&in_h, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&der_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMallocHost((void **)&der_h, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&inv_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void **)&out_d, out_size*sizeof(C_t)));
+
+    CUBLAS_CALL(cublasCreate(&handle));
+
+    for (int x = 0; x < input_dim.size_x[pidx_i]; x++) {
+        for (int y = 0; y < input_dim.size_y[pidx_j]; y++) {
+            for (int z = 0; z < Nz; z++) {
+                in_h[x*input_dim.size_y[pidx_j]*Nz+y*Nz+z] = (T)(sin(2.0*M_PI*(input_dim.start_x[pidx_i]+x)/Nx)*sin(2.0*M_PI*(input_dim.start_y[pidx_j]+y)/Ny)*sin(2.0*M_PI*z/Nz));
+            }
+        }
+    }
+
+    for (int x = 0; x < input_dim.size_x[pidx_i]; x++) {
+        for (int y = 0; y < input_dim.size_y[pidx_j]; y++) {
+            for (int z = 0; z < Nz; z++) {
+                der_h[x*input_dim.size_y[pidx_j]*Nz+y*Nz+z] = -3.0*sqrt(Nx*Ny*Nz)*sin(2*M_PI*(input_dim.start_x[pidx_i]+x)/Nx)*sin(2*M_PI*(input_dim.start_y[pidx_j]+y)/Ny)*sin(2*M_PI*z/Nz);
+            }
+        }
+    }
+
+    CUDA_CALL(cudaMemcpyAsync(in_d, in_h, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
+    CUDA_CALL(cudaMemcpyAsync(der_d, der_h, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz*sizeof(R_t), cudaMemcpyHostToDevice));
+    CUDA_CALL(cudaDeviceSynchronize());
+
+    for (int i = 0; i < runs; i++) {
+        mpicuFFT->execR2C(out_d, in_d);
+        Difference_Pencil_3D::derivativeCoefficients<<<(Nx*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j])/1024+1, 1024>>>
+            (out_d, Nx, Ny, Nz, output_dim.start_z[pidx_j], output_dim.start_y[pidx_i], output_dim.size_z[pidx_j], output_dim.size_y[pidx_i]);
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        mpicuFFT->execC2R(inv_d, out_d);
+
+        //compare difference
+        Difference_Pencil_3D::Difference<T>::differenceInv<<<(input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz)/1024+1, 1024>>>
+            (inv_d, der_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, 1);
+        T sum = 0, max = 0;
+        CUBLAS_CALL(Random_Tests<T>::cublasSumInv(handle, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, inv_d, 1, &sum));
+        int maxIndex;
+        CUBLAS_CALL(Random_Tests<T>::cublasMaxIndex(handle, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz, inv_d, 1, &maxIndex));
+        CUDA_CALL(cudaMemcpy(&max, inv_d+maxIndex-1, sizeof(T), cudaMemcpyDeviceToHost));
+        
+        double globalsum = 0;
+        double globalmax = 0;
+        double sum_d = static_cast<double>(sum);
+        double max_d = static_cast<double>(max);
+        MPI_Allreduce(&sum_d, &globalsum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        MPI_Allreduce(&max_d, &globalmax, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) {
+            std::cout << "Result (avg): " << globalsum / (Nx*Ny*Nz) << std::endl;
+            std::cout << "Result (max): " << globalmax << std::endl;
+        }
+
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+    // CUDA_CALL(cudaMemcpy(out_h, out_d, out_size*sizeof(C_t), cudaMemcpyDeviceToHost));
+
+    //do stuff with out_h / out_d
+
+    //finalize
+    MPI_Finalize();
+
+    CUDA_CALL(cudaFree(in_d));
+    CUDA_CALL(cudaFree(out_d));
+    // free(out_h);
+
     return 0;
 }
 

@@ -243,11 +243,27 @@ protected:
 
     Timer *timer;
 
-    std::vector<std::string> section_descriptions = {"init", "1D FFT Z-Direction", "First Transpose (First Send)", "First Transpose (Packing)", 
-        "First Transpose (Start Local Transpose)",  "First Transpose (Start Receive)", "First Transpose (Finished Receive)", "Transpose (Start All2All)", 
-        "Transpose (Finished All2All)", "1D FFT Y-Direction", 
-        "Second Transpose (Preparation)", "Second Transpose (First Send)", "Second Transpose (Packing)", "Second Transpose (Start Local Transpose)", 
-        "Second Transpose (Start Receive)", "Second Transpose (Finished Receive)", "1D FFT X-Direction", "Run complete"};
+    std::vector<std::string> section_descriptions = {
+        "init", 
+        "1D FFT Z-Direction", 
+        "First Transpose (First Send)", 
+        "First Transpose (Packing)", 
+        "First Transpose (Start Local Transpose)",  
+        "First Transpose (Start Receive)", 
+        "First Transpose (Finished Receive)", 
+        "First Transpose (Start All2All)", 
+        "First Transpose (Finished All2All)", 
+        "1D FFT Y-Direction", 
+        "Second Transpose (Preparation)", 
+        "Second Transpose (First Send)", 
+        "Second Transpose (Packing)", 
+        "Second Transpose (Start Local Transpose)", 
+        "Second Transpose (Start Receive)",
+        "Second Transpose (Finished Receive)", 
+        "Second Transpose (Start All2All)", 
+        "Second Transpose (Finished All2All)", 
+        "1D FFT X-Direction", 
+        "Run complete"};
 
     bool forward = true;
 };

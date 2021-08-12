@@ -18,6 +18,9 @@ public:
     void execR2C(void *out, const void *in) { this->execR2C(out, in, 3);}
     void execR2C(void *out, const void *in, int d);
 
+    void execC2R(void *out, const void *in) { this->execC2R(out, in, 3);}
+    void execC2R(void *out, const void *in, int d);
+
 protected:
     struct Callback_Params_Base {
         std::mutex mutex;
@@ -107,6 +110,9 @@ protected:
     using MPIcuFFT_Pencil<T>::planR2C;
     cufftHandle planC2C_0;
     using MPIcuFFT_Pencil<T>::planC2C_1;
+    using MPIcuFFT_Pencil<T>::planC2R;
+    cufftHandle planC2C_0_inv;
+    cufftHandle planC2C_1_inv;
 
     using MPIcuFFT_Pencil<T>::send_req;
     using MPIcuFFT_Pencil<T>::recv_req;
@@ -142,4 +148,6 @@ protected:
     std::vector<int> sdispls2;
     std::vector<int> recvcounts2;
     std::vector<int> rdispls2;
+
+    using MPIcuFFT_Pencil<T>::forward;
 };

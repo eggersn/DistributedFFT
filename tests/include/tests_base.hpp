@@ -15,17 +15,20 @@ struct Random_Tests {
    static decltype(curandGenerateUniform)* generateUniform;
    static decltype(cublasScasum)* cublasSum;
    static decltype(cublasSasum)* cublasSumInv;
+   static decltype(cublasIsamax)* cublasMaxIndex;
    static decltype(scaleUniformArrayFloat)* scaleUniformArray;
 };
 
 template<typename T> decltype(curandGenerateUniform)* Random_Tests<T>::generateUniform = curandGenerateUniform;
 template<typename T> decltype(cublasScasum)* Random_Tests<T>::cublasSum = cublasScasum;
 template<typename T> decltype(cublasSasum)* Random_Tests<T>::cublasSumInv = cublasSasum;
+template<typename T> decltype(cublasIsamax)* Random_Tests<T>::cublasMaxIndex = cublasIsamax;
 template<typename T> decltype(scaleUniformArrayFloat)* Random_Tests<T>::scaleUniformArray = scaleUniformArrayFloat;
 
 template<> struct Random_Tests<double> { 
    static decltype(curandGenerateUniformDouble)* generateUniform;
    static decltype(cublasDzasum)* cublasSum;
    static decltype(cublasDasum)* cublasSumInv;
+   static decltype(cublasIdamax)* cublasMaxIndex;
    static decltype(scaleUniformArrayDouble)* scaleUniformArray;
 };
