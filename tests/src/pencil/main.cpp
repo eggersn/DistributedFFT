@@ -26,11 +26,14 @@ void printHelp() {
    printf("   Available selections are:\n");
    printf("\t--testcase 0:\tEach rank generates a random input of size (Nx/P1) x (Ny/P1) x Nz. Here, P1*P2 = P must hold.\n");
    printf("\t--testcase 1:\tRank 0 generates the global input and distributes the pencils while computing the complete 3D FFT. Afterwards rank 0 compares its local result with the distributed result. Here, P1*P2+1 = P must hold.\n");
+   printf("\t--testcase 2:\tSame as testcase 0 for the inverse FFT.\n");
+   printf("\t--testcase 3:\tCompute the forward FFT, afterwards the inverse FFT and compare the result with the input data.\n");
+   printf("\t--testcase 4:\tApproximate the laplacian of a periodic function with a forward and an inverse FFT and compare the results to the exact result.\n");
    printf(" --opt [-o]: \t\tSpecifies which option to use.\n");
    printf("   Available selections are:\n");
    printf("\t--opt 0:\tDefault selection, where no coordinate transformation is performed. This option requires multiple plans for the 1D-FFT in y-direction.\n");
    printf("\t--opt 1:\tThe algorithm performs a coordinate transform. Starting from the default data alignment [x][y][z] (z continuous), the 1D-FFT in z-direction transforms the coordinate system into [z][x][y]. Analogously, the 1D-FFT in y-direction into [y][z][x] and finally the 1D-FFT in x-direction into [x][y][z] again.\n");
-   printf(" --fft-dim [-f]: \tSpecifies the number of dimension computed by the algorithm. Available selections are 1, 2, and 3 (default).");
+   printf(" --fft-dim [-f]: \tSpecifies the number of dimension computed by the algorithm. Available selections are 1, 2, and 3 (default).\n");
    printf(" --iterations [-i]: \tSpecifies how often the given testcase should be repeated.\n");
    printf(" --warmup-rounds [-w]: \tThis value is added to the number of iterations. For a warmup round, the performance metrics are not stored.\n");
    printf(" --cuda_aware [-c]: \tIf set and available, device memory pointer are used to call MPI routines.\n");

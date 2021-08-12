@@ -23,6 +23,9 @@ void printHelp() {
    printf("   Available selections are:\n");
    printf("\t--testcase 0:\tEach rank generates a random input of size (Nx/P) x Ny x Nz (P specified by mpirun).\n");
    printf("\t--testcase 1:\tRank 0 generates the global input and distributes the slabs while computing the complete 3D FFT. Afterwards rank 0 compares its local result with the distributed result.\n");
+   printf("\t--testcase 2:\tSame as testcase 0 for the inverse FFT.\n");
+   printf("\t--testcase 3:\tCompute the forward FFT, afterwards the inverse FFT and compare the result with the input data.\n");
+   printf("\t--testcase 4:\tApproximate the laplacian of a periodic function with a forward and an inverse FFT and compare the results to the exact result.\n");
    printf(" --opt [-o]: \t\tSpecifies which option to use.\n");
    printf("   Available selections are:\n");
    printf("\t--opt 0:\tDefault selection, where no coordinate transformation is performed.\n");
