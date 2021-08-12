@@ -32,7 +32,7 @@ def menu_main():
 def select_job():
     # jobs = [f for f in listdir("jobs") if isfile(join("jobs", f))]
     selected_jobs = []
-    prefix = "jobs"
+    prefix = "../jobs"
     while True:
         os.system("clear")
         valid = False

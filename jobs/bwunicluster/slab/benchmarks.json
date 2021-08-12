@@ -1,12 +1,11 @@
 {
     "size": [128, [128, 128, 256], [128, 256, 256], 256, [256, 256, 512], [256, 512, 512], 512, [512, 512, 1024], [512, 1024, 1024], 1024, [1024, 1024, 2048], [1024, 2048, 2048], 2048],
-    "additional-flags": "--mca btl_smcuda_use_cuda_ipc 0",
+    "additional-flags": "--mca btl_smcuda_use_cuda_ipc 0 --mca btl_openib_warn_default_gid_prefix 0",
     "global_test_settings": {
         "--opt": 0,
         "--warmup-rounds": 10,
         "--iterations": 20,
         "-p": 16,
-        "--benchmark_dir": "../benchmarks/bwunicluster",
         "--double_prec": true
     },
     "tests": [

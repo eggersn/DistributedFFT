@@ -1,15 +1,15 @@
 {
-    "size": [32, 64, 128],
+    "size": [64],
     "additional-flags": "--oversubscribe",
     "global_test_settings": {
-        "--opt": 0,
-        "--warmup-rounds": 0,
-        "--iterations": 1,
+        "--opt": 1,
+        "--warmup-rounds": 1,
+        "--iterations": 0,
         "-p1": 2,
         "-p2": 2,
-        "--benchmark_dir": "../benchmarks",
+        "--benchmark_dir": "../benchmarks/home",
         "--double_prec": true,
-        "--testcase": 1
+        "--testcase": 4
     },
     "tests": [
         {

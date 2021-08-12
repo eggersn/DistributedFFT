@@ -1,13 +1,15 @@
 {
-    "size": [64, [64, 64, 128]],
+    "size": [64],
     "additional-flags": "",
     "global_test_settings": {
-        "--opt": 0,
-        "--warmup-rounds": 10,
-        "--iterations": 100,
+        "--opt": 1,
+        "--warmup-rounds": 0,
+        "--iterations": 1,
         "-p": 4,
-        "--benchmark_dir": "../benchmarks",
-        "--double_prec": true
+        "--benchmark_dir": "../benchmarks/home",
+        "--double_prec": true,
+        "--testcase": 4,
+        "--sequence": "Z_Then_YX"
     },
     "tests": [
         {

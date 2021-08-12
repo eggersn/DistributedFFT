@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
 send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type": 2}]
 
-prefix = "../../benchmarks/pcsgs/single"
-opt = 0
-P = 1
+prefix = "benchmarks/bwunicluster/slab_default"
+opt = 1
+P = 16
 cuda_aware = False
 prec = "double"
 
@@ -17,9 +17,9 @@ count = 0
 labels = []
 legend_labels = []
 
-sizes = ["128_128_128", "128_128_256", "128_256_256", "256_256_256", "256_256_512", "256_512_512", "512_512_512", "512_512_1024"]
+sizes = ["128_128_128", "128_128_256", "128_256_256", "256_256_256", "256_256_512", "256_512_512", "512_512_512", "512_512_1024", "512_1024_1024", "1024_1024_1024", "1024_1024_2048", "1024_2048_2048", "2048_2048_2048"]
 
-with open('out.csv', mode='w') as out_file:
+with open('evaluation/slab/out.csv', mode='w') as out_file:
     writer = csv.writer(out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     writer.writerow(["Comm_Method", "Send_Method"] + sizes)

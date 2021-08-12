@@ -3,13 +3,13 @@
     "additional-flags": "--oversubscribe",
     "global_test_settings": {
         "--opt": 1,
-        "--warmup-rounds": 0,
-        "--iterations": 1,
+        "--warmup-rounds": 1,
+        "--iterations": 0,
         "-p1": 2,
         "-p2": 2,
         "--benchmark_dir": "../benchmarks",
         "--double_prec": true,
-        "--testcase": 1
+        "--testcase": 4
     },
     "tests": [
         {

@@ -2,7 +2,7 @@
     "size": [32, 1024],
     "additional-flags": "",
     "global_test_settings": {
-        "--opt": 0,
+        "--opt": 1,
         "--warmup-rounds": 10,
         "--iterations": 100,
         "-p": 4,
