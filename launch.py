@@ -221,6 +221,12 @@ def main():
                 for i in range(0, len(program_args), 2):
                     data["global_test_settings"][program_args[i]] = program_args[i+1]
 
+            old_keys = list(data["global_test_settings"].keys())[:]
+            for key in old_keys:
+                if key[0] == "$":
+                    data["global_test_settings"][key[1:]] = data["global_test_settings"][key]
+                    del data["global_test_settings"][key]
+
             if args.mpi_params != None:
                 data["additional-flags"] += " " + args.mpi_params[0]
 
