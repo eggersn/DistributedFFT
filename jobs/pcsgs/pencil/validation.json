@@ -1,6 +1,6 @@
 {
-    "size": [128, 256, 512, 1024],
-    "additional-flags": "--hostfile ../mpi/hostfile_krypton --rankfile ../mpi/rankfile_krypton",
+    "size": [128, 256, 512, [512, 1024, 1024]],
+    "additional-flags": "--hostfile ../mpi/hostfile_pcsgs",
     "global_test_settings": {
         "$-t": 4,
         "--warmup-rounds": 1,

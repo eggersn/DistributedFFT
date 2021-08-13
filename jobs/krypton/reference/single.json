@@ -3,14 +3,18 @@
     "additional-flags": "--hostfile ../mpi/hostfile_krypton --rankfile ../mpi/rankfile_krypton",
     "global_test_settings": {
         "--warmup-rounds": 10,
-        "--iterations": 100,
+        "--iterations": 20,
         "-p": 1,
-        "--benchmark_dir": "../benchmarks_krypton",
+        "--benchmark_dir": "../benchmarks/krypton",
         "--double_prec": true
     },
     "tests": [
         {
             "name": "Slab"
+        },
+        {
+            "name": "Slab",
+            "-t": 2
         }
     ]
 }

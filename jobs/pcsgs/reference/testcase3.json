@@ -1,12 +1,12 @@
 {
     "size": [32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512],
-    "additional-flags": "--hostfile ../hostfile --map-by node",
+    "additional-flags": "--hostfile ../mpi/hostfile_pcsgs",
     "global_test_settings": {
         "--testcase": 3,
         "--warmup-rounds": 10,
         "--iterations": 100,
         "-p": 4,
-        "--benchmark_dir": "../benchmarks_pcsgs",
+        "--benchmark_dir": "../benchmarks/pcsgs",
         "--double_prec": true
     },
     "tests": [

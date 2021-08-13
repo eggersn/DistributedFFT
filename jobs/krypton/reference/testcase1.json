@@ -6,7 +6,7 @@
         "--warmup-rounds": 10,
         "--iterations": 100,
         "-p": 4,
-        "--benchmark_dir": "../benchmarks_krypton",
+        "--benchmark_dir": "../benchmarks/krypton",
         "--double_prec": true
     },
     "tests": [

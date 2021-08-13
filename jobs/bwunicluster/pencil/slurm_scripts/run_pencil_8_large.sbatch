@@ -55,9 +55,9 @@ python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/p
 echo "Pencil Opt1"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p1 4 -p2 16 -b ../benchmarks/forward_gpu8 --opt 1"
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 16 -b ../benchmarks/inverse_gpu8"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 16 -b ../benchmarks/inverse_gpu8"
 echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 16 -b ../benchmarks/inverse_gpu8 --opt 1"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 16 -b ../benchmarks/inverse_gpu8 --opt 1"
 echo "Partition 8x8"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
@@ -65,9 +65,9 @@ python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/p
 echo "Pencil Opt1"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p1 8 -p2 8 -b ../benchmarks/forward_gpu8 --opt 1"
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 8 -b ../benchmarks/inverse_gpu8"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 8 -b ../benchmarks/inverse_gpu8"
 echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1"
 echo "Partition 16x4"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
@@ -75,9 +75,9 @@ python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/p
 echo "Pencil Opt1"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p1 16 -p2 4 -b ../benchmarks/forward_gpu8 --opt 1"
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 16 -p2 4 -b ../benchmarks/inverse_gpu8"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 16 -p2 4 -b ../benchmarks/inverse_gpu8"
 echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 16 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 16 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1"
 
 echo "Starting on 3xHOST48 / 2xHOST16 / 1xHOST8"
 echo "*****************************************************************************"
@@ -92,12 +92,12 @@ python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/p
 python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p1 4 -p2 4 -b ../benchmarks/forward_gpu8 --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 3 -p2 16 -b ../benchmarks/inverse_gpu8" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/inverse_gpu8" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 3 -p2 16 -b ../benchmarks/inverse_gpu8" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/inverse_gpu8" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 3 -p2 16 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 3 -p2 16 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
 wait
 echo "Partition 6x8 / 2x8"
 echo "-----------------------------------------------------------------------------"
@@ -110,12 +110,12 @@ python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/p
 python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p1 2 -p2 8 -b ../benchmarks/forward_gpu8 --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 6 -p2 8 -b ../benchmarks/inverse_gpu8" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 8 -b ../benchmarks/inverse_gpu8" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 6 -p2 8 -b ../benchmarks/inverse_gpu8" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 8 -b ../benchmarks/inverse_gpu8" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 6 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 6 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
 wait
 echo "Partition 12x4 / 2x4"
 echo "-----------------------------------------------------------------------------"
@@ -128,12 +128,12 @@ python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/p
 python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST8x7 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p1 2 -p2 4 -b ../benchmarks/forward_gpu8 --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 12 -p2 4 -b ../benchmarks/inverse_gpu8" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST8x7 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/inverse_gpu8" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 12 -p2 4 -b ../benchmarks/inverse_gpu8" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST8x7 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/inverse_gpu8" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 12 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST8x7 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 12 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST8x7 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
 wait
 
 echo "Starting on HOST32"
@@ -149,12 +149,12 @@ python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/p
 python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST32x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p1 8 -p2 4 -b ../benchmarks/forward_gpu8 --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST32x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 8 -b ../benchmarks/inverse_gpu8" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST32x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 4 -b ../benchmarks/inverse_gpu8" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST32x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 8 -b ../benchmarks/inverse_gpu8" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST32x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 4 -b ../benchmarks/inverse_gpu8" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 4 -p2 8 -b ../benchmarks/inverse_gpu8 --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p1 8 -p2 4 -b ../benchmarks/inverse_gpu8 --opt 1" --id 2 &
 wait
 
 echo "all done"

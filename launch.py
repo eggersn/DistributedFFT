@@ -5,6 +5,7 @@ from os.path import isfile, join
 import argparse
 import multiprocessing
 import re
+import subprocess
 
 def menu_main():
     valid = False
@@ -41,7 +42,7 @@ def select_job():
             print("Select a Job:\n" + "-" * 35)
             print("[0] all")
             for i in range(len(jobs)):
-                if jobs[i] != "slurm_scripts":
+                if jobs[i] != "slurm_scripts" and jobs[i] != "launch_scripts":
                     print("[{}] {}".format(i+1, jobs[i]))
             print("Selection: ")
             try: 
@@ -144,7 +145,8 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
             elif type(test[key]) != type(True):
                 command += " " + key + " " + str(test[key])
     print(command)
-    os.system(command)
+    output = subprocess.check_output(command, shell=True)
+    print(output)
 
 def generateHostfile(hosts, id=0):
     # assume same hardware for all workers
