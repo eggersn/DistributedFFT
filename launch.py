@@ -41,7 +41,8 @@ def select_job():
             print("Select a Job:\n" + "-" * 35)
             print("[0] all")
             for i in range(len(jobs)):
-                print("[{}] {}".format(i+1, jobs[i]))
+                if jobs[i] != "slurm_scripts":
+                    print("[{}] {}".format(i+1, jobs[i]))
             print("Selection: ")
             try: 
                 opt = int(input())
