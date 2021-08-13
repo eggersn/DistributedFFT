@@ -40,7 +40,7 @@ if(${CMAKE_VERSION} VERSION_LESS "3.18.0")
 else()
     find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cublas)
     # requires cmake 3.18
-    set_property(TARGET mpicufft slab_decomp pencil_decomp PROPERTY CUDA_ARCHITECTURES 50 61 80 86)
+    set_property(TARGET mpicufft slab_decomp pencil_decomp PROPERTY CUDA_ARCHITECTURES 50 61 70 80)
 
     # link CUDA libraries
     target_link_libraries(mpicufft PUBLIC CUDA::cudart CUDA::cufft)
@@ -93,7 +93,7 @@ else()
     # requires cmake 3.17
     find_package(CUDAToolkit REQUIRED CUDA::cudart CUDA::cufft CUDA::curand CUDA::cublas)
     # requires cmake 3.18
-    set_property(TARGET test_base slab_tests pencil_tests reference_tests PROPERTY CUDA_ARCHITECTURES 50 61 80 86)
+    set_property(TARGET test_base slab_tests pencil_tests reference_tests PROPERTY CUDA_ARCHITECTURES 50 61 70 80)
     
     # link CUDA libraries
     target_link_libraries(test_base PUBLIC CUDA::cudart CUDA::curand CUDA::cublas)
