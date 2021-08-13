@@ -6,6 +6,7 @@ import argparse
 import multiprocessing
 import re
 import subprocess
+from datetime import datetime
 
 def menu_main():
     valid = False
@@ -145,6 +146,7 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
             elif type(test[key]) != type(True):
                 command += " " + key + " " + str(test[key])
     print(command)
+    print(datetime.now())
     output = subprocess.check_output(command, shell=True)
     print(output)
 
