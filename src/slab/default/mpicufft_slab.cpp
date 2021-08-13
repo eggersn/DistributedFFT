@@ -529,14 +529,11 @@ void MPIcuFFT_Slab<T>::Peer2Peer_Communication(void *complex_, bool forward) {
     CUDA_CALL(cudaDeviceSynchronize());
     timer->stop_store("Transpose (Finished Receive)");
   } else { // Inverse FFT
-    C_t *send_ptr, *recv_ptr, *copy_ptr;
+    C_t *recv_ptr, *copy_ptr;
     C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
-    if (cuda_aware) {
-      send_ptr = cuFFT<T>::complex(mem_d[0]);
-    } else {
+    if (!cuda_aware) {
       copy_ptr = complex;
       recv_ptr = cuFFT<T>::complex(mem_h[0]);
-      send_ptr = cuFFT<T>::complex(mem_h[1]);
     }
 
     if (config.send_method == MPI_Type) {
