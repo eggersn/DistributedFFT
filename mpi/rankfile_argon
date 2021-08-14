@@ -1,0 +1,4 @@
+rank 0=argon-tesla1 slot=0:0-11
+rank 1=argon-tesla1 slot=0:0-11
+rank 2=argon-tesla2 slot=1:0-11
+rank 3=argon-tesla2 slot=1:0-11
