@@ -275,7 +275,8 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Streams(void *complex_, void *recv_ptr_, b
       send_ptr = cuFFT<T>::complex(mem_h[0]);
       // Thread which is used to send the MPI messages
       mpisend_thread = std::thread(&MPIcuFFT_Slab_Opt1<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
-
+    } else {
+      timer->stop_store("Transpose (Packing)");
     }
 
     for (auto p : comm_order) { 
@@ -417,6 +418,7 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_, bool forward
 
       timer->stop_store("Transpose (Start Receive)");
       MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
+      timer->stop_store("Transpose (First Receive)");
       timer->stop_store("Transpose (Finished Receive)");
       if (!cuda_aware) {
         if (pidx > 0)
@@ -461,6 +463,8 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_, bool forward
           MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
           if (p == MPI_UNDEFINED) 
               break;
+          if (count == 0)
+            timer->stop_store("Transpose (First Receive)");
           if (count == pcnt-2)
             timer->stop_store("Transpose (Finished Receive)");
           count++;
@@ -507,6 +511,8 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_, bool forward
         MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
         if (p == MPI_UNDEFINED)
           break;
+        if (count == 0)
+          timer->stop_store("Transpose (First Receive)");
         if (count == pcnt-2)
           timer->stop_store("Transpose (Finished Receive)");
         count++;
@@ -517,6 +523,7 @@ void MPIcuFFT_Slab_Opt1<T>::Peer2Peer_Communication(void *complex_, bool forward
       } while(p != MPI_UNDEFINED);
     } else { // just wait for all receives
       MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
+      timer->stop_store("Transpose (First Receive)");
       timer->stop_store("Transpose (Finished Receive)");
     }
     CUDA_CALL(cudaDeviceSynchronize());

@@ -108,6 +108,7 @@ protected:
         "Transpose (Packing)", 
         "Transpose (Start Local Transpose)", 
         "Transpose (Start Receive)", 
+        "Transpose (First Receive)", 
         "Transpose (Finished Receive)", 
         "Transpose (Start All2All)", 
         "Transpose (Finished All2All)",

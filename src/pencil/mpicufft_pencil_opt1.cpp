@@ -459,6 +459,8 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_FirstTranspose(void *complex_, v
         if (!cuda_aware) {
             send_ptr = cuFFT<T>::complex(mem_h[1]);
             mpisend_thread1 = std::thread(&MPIcuFFT_Pencil_Opt1<T>::MPIsend_Thread_FirstCallback, this, std::ref(base_params), send_ptr);
+        } else {
+            timer->stop_store("First Transpose (Packing)");
         }
 
         for (size_t i = 0; i < comm_order1.size(); i++){
@@ -611,6 +613,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
 
             timer->stop_store("First Transpose (Start Receive)");
             MPI_Waitall(partition->P2, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("First Transpose (First Receive)");
             timer->stop_store("First Transpose (Finished Receive)");
 
             if (!cuda_aware) {
@@ -654,6 +657,8 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
                 MPI_Waitany(partition->P2, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED)
                     break;
+                if (count == 0)
+                    timer->stop_store("First Transpose (First Receive)");
                 if (count == partition->P2-2)
                     timer->stop_store("First Transpose (Finished Receive)");
                 count++;
@@ -711,6 +716,8 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
                 MPI_Waitany(partition->P2, recv_req.data(), &p_j, MPI_STATUSES_IGNORE);
                 if (p_j == MPI_UNDEFINED)
                     break;
+                if (count == 0)
+                    timer->stop_store("Second Transpose (First Receive)");
                 if (count == partition->P2-2)
                     timer->stop_store("Second Transpose (Finished Receive)");
                 count++;
@@ -721,6 +728,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
             } while (p_j != MPI_UNDEFINED);
         } else {
             MPI_Waitall(partition->P2, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("Second Transpose (First Receive)");
             timer->stop_store("Second Transpose (Finished Receive)");
         }
         CUDA_CALL(cudaDeviceSynchronize());
@@ -969,6 +977,8 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Streams_SecondTranspose(void *complex_, 
         if (!cuda_aware) {
             send_ptr = cuFFT<T>::complex(mem_h[1]);
             mpisend_thread2 = std::thread(&MPIcuFFT_Pencil_Opt1<T>::MPIsend_Thread_SecondCallback, this, std::ref(base_params), send_ptr);
+        } else {
+            timer->stop_store("Second Transpose (Packing)");
         }
 
         for (size_t i = 0; i < comm_order2.size(); i++){
@@ -1117,6 +1127,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
 
             timer->stop_store("Second Transpose (Start Receive)");
             MPI_Waitall(partition->P1, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("Second Transpose (First Receive)");
             timer->stop_store("Second Transpose (Finished Receive)");
 
             if (!cuda_aware) {
@@ -1160,6 +1171,8 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
                 MPI_Waitany(partition->P1, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED)
                     break;
+                if (count == 0)
+                    timer->stop_store("Second Transpose (First Receive)");
                 if (count==partition->P1-2)
                     timer->stop_store("Second Transpose (Finished Receive)");
                 count++;
@@ -1217,6 +1230,8 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
                 MPI_Waitany(partition->P1, recv_req.data(), &p_i, MPI_STATUSES_IGNORE);
                 if (p_i == MPI_UNDEFINED)
                     break;
+                if (count == 0)
+                    timer->stop_store("First Transpose (First Receive)");
                 if (count == partition->P1-2)
                     timer->stop_store("First Transpose (Finished Receive)");
                 count++;
@@ -1227,6 +1242,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
             } while (p_i != MPI_UNDEFINED);
         } else {
             MPI_Waitall(partition->P1, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("First Transpose (First Receive)");
             timer->stop_store("First Transpose (Finished Receive)");
         }
         CUDA_CALL(cudaDeviceSynchronize());

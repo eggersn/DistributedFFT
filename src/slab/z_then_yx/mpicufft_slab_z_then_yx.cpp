@@ -371,6 +371,8 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Streams(void *complex_, void *recv_pt
 
         if (!cuda_aware) 
             mpisend_thread = std::thread(&MPIcuFFT_Slab_Z_Then_YX<T>::MPIsend_Thread, this, std::ref(base_params), send_ptr);
+        else 
+            timer->stop_store("Transpose (Packing)");  
 
         for (auto p : comm_order) {
             MPI_Irecv(&recv_ptr[output_start_z[p]*input_size_y*input_sizes_x[pidx]], 
@@ -483,6 +485,8 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
                 MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED) 
                     break;
+                if (count == 0)
+                    timer->stop_store("Transpose (First Receive)");
                 if (count == pcnt-2)
                     timer->stop_store("Transpose (Finished Receive)");
                 count++;
@@ -495,6 +499,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
             } while(p != MPI_UNDEFINED);
         } else { // just wait for all receives
             MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("Transpose (First Receive)");
             timer->stop_store("Transpose (Finished Receive)");
         }          
         CUDA_CALL(cudaDeviceSynchronize());
@@ -529,6 +534,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
 
             MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
             CUDA_CALL(cudaDeviceSynchronize());
+            timer->stop_store("Transpose (First Receive)");
             timer->stop_store("Transpose (Finished Receive)");
 
             if (!cuda_aware) {
@@ -560,6 +566,8 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
                 MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED) 
                     break;
+                if (count == 0)
+                    timer->stop_store("Transpose (First Receive)");
                 if (count == pcnt-2)
                     timer->stop_store("Transpose (Finished Receive)");
                 count++;
