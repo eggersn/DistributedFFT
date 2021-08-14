@@ -107,7 +107,7 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
         if test["name"].lower() == "pencil":
             checkIfParamExists(test, "-p1", "--partition1", "Invalid test: P1 not specified")
             checkIfParamExists(test, "-p2", "--partition2", "Invalid test: P2 not specified")
-            ranks = test["-p1"] * test["-p2"]
+            ranks = int(test["-p1"]) * int(test["-p2"])
             if "--testcase" in test and test["--testcase"] == 1:
                 ranks += 1
         elif test["name"].lower() == "slab":

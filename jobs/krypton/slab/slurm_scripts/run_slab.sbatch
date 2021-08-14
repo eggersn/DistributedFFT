@@ -46,6 +46,6 @@ python launch.py --jobs krypton/slab/benchmarks_base.json --build_dir "build_kry
 echo "Slab 1D->2D default (inverse)"
 python launch.py --jobs krypton/slab/benchmarks_base.json --build_dir "build_krypton" --global_params "-t 2 -p 4 -b ../benchmarks/krypton/inverse -s Z_Then_YX"
 echo "Slab 1D->2D opt1 (inverse)"
-python launch.py --jobs krypton/slab/benchmarks_base.json --build_dir "build_krypton" --global_params "-t 2 -p 24 -b ../benchmarks/krypton/inverse -s Z_Then_YX --opt 1"
+python launch.py --jobs krypton/slab/benchmarks_base.json --build_dir "build_krypton" --global_params "-t 2 -p 4 -b ../benchmarks/krypton/inverse -s Z_Then_YX --opt 1"
 
 echo "all done"
