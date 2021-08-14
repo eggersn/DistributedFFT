@@ -185,7 +185,7 @@ int Tests_Slab_Random_Default<T>::testcase0(const int opt, const int runs){
     mpicuFFT->initFFT(&global_size, true);
     
     //execute
-    this->initializeRandArray(in_d, N1);
+    this->initializeRandArray(in_d, N1*Ny*Nz);
     for (int i = 0; i < runs; i++){
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d);
@@ -274,7 +274,7 @@ int Tests_Slab_Random_Default<T>::coordinate(const int world_size, const int run
 
     for (int i = 0; i < runs; i++) {
         //random initialization of full Nx*Ny*Nz array
-        this->initializeRandArray(in_d, Nx);
+        this->initializeRandArray(in_d, Nx*Ny*Nz);
     
         //Copy input data to send-buffer and initialize cufft
         CUDA_CALL(cudaMemcpyAsync(send_ptr, in_d, Nx*Ny*Nz*sizeof(R_t), 
@@ -492,7 +492,7 @@ int Tests_Slab_Random_Default<T>::testcase2(const int opt, const int runs){
     mpicuFFT->initFFT(&global_size, true);
     
     //execute
-    this->initializeRandArrayComplex(out_d, N1*Ny*(Nz/2+1));
+    this->initializeRandArray(out_d, N1*Ny*(Nz/2+1));
     for (int i = 0; i < runs; i++){
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execC2R(inv_d, out_d);
@@ -563,7 +563,7 @@ int Tests_Slab_Random_Default<T>::testcase3(const int opt, const int runs){
     
     //execute
     for (int i = 0; i < runs; i++){
-        this->initializeRandArray(in_d, N1);
+        this->initializeRandArray(in_d, N1*Ny*Nz);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d);
         MPI_Barrier(MPI_COMM_WORLD);
