@@ -69,136 +69,136 @@ echo "start python script"
 echo "Starting on HOST48"
 echo "-----------------------------------------------------------------------------"
 echo "Slab 2D->1D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/forward_gpu4"
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/bwunicluster/gpu4/forward"
 echo "Slab 2D->1D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/forward_gpu4 --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1"
 echo "Slab 1D->2D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/forward_gpu4 -s Z_Then_YX"
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX"
 echo "Slab 1D->2D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 48 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1"
 echo "Slab 2D->1D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/inverse_gpu4"
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/bwunicluster/gpu4/inverse"
 echo "Slab 2D->1D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/inverse_gpu4 --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1"
 echo "Slab 1D->2D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX"
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX"
 echo "Slab 1D->2D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST48 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 48 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1"
 
 echo "Starting on HOST40 & HOST8"
 echo "-----------------------------------------------------------------------------"
 echo "Slab 2D->1D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/forward_gpu4" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/forward_gpu4" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 & 
 wait
 echo "Slab 2D->1D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/forward_gpu4 --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/forward_gpu4 --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 & 
 wait
 echo "Slab 1D->2D default" 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/forward_gpu4 -s Z_Then_YX" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/forward_gpu4 -s Z_Then_YX" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX" --id 2 & 
 wait
 echo "Slab 1D->2D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 40 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 8 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1" --id 2 & 
 wait
 echo "Slab 2D->1D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/inverse_gpu4" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/inverse_gpu4" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 & 
 wait
 echo "Slab 2D->1D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/inverse_gpu4 --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/inverse_gpu4 --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 2 & 
 wait
 echo "Slab 1D->2D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX" --id 2 &
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX" --id 2 &
 wait
 echo "Slab 1D->2D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST40 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 40 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST8 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 8 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1" --id 2 & 
 wait
 
 echo "Starting on HOST32 & HOST16"
 echo "-----------------------------------------------------------------------------"
 echo "Slab 2D->1D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/forward_gpu4" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/forward_gpu4" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 & 
 wait
 echo "Slab 2D->1D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/forward_gpu4 --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/forward_gpu4 --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 & 
 wait
 echo "Slab 1D->2D default" 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/forward_gpu4 -s Z_Then_YX" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/forward_gpu4 -s Z_Then_YX" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX" --id 2 & 
 wait
 echo "Slab 1D->2D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 32 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 16 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1" --id 2 & 
 wait
 echo "Slab 2D->1D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/inverse_gpu4" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/inverse_gpu4" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 & 
 wait
 echo "Slab 2D->1D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/inverse_gpu4 --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/inverse_gpu4 --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 2 & 
 wait
 echo "Slab 1D->2D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX" --id 2 &
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX" --id 2 &
 wait
 echo "Slab 1D->2D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST32 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 32 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST16 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 16 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1" --id 2 & 
 wait
 
 echo "Starting on HOST24x0 & HOST24x1"
 echo "-----------------------------------------------------------------------------"
 echo "Slab 2D->1D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 & 
 wait
 echo "Slab 2D->1D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4 --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4 --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 & 
 wait
 echo "Slab 1D->2D default" 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4 -s Z_Then_YX" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4 -s Z_Then_YX" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX" --id 2 & 
 wait
 echo "Slab 1D->2D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 24 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1" --id 2 & 
 wait
 echo "Slab 2D->1D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 & 
 wait
 echo "Slab 2D->1D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4 --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4 --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 2 & 
 wait
 echo "Slab 1D->2D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX" --id 2 &
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX" --id 2 &
 wait
 echo "Slab 1D->2D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST24x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 24 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1" --id 2 & 
 wait
 
 echo "Starting on HOST4"
 echo "-----------------------------------------------------------------------------"
 echo "Slab 2D->1D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/forward_gpu4" --id 1 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/forward_gpu4 --opt 1" --id 2 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x2 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/forward_gpu4 -s Z_Then_YX" --id 3 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x3 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/forward_gpu4 -s Z_Then_YX --opt 1" --id 4 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST4x4 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/inverse_gpu4" --id 5 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST4x5 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/inverse_gpu4 --opt 1" --id 6 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST4x6 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX" --id 7 & 
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST4x7 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/inverse_gpu4 -s Z_Then_YX --opt 1" --id 8 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x0 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x1 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x2 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX" --id 3 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json bwunicluster/slab/validation.json --build_dir "build_gpu4" --hosts $HOST4x3 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-p 4 -b ../benchmarks/bwunicluster/gpu4/forward -s Z_Then_YX --opt 1" --id 4 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST4x4 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 5 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST4x5 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 6 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base1.json --build_dir "build_gpu4" --hosts $HOST4x6 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX" --id 7 & 
+python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --build_dir "build_gpu4" --hosts $HOST4x7 --gpus  4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --global_params "-t 2 -p 4 -b ../benchmarks/bwunicluster/gpu4/inverse -s Z_Then_YX --opt 1" --id 8 & 
 wait
