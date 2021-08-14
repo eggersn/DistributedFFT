@@ -189,7 +189,7 @@ int Tests_Pencil_Random_3D<T>::testcase0(const int opt, const int runs){
     //allocate memory (host)
     // out_h = (T *)calloc(out_size, sizeof(C_t));
 
-    this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+    this->initializeRandArray(in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz);
     for (int i = 0; i < runs; i++) {
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d);
@@ -301,7 +301,7 @@ int Tests_Pencil_Random_3D<T>::coordinate(const int world_size, const int runs) 
 
     for (int i = 0; i < runs; i++) {
         //random initialization of full Nx*Ny*Nz array
-        this->initializeRandArray(in_d, Nx, Ny);
+        this->initializeRandArray(in_d, Nx*Ny*Nz);
     
         std::vector<size_t> recv_counts;
         size_t recv_count = 0;
@@ -541,7 +541,7 @@ int Tests_Pencil_Random_3D<T>::testcase2(const int opt, const int runs){
     //allocate memory (host)
     // out_h = (T *)calloc(out_size, sizeof(C_t));
 
-    this->initializeRandArray(out_d, 2*input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+    this->initializeRandArray(out_d, output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]);
     for (int i = 0; i < runs; i++) {
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execC2R(inv_d, out_d);
@@ -620,7 +620,7 @@ int Tests_Pencil_Random_3D<T>::testcase3(const int opt, const int runs){
     // out_h = (T *)calloc(out_size, sizeof(C_t));
 
     for (int i = 0; i < runs; i++) {
-        this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+        this->initializeRandArray(in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d);
         MPI_Barrier(MPI_COMM_WORLD);

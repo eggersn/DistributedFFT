@@ -19,7 +19,7 @@
     return EXIT_FAILURE;}} while(0)
 
 template<typename T>
-int Tests_Pencil_Random<T>::initializeRandArray(void* in_d, size_t N1, size_t N2){
+int Tests_Pencil_Random<T>::initializeRandArray(void* in_d, size_t N){
     using R_t = typename cuFFT<T>::R_t;
     using C_t = typename cuFFT<T>::C_t;
 
@@ -31,9 +31,9 @@ int Tests_Pencil_Random<T>::initializeRandArray(void* in_d, size_t N1, size_t N2
     //set seed of generator
     CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, (unsigned long long) clock()));
     //get poisson samples
-    CURAND_CALL(Random_Tests<T>::generateUniform(gen, real, N1*N2*Nz));
+    CURAND_CALL(Random_Tests<T>::generateUniform(gen, real, N));
 
-    Random_Tests<T>::scaleUniformArray<<<(N1*N2*Nz)/1024+1, 1024>>>(real, 255, N1*N2*Nz);
+    Random_Tests<T>::scaleUniformArray<<<N/1024+1, 1024>>>(real, 255, N);
 
     CURAND_CALL(curandDestroyGenerator(gen));
 

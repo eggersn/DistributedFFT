@@ -19,7 +19,7 @@ public:
       }
 
 protected:
-      int initializeRandArray(void* in_d, size_t N1, size_t N2);
+      int initializeRandArray(void* in_d, size_t N);
       virtual  int compute(const int rank, const int world_size, const int opt, const int runs) = 0;
       virtual  int coordinate(const int world_size, const int runs) = 0;
 

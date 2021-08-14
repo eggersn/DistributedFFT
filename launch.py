@@ -147,8 +147,11 @@ def run_test(test, size, global_test_settings, additional_flags, parse):
                 command += " " + key + " " + str(test[key])
     print(command)
     print(datetime.now())
-    output = subprocess.check_output(command, shell=True)
-    print(output)
+    try:
+        output = subprocess.check_output(command, shell=True)
+        print(output)
+    except subprocess.CalledProcessError as e:
+        print(e.output)
 
 def generateHostfile(hosts, id=0):
     # assume same hardware for all workers

@@ -140,7 +140,7 @@ int Tests_Pencil_Random_2D<T>::testcase0(const int opt, const int runs){
     // out_h = (T *)calloc(out_size, sizeof(C_t));
 
     for (int i = 0; i < runs; i++) {
-        this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+        this->initializeRandArray(in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d, 2);
         MPI_Barrier(MPI_COMM_WORLD);
@@ -252,7 +252,7 @@ int Tests_Pencil_Random_2D<T>::coordinate(const int world_size, const int runs) 
 
     for (int i = 0; i < runs; i++) {
         //random initialization of full Nx*Ny*Nz array
-        this->initializeRandArray(in_d, Nx, Ny);
+        this->initializeRandArray(in_d, Nx*Ny*Nz);
     
         std::vector<size_t> recv_counts;
         size_t recv_count = 0;
@@ -499,7 +499,7 @@ int Tests_Pencil_Random_2D<T>::testcase3(const int opt, const int runs){
     // out_h = (T *)calloc(out_size, sizeof(C_t));
 
     for (int i = 0; i < runs; i++) {
-        this->initializeRandArray(in_d, input_dim.size_x[pidx_i], input_dim.size_y[pidx_j]);
+        this->initializeRandArray(in_d, input_dim.size_x[pidx_i]*input_dim.size_y[pidx_j]*Nz);
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execR2C(out_d, in_d, 2);
         MPI_Barrier(MPI_COMM_WORLD);
