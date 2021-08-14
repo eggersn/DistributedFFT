@@ -438,13 +438,13 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_FirstTranspose(void *complex_, void
             CUDA_CALL(cudaDeviceSynchronize());
 
             if (i == 0)
-                timer->stop_store("First Transpose (First Send)");
+                timer->stop_store("Second Transpose (First Send)");
 
             MPI_Isend(&send_ptr[transposed_dim.size_x[pidx_i]*input_dim.start_y[p_j]*transposed_dim.size_z[pidx_j]],
                 sizeof(C_t)*transposed_dim.size_x[pidx_i]*input_dim.size_y[p_j]*transposed_dim.size_z[pidx_j], MPI_BYTE,
                 p_j, pidx_j, comm1, &send_req[p_j]);
         }
-        timer->stop_store("First Transpose (Packing)");  
+        timer->stop_store("Second Transpose (Packing)");  
     }
 } 
 
@@ -560,7 +560,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_FirstTranspose(void *complex_, v
                     sizeof(C_t)*transposed_dim.size_y[0]*transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j], cudaMemcpyDeviceToHost));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("First Transpose (Packing)");
+        timer->stop_store("Second Transpose (Packing)");
 
         for (size_t i = 0; i < comm_order1.size(); i++){
             size_t p_j = comm_order1[i];
@@ -571,7 +571,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_FirstTranspose(void *complex_, v
                 p_j, p_j, comm1, &recv_req[p_j]);       
 
             if (i == 0)
-                timer->stop_store("First Transpose (First Send)");
+                timer->stop_store("Second Transpose (First Send)");
 
             MPI_Isend(&send_ptr[input_dim.start_y[p_j]], 1, MPI_RECV1[p_j], p_j, pidx_j, comm1, &send_req[p_j]);
         }
@@ -609,15 +609,16 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
                 CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[pidx_j]));
             }
 
-            timer->stop_store("Transpose (Start Receive)");
+            timer->stop_store("First Transpose (Start Receive)");
             MPI_Waitall(partition->P2, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("First Transpose (Finished Receive)");
 
             if (!cuda_aware) {
                 CUDA_CALL(cudaMemcpyAsync(temp_ptr, recv_ptr, 
                     sizeof(C_t)*transposed_dim.size_y[0]*transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j], cudaMemcpyHostToDevice));
             }
             CUDA_CALL(cudaDeviceSynchronize());
-            timer->stop_store("First Transpose (Finished Receive)");
+            timer->stop_store("First Transpose (Unpacking)");
         } else {
             if (cuda_aware)
                 recv_ptr = cuFFT<T>::complex(mem_d[1]);
@@ -646,13 +647,16 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
             // Start copying the received blocks to the temp buffer, where the second 1D FFT (y-direction) can be computed
             // Since the received data has to be realigned (independent of cuda_aware), we use cudaMemcpy3D.
             timer->stop_store("First Transpose (Start Receive)");
-            int p;
+            int p,count=0;
             do {
                 // recv_req contains one null handle (i.e. recv_req[pidx_j]) and P2-1 active handles
                 // If all active handles are processed, Waitany will return MPI_UNDEFINED
                 MPI_Waitany(partition->P2, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED)
                     break;
+                if (count == partition->P2-2)
+                    timer->stop_store("First Transpose (Finished Receive)");
+                count++;
 
                 // At this point, we received data of one of the P2-1 other relevant processes
                 cudaMemcpy3DParms cpy_params = {0};
@@ -668,7 +672,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
             } while (p != MPI_UNDEFINED);
             // For the 1D FFT in y-direction, all data packages have to be received
             CUDA_CALL(cudaDeviceSynchronize());
-            timer->stop_store("First Transpose (Finished Receive)");
+            timer->stop_store("First Transpose (Unpacking)");
         }
     } else {
         C_t *copy_ptr = complex;
@@ -685,7 +689,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
             this->Peer2Peer_MPIType_FirstTranspose(complex_, (void *)recv_ptr, false);
 
         // local transpose
-        timer->stop_store("First Transpose (Start Local Transpose)");
+        timer->stop_store("Second Transpose (Start Local Transpose)");
         {
             cudaMemcpy3DParms cpy_params = {0};
             cpy_params.dstPos = make_cudaPos(0, 0, transposed_dim.start_z[pidx_j]);
@@ -698,15 +702,18 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[pidx_j]));
         }
 
-        timer->stop_store("First Transpose (Start Receive)");
+        timer->stop_store("Second Transpose (Start Receive)");
         if (!cuda_aware) {
-            int p_j;
+            int p_j,count=0;
             do {
                 // recv_req contains one null handle (i.e. recv_req[pidx_j]) and P2-1 active handles
                 // If all active handles are processed, Waitany will return MPI_UNDEFINED
                 MPI_Waitany(partition->P2, recv_req.data(), &p_j, MPI_STATUSES_IGNORE);
                 if (p_j == MPI_UNDEFINED)
                     break;
+                if (count == partition->P2-2)
+                    timer->stop_store("Second Transpose (Finished Receive)");
+                count++;
 
                 CUDA_CALL(cudaMemcpyAsync(&copy_ptr[transposed_dim.start_z[p_j]*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i]],
                     &recv_ptr[transposed_dim.start_z[p_j]*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i]], 
@@ -714,9 +721,10 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_FirstTranspose(void *compl
             } while (p_j != MPI_UNDEFINED);
         } else {
             MPI_Waitall(partition->P2, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("Second Transpose (Finished Receive)");
         }
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("First Transpose (Finished Receive)");
+        timer->stop_store("Second Transpose (Unpacking)");
     }
 } 
 
@@ -766,7 +774,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_FirstTranspose(void* complex_, bool f
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p]));   // TODO: check if this is the best stream for selection!
         }
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("First Transpose (Finished Receive)");
+        timer->stop_store("First Transpose (Unpacking)");
     } else {
         C_t *copy_ptr = complex;
         if (cuda_aware) {
@@ -790,19 +798,19 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_FirstTranspose(void* complex_, bool f
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_j])); 
         }
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("First Transpose (Packing)");
+        timer->stop_store("Second Transpose (Packing)");
 
-        timer->stop_store("First Transpose (Start All2All)");
+        timer->stop_store("Second Transpose (Start All2All)");
         MPI_Alltoallv(send_ptr, recvcounts1.data(), rdispls1.data(), MPI_BYTE, 
                     recv_ptr, sendcounts1.data(), sdispls1.data(), MPI_BYTE, comm1);
-        timer->stop_store("First Transpose (Finished All2All)");
+        timer->stop_store("Second Transpose (Finished All2All)");
 
         if (!cuda_aware) {
             CUDA_CALL(cudaMemcpyAsync(copy_ptr, recv_ptr, 
                 sizeof(C_t)*(input_dim.size_z[0]/2+1)*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i], cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("First Transpose (Finished Receive)");
+        timer->stop_store("Second Transpose (Unpacking)");
     }
 }
 
@@ -836,7 +844,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_FirstTranspose(void* complex_, boo
                 transposed_dim.size_y[0]*transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*sizeof(C_t), cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("First Transpose (Finished Receive)");
+        timer->stop_store("First Transpose (Unpacking)");
     } else {
         C_t *copy_ptr = complex;
         if (cuda_aware) {
@@ -849,19 +857,19 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_FirstTranspose(void* complex_, boo
                 transposed_dim.size_y[0]*transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*sizeof(C_t), cudaMemcpyDeviceToHost));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("First Transpose (Packing)");
+        timer->stop_store("Second Transpose (Packing)");
 
-        timer->stop_store("First Transpose (Start All2All)");
+        timer->stop_store("Second Transpose (Start All2All)");
         MPI_Alltoallw(send_ptr, recvcounts1.data(), rdispls1.data(), MPI_RECV1.data(), 
                     recv_ptr, sendcounts1.data(), sdispls1.data(), MPI_SND1.data(), comm1);
-        timer->stop_store("First Transpose (Finished All2All)");
+        timer->stop_store("Second Transpose (Finished All2All)");
 
         if (!cuda_aware) {
             CUDA_CALL(cudaMemcpyAsync(copy_ptr, recv_ptr, 
                 sizeof(C_t)*(input_dim.size_z[0]/2+1)*input_dim.size_y[pidx_j]*input_dim.size_x[pidx_i], cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("First Transpose (Finished Receive)");
+        timer->stop_store("Second Transpose (Unpacking)");
     }
 }
 
@@ -940,13 +948,13 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Sync_SecondTranspose(void *complex_, voi
             CUDA_CALL(cudaDeviceSynchronize());
 
             if (i == 0)
-                timer->stop_store("Second Transpose (First Send)");
+                timer->stop_store("First Transpose (First Send)");
 
             MPI_Isend(&send_ptr[transposed_dim.start_x[p_i]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j]], 
                 sizeof(C_t)*transposed_dim.size_x[p_i]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], MPI_BYTE,
                 p_i, pidx_i, comm2, &send_req[p_i]);
         }
-        timer->stop_store("Second Transpose (Packing)");
+        timer->stop_store("First Transpose (Packing)");
     }
 }
 
@@ -1060,7 +1068,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_SecondTranspose(void *complex_, 
                 sizeof(C_t)*output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], cudaMemcpyDeviceToHost));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Second Transpose (Packing)");
+        timer->stop_store("First Transpose (Packing)");
 
         for (size_t i = 0; i < comm_order2.size(); i++) {
             size_t p_i = comm_order2[i];
@@ -1070,7 +1078,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_MPIType_SecondTranspose(void *complex_, 
                 MPI_BYTE, p_i, p_i, comm2, &recv_req[p_i]);
 
             if (i == 0)
-                timer->stop_store("Second Transpose (First Send)");
+                timer->stop_store("First Transpose (First Send)");
 
             MPI_Isend(&send_ptr[transposed_dim.start_x[p_i]], 1, MPI_RECV2[p_i], p_i, pidx_i, comm2, &send_req[p_i]);
         }
@@ -1109,13 +1117,14 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
 
             timer->stop_store("Second Transpose (Start Receive)");
             MPI_Waitall(partition->P1, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("Second Transpose (Finished Receive)");
 
             if (!cuda_aware) {
                 CUDA_CALL(cudaMemcpyAsync(temp_ptr, recv_ptr, 
                     sizeof(C_t)*output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], cudaMemcpyHostToDevice));
             }
             CUDA_CALL(cudaDeviceSynchronize());
-            timer->stop_store("Second Transpose (Finished Receive)");
+            timer->stop_store("Second Transpose (Unpacking)");
         } else {
             if (cuda_aware)
                 recv_ptr = cuFFT<T>::complex(mem_d[1]);
@@ -1144,14 +1153,17 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
             timer->stop_store("Second Transpose (Start Receive)");
             // Start copying the received blocks to GPU memory (if !cuda_aware)
             // Otherwise the data is already correctly aligned. Therefore, we compute the last 1D FFT (x-direction) in the recv buffer (= temp1 buffer)
-            int p;
+            int p,count=0;
             do {
                 // recv_req contains one null handle (i.e. recv_req[pidx_i]) and P1-1 active handles
                 // If all active handles are processed, Waitany will return MPI_UNDEFINED
                 MPI_Waitany(partition->P1, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED)
                     break;
-                
+                if (count==partition->P1-2)
+                    timer->stop_store("Second Transpose (Finished Receive)");
+                count++;
+
                 cudaMemcpy3DParms cpy_params = {0};
                 cpy_params.srcPos = make_cudaPos(0, 0, 0);
                 cpy_params.srcPtr = make_cudaPitchedPtr(&recv_ptr[transposed_dim.start_x[p]*transposed_dim.size_z[pidx_j]*output_dim.size_y[pidx_i]], 
@@ -1166,7 +1178,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
 
             // Wait for memcpy to complete
             CUDA_CALL(cudaDeviceSynchronize());
-            timer->stop_store("Second Transpose (Finished Receive)");
+            timer->stop_store("Second Transpose (Unpacking)");
         }
     } else {
         C_t *copy_ptr = complex;
@@ -1183,7 +1195,7 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
             this->Peer2Peer_MPIType_SecondTranspose(complex_, (void *)recv_ptr, false);
 
         // Transpose local block
-        timer->stop_store("Second Transpose (Start Local Transpose)");
+        timer->stop_store("First Transpose (Start Local Transpose)");
         {
             cudaMemcpy3DParms cpy_params = {0};
             cpy_params.dstPos = make_cudaPos(0, 0, output_dim.start_y[pidx_i]);
@@ -1196,15 +1208,18 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[pidx_i]));            
         }
 
-        timer->stop_store("Second Transpose (Start Receive)");
+        timer->stop_store("First Transpose (Start Receive)");
         if (!cuda_aware) {
-            int p_i;
+            int p_i,count=0;
             do {
                 // recv_req contains one null handle (i.e. recv_req[pidx_j]) and P2-1 active handles
                 // If all active handles are processed, Waitany will return MPI_UNDEFINED
                 MPI_Waitany(partition->P1, recv_req.data(), &p_i, MPI_STATUSES_IGNORE);
                 if (p_i == MPI_UNDEFINED)
                     break;
+                if (count == partition->P1-2)
+                    timer->stop_store("First Transpose (Finished Receive)");
+                count++;
 
                 CUDA_CALL(cudaMemcpyAsync(&copy_ptr[transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*output_dim.start_y[p_i]],
                     &recv_ptr[transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j]*output_dim.start_y[p_i]], 
@@ -1212,9 +1227,10 @@ void MPIcuFFT_Pencil_Opt1<T>::Peer2Peer_Communication_SecondTranspose(void *comp
             } while (p_i != MPI_UNDEFINED);
         } else {
             MPI_Waitall(partition->P1, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("First Transpose (Finished Receive)");
         }
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("Second Transpose (Finished Receive)");
+        timer->stop_store("First Transpose (Unpacking)");
     }
 }
 
@@ -1262,7 +1278,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_, bool 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p]));   
         }
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("Second Transpose (Finished Receive)");
+        timer->stop_store("Second Transpose (Unpacking)");
     } else {
         C_t *copy_ptr = complex;
         if (cuda_aware) {
@@ -1286,9 +1302,9 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_, bool 
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p]));   
         }
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("Second Transpose (Packing)");
+        timer->stop_store("First Transpose (Packing)");
 
-        timer->stop_store("Second  (Start All2All)");
+        timer->stop_store("First (Start All2All)");
         MPI_Alltoallv(send_ptr, recvcounts2.data(), rdispls2.data(), MPI_BYTE, 
                     recv_ptr, sendcounts2.data(), sdispls2.data(), MPI_BYTE, comm2);
         timer->stop_store("Second Transpose (Finished All2All)");
@@ -1298,7 +1314,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_Sync_SecondTranspose(void *complex_, bool 
                 sizeof(C_t)*transposed_dim.size_y[0]*transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j], cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Second Transpose (Finished Receive)");
+        timer->stop_store("First Transpose (Unpacking)");
     }
 }
 
@@ -1332,7 +1348,7 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_SecondTranspose(void *complex_, bo
                 sizeof(C_t)*output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Second Transpose (Finished Receive)");
+        timer->stop_store("Second Transpose (Unpacking)");
     } else {
         C_t *copy_ptr = complex;
         if (cuda_aware) {
@@ -1345,19 +1361,19 @@ void MPIcuFFT_Pencil_Opt1<T>::All2All_MPIType_SecondTranspose(void *complex_, bo
                 sizeof(C_t)*output_dim.size_x[0]*output_dim.size_y[pidx_i]*output_dim.size_z[pidx_j], cudaMemcpyDeviceToHost));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Second Transpose (Packing)");
+        timer->stop_store("First Transpose (Packing)");
 
-        timer->stop_store("Second Transpose (Start All2All)");
+        timer->stop_store("First Transpose (Start All2All)");
         MPI_Alltoallw(send_ptr, recvcounts2.data(), rdispls2.data(), MPI_RECV2.data(), 
                     recv_ptr, sendcounts2.data(), sdispls2.data(), MPI_SND2.data(), comm2);
-        timer->stop_store("Second Transpose (Finished All2All)");
+        timer->stop_store("First Transpose (Finished All2All)");
 
         if (!cuda_aware) {
             CUDA_CALL(cudaMemcpyAsync(copy_ptr, recv_ptr, 
                 sizeof(C_t)*transposed_dim.size_y[0]*transposed_dim.size_x[pidx_i]*transposed_dim.size_z[pidx_j], cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Second Transpose (Finished Receive)");
+        timer->stop_store("First Transpose (Unpacking)");
     }
 }
 
@@ -1441,6 +1457,7 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
             MPI_Waitall(partition->P2, send_req.data(), MPI_STATUSES_IGNORE);
         }
         CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("First Transpose (Send Complete)");
 
         if (config.comm_method2 == Peer2Peer)
             this->Peer2Peer_Communication_SecondTranspose((void *)complex);
@@ -1516,13 +1533,11 @@ void MPIcuFFT_Pencil_Opt1<T>::execC2R(void *out, const void *in, int d) {
                 mpisend_thread2.join();
             MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
         }
-
+        timer->stop_store("First Transpose (Send Complete)");
 
         /* ***********************************************************************************************************************
         *                                                     Second Global Transpose
         *  *********************************************************************************************************************** */
-
-        timer->stop_store("Second Transpose (Preparation)");
 
         if (config.comm_method == Peer2Peer)
             this->Peer2Peer_Communication_FirstTranspose((void *)complex, false);

@@ -478,11 +478,14 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
         }
         timer->stop_store("Transpose (Start Receive)");
         if (!cuda_aware) { // copy received blocks to device
-            int p;
+            int p,count=0;
             do {
                 MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED) 
                     break;
+                if (count == pcnt-2)
+                    timer->stop_store("Transpose (Finished Receive)");
+                count++;
 
                 size_t oslice = output_sizes_z[pidx]*output_size_y*input_start_x[p];   
 
@@ -492,9 +495,10 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
             } while(p != MPI_UNDEFINED);
         } else { // just wait for all receives
             MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
+            timer->stop_store("Transpose (Finished Receive)");
         }          
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("Transpose (Finished Receive)");
+        timer->stop_store("Transpose (Unpacking)");
     } else {
         C_t *send_ptr, *recv_ptr;
         C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
@@ -525,12 +529,13 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
 
             MPI_Waitall(pcnt, recv_req.data(), MPI_STATUSES_IGNORE);
             CUDA_CALL(cudaDeviceSynchronize());
+            timer->stop_store("Transpose (Finished Receive)");
 
             if (!cuda_aware) {
                 CUDA_CALL(cudaMemcpyAsync(copy_ptr, recv_ptr, sizeof(C_t)*input_sizes_x[pidx]*input_size_y*output_size_z, cudaMemcpyHostToDevice));
                 CUDA_CALL(cudaDeviceSynchronize());
             }
-            timer->stop_store("Transpose (Finished Receive)");
+            timer->stop_store("Transpose (Unpacking)");
         } else {
             if (cuda_aware)
                 recv_ptr = cuFFT<T>::complex(mem_d[1]);
@@ -550,11 +555,14 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
             }
 
             timer->stop_store("Transpose (Start Receive)");
-            int p;
+            int p, count=0;
             do {
                 MPI_Waitany(pcnt, recv_req.data(), &p, MPI_STATUSES_IGNORE);
                 if (p == MPI_UNDEFINED) 
                     break;
+                if (count == pcnt-2)
+                    timer->stop_store("Transpose (Finished Receive)");
+                count++;
 
                 CUDA_CALL(cudaMemcpy2DAsync(&copy_ptr[output_start_z[p]], sizeof(C_t)*output_size_z,
                     &recv_ptr[output_start_z[p]*input_size_y*input_sizes_x[pidx]], sizeof(C_t)*output_sizes_z[p], 
@@ -562,7 +570,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::Peer2Peer_Communication(void *complex_, bool fo
                     cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
             } while (p != MPI_UNDEFINED);
             CUDA_CALL(cudaDeviceSynchronize());
-            timer->stop_store("Transpose (Finished Receive)");
+            timer->stop_store("Transpose (Unpacking)");
         }
     }
 }
@@ -603,7 +611,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::All2All_Sync(void *complex_, bool forward) {
             CUDA_CALL(cudaMemcpyAsync(temp_ptr, recv_ptr, output_size_x*output_size_y*output_sizes_z[pidx]*sizeof(C_t), cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Transpose (Finished Receive)");
+        timer->stop_store("Transpose (Unpacking)");
     } else {
         C_t *temp_ptr = cuFFT<T>::complex(mem_d[0]);
         C_t *copy_ptr = complex;
@@ -633,7 +641,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::All2All_Sync(void *complex_, bool forward) {
                 cuda_aware?cudaMemcpyDeviceToDevice:cudaMemcpyHostToDevice, streams[p]));
         }
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("Transpose (Finished Receive)");
+        timer->stop_store("Transpose (Unpacking)");
     }
 }
 
@@ -668,7 +676,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::All2All_MPIType(void *complex_, bool forward) {
             CUDA_CALL(cudaMemcpyAsync(temp_ptr, recv_ptr, output_sizes_z[pidx]*output_size_y*output_size_x*sizeof(C_t), cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Transpose (Finished Receive)");
+        timer->stop_store("Transpose (Unpacking)");
     } else {
         C_t *copy_ptr = complex;
         if (cuda_aware) {
@@ -694,7 +702,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::All2All_MPIType(void *complex_, bool forward) {
             CUDA_CALL(cudaMemcpyAsync(copy_ptr, recv_ptr, output_size_z*input_size_y*input_sizes_x[pidx]*sizeof(C_t), cudaMemcpyHostToDevice));
             CUDA_CALL(cudaDeviceSynchronize());
         }
-        timer->stop_store("Transpose (Finished Receive)");
+        timer->stop_store("Transpose (Unpacking)");
     }
 }
 
@@ -775,7 +783,7 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::execC2R(void *out, const void *in) {
         timer->start();
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C, complex, temp_ptr, CUFFT_INVERSE));
         CUDA_CALL(cudaDeviceSynchronize());
-        timer->stop_store("1D FFT Z-Direction");
+        timer->stop_store("2D FFT Y-X-Direction");
 
         if (config.comm_method == Peer2Peer)
             this->Peer2Peer_Communication((void *)complex, false);
@@ -785,8 +793,8 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::execC2R(void *out, const void *in) {
         // compute remaining 1d FFT, for cuda-aware recv and temp buffer are identical
         CUFFT_CALL(cuFFT<T>::execC2R(planC2R, copy_ptr, real));
         CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("1D FFT Z-Direction");
 
-        timer->stop_store("2D FFT Y-X-Direction");
         if (config.comm_method == Peer2Peer) {
             if (config.send_method == Streams && !cuda_aware)
                 mpisend_thread.join();

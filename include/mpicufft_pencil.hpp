@@ -253,8 +253,9 @@ protected:
         "First Transpose (Finished Receive)", 
         "First Transpose (Start All2All)", 
         "First Transpose (Finished All2All)", 
+        "First Transpose (Unpacking)", 
+        "First Transpose (Send Complete)", 
         "1D FFT Y-Direction", 
-        "Second Transpose (Preparation)", 
         "Second Transpose (First Send)", 
         "Second Transpose (Packing)", 
         "Second Transpose (Start Local Transpose)", 
@@ -262,6 +263,7 @@ protected:
         "Second Transpose (Finished Receive)", 
         "Second Transpose (Start All2All)", 
         "Second Transpose (Finished All2All)", 
+        "Second Transpose (Unpacking)", 
         "1D FFT X-Direction", 
         "Run complete"};
 
