@@ -492,7 +492,7 @@ int Tests_Slab_Random_Default<T>::testcase2(const int opt, const int runs){
     mpicuFFT->initFFT(&global_size, true);
     
     //execute
-    this->initializeRandArray(out_d, 2*N1);
+    this->initializeRandArrayComplex(out_d, N1*Ny*(Nz/2+1));
     for (int i = 0; i < runs; i++){
         MPI_Barrier(MPI_COMM_WORLD);
         mpicuFFT->execC2R(inv_d, out_d);
