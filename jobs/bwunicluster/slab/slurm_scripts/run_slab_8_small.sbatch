@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:8
 #SBATCH --nodes=2
 #SBATCH --ntasks=16
-#SBATCH --time=06:00:00
+#SBATCH --time=12:00:00
 #SBATCH --job-name=gpu8_slab
 #SBATCH --output=gpu8_slab.%j.out
 #SBATCH --account=st

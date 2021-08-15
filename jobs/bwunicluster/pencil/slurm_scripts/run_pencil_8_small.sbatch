@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:8
 #SBATCH --nodes=2
 #SBATCH --ntasks=16
-#SBATCH --time=06:00:00
+#SBATCH --time=12:00:00
 #SBATCH --job-name=gpu8_pencil
 #SBATCH --output=gpu8_pencil.%j.out
 #SBATCH --account=st
@@ -47,13 +47,13 @@ echo "**************************************************************************
 echo "Partition 4x4"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0"
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward --opt 1"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward --opt 1" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0"
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse"
-echo "Pencil Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse --opt 1"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0"
+echo "Pencil Opt1 Inverse" 
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST16 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse --opt 1" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0"
 echo "Partition 2x8"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
@@ -70,12 +70,12 @@ echo "**************************************************************************
 echo "Partition 2x4"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default / Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST8x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST8x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST8x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" --id 1 & 
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST8x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/forward --opt 1" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" --id 2 &
 wait
 echo "Pencil Default / Opt1 Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST8x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST8x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST8x0 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST8x1 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu8/small/inverse --opt 1" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" --id 2 &
 wait
 
 echo "all done"

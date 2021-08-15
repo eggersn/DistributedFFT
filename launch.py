@@ -70,6 +70,7 @@ def keysToLower(test):
 def convertKey(test, key1, key2):
     if (not key1 in test) and (key2 in test):
         test[key1] = test[key2]
+        del test[key2]
 
 def checkIfParamExists(test, key1, key2, error_msg=""):
     if (not key1 in test) and (not key2 in test):
@@ -236,7 +237,7 @@ def main():
                     del data["global_test_settings"][key]
 
             if args.mpi_params != None:
-                data["additional-flags"] += " " + args.mpi_params[0]
+                data["additional-flags"] = args.mpi_params[0]
 
             if hostfile != "" and re.match("--hostfile", data["additional-flags"]):
                 raise ValueError('Error in job {}: Hostfile is specified even though it is newly generated, aborting...'.format(job))
