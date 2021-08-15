@@ -4,8 +4,7 @@
     "global_test_settings": {
         "--warmup-rounds": 10,
         "--iterations": 20,
-        "--double_prec": true,
-        "--cuda_aware": true
+        "--double_prec": true
     },
     "tests": [
         {
