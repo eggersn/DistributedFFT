@@ -57,33 +57,33 @@ echo "--------------------------------------------------------------------------
 echo "Partition 6x8"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward"
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1"
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 6 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 6 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse"
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 6 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1"
 echo "-----------------------------------------------------------------------------"
 echo "Partition 12x4"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward"
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1"
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 12 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse"
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 12 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse"
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 12 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1"
 echo "-----------------------------------------------------------------------------"
 echo "Partition 24x2"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 24 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" 
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 24 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" 
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 24 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" 
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 24 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" 
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 24 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" 
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 24 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" 
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST48 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 24 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" 
 
@@ -94,16 +94,16 @@ echo "--------------------------------------------------------------------------
 echo "Partition 5x8 / 2x4"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 5 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 5 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
 wait
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 5 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 5 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 5 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 5 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 2 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 5 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 &
@@ -113,16 +113,16 @@ echo "--------------------------------------------------------------------------
 echo "Partition 10x4 / 4x2"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 10 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 10 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 10 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 10 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 10 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 4 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 10 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST8 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 4 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 10 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 &
@@ -132,16 +132,16 @@ echo "--------------------------------------------------------------------------
 echo "Partition 20x2 / 2x2"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 20 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST4 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 20 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST4 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 20 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST4 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 20 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST4 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 20 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST4 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 2 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 20 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST4 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 2 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST40 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 20 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
@@ -155,16 +155,16 @@ echo "--------------------------------------------------------------------------
 echo "Partition 4x8 / 2x8"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
 wait
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 2 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 4 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 2 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 4 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 2 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 4 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 &
@@ -174,16 +174,16 @@ echo "--------------------------------------------------------------------------
 echo "Partition 8x4 / 4x4"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
 wait
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 8 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 8 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 4 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 8 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 &
@@ -193,16 +193,16 @@ echo "--------------------------------------------------------------------------
 echo "Partition 16x2 / 8x2"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 16 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 16 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 16 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 16 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 8 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 16 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 8 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 16 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST16 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 8 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST32 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 16 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
@@ -216,16 +216,16 @@ echo "--------------------------------------------------------------------------
 echo "Partition 3x8 / 6x4"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 3 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json bwunicluster/pencil/validation.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 3 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward" --id 2 &
 wait
 echo "Pencil Opt1"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 3 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json bwunicluster/pencil/validation.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 3 -p2 8 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json bwunicluster/pencil/validation.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 6 -p2 4 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 2 &
 wait
 echo "Pencil Default Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 3 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 6 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 3 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 1 &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 6 -p2 4 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 &
 wait
 echo "Pencil Opt1 Inverse"
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 3 -p2 8 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 1 &
@@ -235,11 +235,11 @@ echo "--------------------------------------------------------------------------
 echo "Partition 12x2"
 echo "-----------------------------------------------------------------------------"
 echo "Pencil Default Forward / Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base1.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 12 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 12 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 echo "Pencil Opt1 Forward / Inverse"
-python launch.py --jobs bwunicluster/pencil/benchmarks_base2.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
+python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST24x0 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-p1 12 -p2 2 -b ../benchmarks/bwunicluster/gpu4/forward --opt 1" --id 1 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 python launch.py --jobs bwunicluster/pencil/benchmarks_base0.json --hosts $HOST24x1 --gpus 4 --affinity 0:0-9 0:0-9 1:0-9 1:0-9 --build_dir "build_gpu4" --global_params "-t 2 -p1 12 -p2 2 -b ../benchmarks/bwunicluster/gpu4/inverse --opt 1" --id 2 --mpi_params "--mca btl_openib_warn_default_gid_prefix 0" &
 wait
 
