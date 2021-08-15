@@ -575,6 +575,8 @@ int Tests_Pencil_Random_3D<T>::testcase3(const int opt, const int runs){
         MPI_Abort(MPI_COMM_WORLD, 1);
     }
 
+    config.warmup_rounds *= 2;
+
     //number of processes
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
@@ -676,6 +678,8 @@ int Tests_Pencil_Random_3D<T>::testcase4(const int opt, const int runs){
         printf("ERROR: The MPI library does not have full thread support\n");
         MPI_Abort(MPI_COMM_WORLD, 1);
     }
+
+    config.warmup_rounds *= 2;
 
     //number of processes
     int world_size;
