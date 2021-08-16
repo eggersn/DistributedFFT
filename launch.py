@@ -227,8 +227,17 @@ def main():
 
             if args.global_params != None:
                 program_args = args.global_params[0].split(" ")
-                for i in range(0, len(program_args), 2):
-                    data["global_test_settings"][program_args[i]] = program_args[i+1]
+                i = 0
+                while i < len(program_args):
+                    if program_args[i] == "-c" or program_args[i] == "--cuda_aware":
+                        data["global_test_settings"]["--cuda_aware"] = True
+                        i += 1
+                    elif program_args[i] == "-d" or program_args[i] == "--double_prec":
+                        data["global_test_settings"]["--double_prec"] = True
+                        i += 1
+                    else:
+                        data["global_test_settings"][program_args[i]] = program_args[i+1]
+                        i += 2
 
             old_keys = list(data["global_test_settings"].keys())[:]
             for key in old_keys:
