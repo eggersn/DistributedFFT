@@ -1504,8 +1504,8 @@ void MPIcuFFT_Pencil<T>::All2All_Sync_SecondTranspose(void *complex_, bool forwa
             CUDA_CALL(cudaMemcpy3DAsync(&cpy_params, streams[p_i]));
         }
 
-        timer->stop_store("Second Transpose (Packing)");
         CUDA_CALL(cudaDeviceSynchronize());
+        timer->stop_store("Second Transpose (Packing)");
 
         timer->stop_store("Second Transpose (Start All2All)");
         MPI_Alltoallv(send_ptr, sendcounts2.data(), sdispls2.data(), MPI_BYTE, 

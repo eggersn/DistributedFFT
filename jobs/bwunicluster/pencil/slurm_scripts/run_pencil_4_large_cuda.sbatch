@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:4
 #SBATCH --nodes=12
 #SBATCH --ntasks=48
-#SBATCH --time=48:00:00
+#SBATCH --time=35:00:00
 #SBATCH --job-name=gpu4_pencil_cuda
 #SBATCH --output=gpu4_pencil_cuda.%j.out
 #SBATCH --account=st
