@@ -1,87 +1,120 @@
+from os import listdir
+from os.path import isfile, join
+import os
+import pathlib
+import re
+import csv
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import t
 
-x_vals = [r"$128^3$", r"$128^2 \times 256$", r"$128 \times 256^2$", r"$256^3$", r"$256^2 \times 512$", r"$256 \times 512^2$", r"$512^3$", r"$512^2 \times 1024$", r"$512 \times 1024^2$", r"$1024^3$"]
+prefix = "evaluation/benchmarks/bwunicluster/old/forward"
+title = "BwUniCluster GPU8 Old Forward"
+P = 8
 
-# pcsgs
-# y_vals = [
-# [29.2770, 59.0838, 116.0176, 301.6503, 455.4458, 906.2078, 1826.2120, 3596.7229, 7572.4816],
-# [36.9244, 60.1292, 116.5844, 232.8071, 453.1416, 923.1547, 1803.3436, 3616.2099, 7548.5975],
-# [29.8976, 59.2610, 115.1021, 228.2983, 462.4344, 904.4720, 1821.5728, 3595.4920, 7464.9903],
-# [30.4229, 59.3988, 117.0058, 234.8397, 459.2503, 918.3916, 1825.8398, 3703.7720, 7523.9209],
-# [38.5110, 75.2786, 149.4329, 423.6025, 592.7390, 1186.0424, 2374.4224, 4765.0726, 9811.8297],
-# [38.2472, 75.4907, 150.9566, 300.1780, 597.6353, 1196.3756, 2391.0325, 4768.5839, 9719.2443],
-# [0.6523, 1.3265, 2.5238, 4.8506, 10.0778, 20.8343, 43.0472, 92.6532]]
+def ConvertSizesToLabels(sizes):
+    labels = []
+    for s in sizes:
+        dims = s.split("_")
+        if dims[0] == dims[1] and dims[1] == dims[2]:
+            labels.append(r"${}^3$".format(dims[0]))
+        elif dims[0] == dims[1]:
+            labels.append(r"${}^2x{}$".format(dims[0], dims[2]))
+        elif dims[1] == dims[2]:
+            labels.append(r"${}x{}^2$".format(dims[0], dims[2]))
+        else:
+            labels.append(r"${}x{}x{}$".format(dims[0], dims[1], dims[2]))
 
-# pcsgs cuda_aware
-y_vals = [
-[29.7602, 59.0332, 146.7097, 227.9518, 449.9262, 894.1393, 1774.6199, 3596.5810, 7216.4814],
-[31.4960, 59.0856, 114.8241, 228.3552, 445.3578, 884.7643, 1783.4624, 3688.8935, 7177.6466],
-[69.7374, 79.8173, 174.9031, 350.0543, 468.3927, 907.2840, 1791.4662, 3691.7335, 7341.7471],
-[29.9609, 57.5422, 111.3434, 225.7484, 445.4755, 976.5535, 1789.1993, 3613.0918, 7427.7910],
-[46.1719, 74.1008, 146.8229, 293.0247, 581.4285, 1164.4680, 2324.6106, 4631.9107, 9442.1016],
-[39.4244, 77.5749, 146.8159, 292.3212, 647.7481, 1174.9687, 2323.7266, 4631.8227, 9438.7448],
-[0.6523, 1.3265, 2.5238, 4.8506, 10.0778, 20.8343, 43.0472, 92.6532]]
+    return labels
 
-# krypton
-# y_vals = [
-# [2.6104, 2.8496, 5.3392, 9.4160, 17.7620, 34.8284, 69.7371, 136.5089, 271.5267, 590.1514175],
-# [2.2298, 3.1817, 5.8016, 11.0513, 21.8313, 44.0290, 86.5286, 155.2354, 305.0805, 656.58155],
-# [1.4494, 2.6333, 5.4334, 10.9788, 23.9823, 46.6907, 90.3210, 180.0794, 398.3437, 749.6851175],
-# [1.6598, 3.2467, 5.5026, 11.1406, 23.4140, 47.4440, 95.7999, 185.2786, 385.9134, 768.8481],
-# [2.0890, 3.5741, 6.3829, 12.4129, 23.4707, 44.7869, 97.7494, 172.8221, 351.8331, 805.8163],
-# [2.3780, 3.3779, 6.2975, 11.9340, 23.2622, 46.5644, 89.4847, 176.8941, 364.2885, 759.9095]]
+def collect(cuda_aware):
+    subdirs = ["pencil/approx", "slab_default", "slab_z_then_yx"]
 
-# krypton cuda_aware
-# y_vals = [
-# [0.3959, 0.6148, 1.1284, 1.9599, 3.8229, 7.6069, 15.1816, 29.7223, 58.9517, 157.5153975],
-# [0.3696, 0.6517, 1.3555, 3.1947, 7.1253, 15.7236, 30.1591, 47.7335, 99.1228, 228.568125],
-# [0.3953, 0.7326, 1.4746, 3.1498, 7.4521, 16.4230, 32.8572, 68.0527, 155.8264, 302.40018],
-# [0.3427, 0.6831, 1.3874, 3.0574, 7.0121, 15.5847, 32.2413, 70.0283, 153.2492, 307.5333025],
-# [1.0204, 1.3587, 1.9262, 3.6406, 5.2576, 8.6689, 24.2949, 34.3805, 78.1835, 261.3697],
-# [0.4211, 0.6782, 1.2039, 2.2691, 4.3046, 8.4441, 16.7861, 36.8559, 88.9093, 216.5879],
-# [0.2532, 0.4688, 0.9055, 1.7703, 3.4846, 7.5770, 15.3916, 30.4036, 64.2797]]
+    sizes = []
 
-title = "Best Selection [PCSGS, cuda_aware]"
-legend = ["Slab", "Slab (Opt1)", "Slab Z_Then_YX", "Slab Z_Then_YX (Opt1)", "Pencil", "Pencil (Opt1)", "Reference (Single GPU)"]
+    plt.title("Comparison " + title + " FFT [P={}{}]".format(P, ", CUDA-aware" if cuda_aware else ""), fontsize=20)
+    plt.grid(zorder=0, color="grey")
+    plt.yscale('symlog', base=10)
+    plt.ylabel("Time [ms]", fontsize=16)
+    plt.yticks(fontsize=14)
+    plt.xticks(fontsize=14, rotation=30)
 
-labels = []
-for y in y_vals[:len(y_vals)-1]:
-    print(y)
-    label, = plt.plot(x_vals[0:len(y_vals[0])], y, "D-", zorder=3, linewidth=3, markersize=10)
-    labels.append(label)
+    labels = []; legend = []
 
-label, = plt.plot(x_vals[0:len(y_vals[-1])], y_vals[-1], "D-", zorder=3, linewidth=3, markersize=10)
-labels.append(label)
+    x_vals_collection = []
+    values_collection = []
 
-plt.title(title, fontsize=22)
-plt.xlabel("Size", fontsize=20)
-plt.ylabel("Time [ms]", fontsize=20)
-plt.legend(labels, legend, prop={"size":16})
-plt.xticks(fontsize=16)
-plt.yticks(fontsize=16)
-plt.grid(zorder=0, color="grey")
-plt.yscale('log', base=10)
-plt.show()
-plt.close()
+    for subdir in subdirs:
+        if os.path.isdir(join(prefix, join(subdir, "runs"))):
+            files = []
+            offset = 0
 
-title = "Best Selection; Difference to Slab [PCSGS, cuda_aware]"
-labels = []
-for y in y_vals[:len(y_vals)-1]:
-    print([y_vals[0][i]-y[i] for i in range(0, len(y))])
-    label, = plt.plot(x_vals[0:len(y_vals[0])], [y_vals[0][i]-y[i] for i in range(0, len(y))], "D-", zorder=3, linewidth=3, markersize=10)
-    labels.append(label)
+            if subdir == subdirs[0]:
+                files = [f for f in listdir(join(prefix, join(subdir, "runs"))) if int(f.split("_")[2])*int(f.split("_")[3]) == P and (f.split("_")[-1]=="1.csv")==cuda_aware]
+                offset = 4
+            else:
+                files = [f for f in listdir(join(prefix, join(subdir, "runs"))) if int(f.split("_")[2]) == P and (f.split("_")[-1]=="1.csv")==cuda_aware]
+                offset = 2
 
-# label, = plt.plot(x_vals[0:len(y_vals[-1])], [y_vals[0][i]-y_vals[-1][i] for i in range(0, len(y_vals[-1]))], "D-", zorder=3, linewidth=3, markersize=10)
-# labels.append(label)
 
-plt.title(title, fontsize=22)
-plt.xlabel("Size", fontsize=20)
-plt.ylabel("Time [ms]", fontsize=20)
-plt.legend(labels, legend, prop={"size":16})
-plt.xticks(fontsize=16)
-plt.yticks(fontsize=16)
-plt.grid(zorder=0, color="grey")
-plt.yscale('symlog', base=10)
-plt.yticks([10**2, 10, 0, -10, -100, -1000])
-plt.show()
+            for f in files:
+                file = join(prefix, subdir, "runs", f)
+                with open(file) as csv_file:
+                    csv_reader = csv.reader(csv_file, delimiter=',')
+                    it_sizes = next(csv_reader)[offset:]
+                    if len(it_sizes) > len(sizes):
+                            sizes = it_sizes
+
+                    x_vals = ConvertSizesToLabels(it_sizes)
+                    values = [-1 for s in it_sizes]
+                    row = next(csv_reader)
+                    while row != []:
+                        runs = [float(x) for x in row[offset:]]
+                        for i in range(len(runs)):
+                            if values[i] == -1 or runs[i] < values[i]:
+                                values[i] = runs[i]
+
+                        row = next(csv_reader)
+
+                    x_vals_collection.append(x_vals)
+                    values_collection.append(values)
+
+                    label, = plt.plot(x_vals, values, "D-", zorder=3, linewidth=3, markersize=10)
+                    labels.append(label)
+                    if subdir == subdirs[0]:
+                        legend.append("Pencil [{}, {}x{}]".format("default" if f.split("_")[1] == "0" else "opt1", f.split("_")[2], f.split("_")[3]))
+                    else:
+                        legend.append("Slab [{}, {}]".format("ZY_Then_X" if subdir == subdirs[1] else "Z_Then_YX", "default" if f.split("_")[1] == "0" else "opt1"))
+                    print(legend[-1], values)
+
+    plt.legend(labels, legend, prop={"size":16})
+    fig = plt.gcf()
+    fig.set_size_inches(15, 8)
+    plt.savefig(prefix+"/comparison_{}_{}".format(P, 1 if cuda_aware else 0), dpi=100)
+    plt.close()
+
+    plt.title("Difference " + title + " FFT [P={}{}]".format(P, ", CUDA-aware" if cuda_aware else ""), fontsize=20)
+    plt.grid(zorder=0, color="grey")
+    plt.yscale('symlog', base=10)
+    plt.ylabel("Time [ms]", fontsize=16)
+    plt.yticks(fontsize=14)
+    plt.xticks(fontsize=14, rotation=30)
+
+    for i in range(len(values_collection)):
+        plt.plot(x_vals_collection[i], [values_collection[i][j] - min([values[j] for values in values_collection if j < len(values)]) for j in range(len(values_collection[i]))], "D-", zorder=3, linewidth=3, markersize=10)
+
+    plt.legend(labels, legend, prop={"size":16})
+    fig = plt.gcf()
+    fig.set_size_inches(15, 8)
+    plt.savefig(prefix+"/difference_{}_{}".format(P, 1 if cuda_aware else 0), dpi=100)
+    plt.close()
+
+def main():
+    for c in range(2):
+        collect(c==1)
+        print()
+
+if __name__ == "__main__":
+    main()
+
+
