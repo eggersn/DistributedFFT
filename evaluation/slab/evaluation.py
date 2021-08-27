@@ -10,7 +10,7 @@ from scipy.stats import t
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
 send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type": 2}]
 
-prefix = "benchmarks/bwunicluster/old"
+prefix = "benchmarks/krypton"
 prec = "double"
 
 run_iterations = 20
@@ -236,14 +236,14 @@ def compareMethods(opt, P, cuda_aware, forward, seq, subdir):
                             writer1.writerow([""] + sizes)
 
                             data = data_collection["{}-{}".format(comm, snd)]
-                            # proportions = getProportions(data, seq, comm_methods[comm], forward)
+                            proportions = getProportions(data, seq, comm_methods[comm], forward)
 
                             for d in data:
                                 if sum(data[d]) != 0:
                                     writer.writerow([d]+data[d])
                             
-                            # for p in proportions:
-                            #     writer1.writerow([p] + [max(proportions[p][i] / proportions["Run"][i], 0) for i in range(len(proportions[p]))])
+                            for p in proportions:
+                                writer1.writerow([p] + [max(proportions[p][i] / proportions["Run"][i], 0) for i in range(len(proportions[p]))])
 
                             writer2.writerow([comm, snd] + data["Run complete"])
                             for i in range(len(sizes)):

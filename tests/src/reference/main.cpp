@@ -141,7 +141,11 @@ ReferenceParams parseParams(int argc, char *argv[]) {
          throw std::runtime_error("Invalid option for selected testcase.");
       params.P1 = StringToSize_t(getValueOfParam(argc, argv, "--partition1", "-p1"), true, "P1 is required for this testcase.");
       params.P2 = StringToSize_t(getValueOfParam(argc, argv, "--partition2", "-p2"), true, "P2 is required for this testcase.");
-   } else {
+   } else if (params.testcase == 4) {
+      if (params.opt < 0 || params.opt > 0)
+         throw std::runtime_error("Invalid option for selected testcase.");
+   }  
+   else {
       throw std::runtime_error("Invalid testcase.");
    }
 

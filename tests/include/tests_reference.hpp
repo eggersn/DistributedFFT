@@ -76,6 +76,7 @@ protected:
       * There are an additional 10 warm-up rounds, which are not considered for the resulting bandwidth.
       */
       int testcase3(const int opt, const int runs);
+      int testcase4(const int opt, const int runs);
       int initializeRandArray(void* in_d, size_t N1, size_t N2);
 
       size_t Nx, Ny, Nz;

@@ -55,6 +55,8 @@ int Tests_Reference<T>::run(const int testcase, const int opt, const int runs) {
         return this->testcase2(opt, runs);
     else if (testcase == 3)
         return this->testcase3(opt, runs);
+    else if (testcase == 4)
+        return this->testcase4(opt, runs);
     throw std::runtime_error("Invalid Testcase!");
 }
 
@@ -1095,42 +1097,60 @@ int Tests_Reference<T>::testcase3(const int opt, const int runs) {
     return 0;
 }
 
-// template<typename T>
-// int Tests_Reference<T>::testcase4(const int opt, const int runs) {
-//     using R_t = typename cuFFT<T>::R_t;
+template<typename T>
+int Tests_Reference<T>::testcase4(const int opt, const int runs) {
+    using R_t = typename cuFFT<T>::R_t;
 
-//     MPI_Init(NULL, NULL);
+    MPI_Init(NULL, NULL);
 
-//     //number of processes
-//     int world_size;
-//     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    MPI_Request send_req, recv_req;
 
-//     //get global rank
-//     int rank;
-//     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    //number of processes
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-//     int dev_count;
-//     CUDA_CALL(cudaGetDeviceCount(&dev_count));
+    //get global rank
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-//     int dev = rank % dev_count;
-//     CUDA_CALL(cudaSetDevice(dev));
+    if (rank > 1)  
+        return 0;
 
-//     R_t *in_d, out_d;
-//     CUDA_CALL(cudaMalloc((void**)&in_d, Nx*Ny*Nz*sizeof(R_t)));
-//     CUDA_CALL(cudaMalloc((void**)&in_d, (world_size-1)*Nx*Ny*Nz*sizeof(R_t)));
+    int dev_count;
+    CUDA_CALL(cudaGetDeviceCount(&dev_count));
 
-//     initializeRandArray(in_d, Nx, Ny);
+    if (rank == 0)
+        CUDA_CALL(cudaSetDevice(0));
+    else 
+        CUDA_CALL(cudaSetDevice(0));
 
-//     // use MPI 
-//     if (opt == 0) {
-        
-//     } else { // use cudamemcpy peer-2-peer
+    R_t *in_d, *out_d;
+    CUDA_CALL(cudaMalloc((void**)&in_d, Nx*Ny*Nz*sizeof(R_t)));
+    CUDA_CALL(cudaMalloc((void**)&out_d, Nx*Ny*Nz*sizeof(R_t)));
 
-//     }
+    initializeRandArray(in_d, Nx, Ny);
 
-//     MPI_Finalize();
-//     return 0;
-// }
+    double t1, t2;
+
+    for (int i = 0; i < runs+20; i++) {
+        if (i == 20)
+            t1 = MPI_Wtime();
+        MPI_Isend(in_d, Nx*Ny*Nz*sizeof(R_t), MPI_BYTE, 1-rank, rank, MPI_COMM_WORLD, &send_req);
+        MPI_Irecv(out_d, Nx*Ny*Nz*sizeof(R_t), MPI_BYTE, 1-rank, 1-rank, MPI_COMM_WORLD, &recv_req);
+    
+        MPI_Wait(&recv_req, MPI_STATUS_IGNORE);
+        MPI_Wait(&send_req, MPI_STATUS_IGNORE);
+    }
+    t2 = MPI_Wtime();
+
+    double d = (t2 - t1)/runs;
+    double b = Nx*Ny*Nz*sizeof(R_t) / d;
+
+    printf("diff %f, bandwidth %f\n", d, b);
+
+    MPI_Finalize();
+    return 0;
+}
 
 template class Tests_Reference<float>;
 template class Tests_Reference<double>;
