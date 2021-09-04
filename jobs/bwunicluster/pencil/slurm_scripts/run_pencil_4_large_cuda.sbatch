@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:4
 #SBATCH --nodes=12
 #SBATCH --ntasks=48
-#SBATCH --time=35:00:00
+#SBATCH --time=48:00:00
 #SBATCH --job-name=gpu4_pencil_cuda
 #SBATCH --output=gpu4_pencil_cuda.%j.out
 #SBATCH --account=st
@@ -17,23 +17,23 @@ module load mpi/openmpi/4.1
 echo "Modules loaded"
 
 # determine hosts
-HOSTS="$(mpirun | sort -n | sed -r 's/\.localdomain//'"
+HOSTS="$(mpirun hostname | sort -n | sed -r 's/\.localdomain//')"
 echo "$HOSTS"
-HOST48="$(echo "$HOSTS" | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST48="$(echo "$HOSTS" | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "48: $HOST48"
-HOST40="$(echo "$HOSTS" | head -n 40 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST40="$(echo "$HOSTS" | head -n 40 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "40: $HOST40"
-HOST32="$(echo "$HOSTS" | head -n 32 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST32="$(echo "$HOSTS" | head -n 32 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "32: $HOST32"
-HOST24x0="$(echo "$HOSTS" | head -n 24 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST24x0="$(echo "$HOSTS" | head -n 24 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "24x0: $HOST24x0"
-HOST24x1="$(echo "$HOSTS" | tail -n 24 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST24x1="$(echo "$HOSTS" | tail -n 24 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "24x1: $HOST24x1"
-HOST16="$(echo "$HOSTS" | tail -n 16 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST16="$(echo "$HOSTS" | tail -n 16 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "16: $HOST16"
-HOST8="$(echo "$HOSTS" | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8="$(echo "$HOSTS" | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8: $HOST8"
-HOST4="$(echo "$HOSTS" | tail -n 4 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST4="$(echo "$HOSTS" | tail -n 4 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "4: $HOST4"
 
 # build

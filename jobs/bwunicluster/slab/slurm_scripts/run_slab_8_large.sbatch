@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:8
 #SBATCH --ntasks=64
 #SBATCH --nodes=8
-#SBATCH --time=30:00:00
+#SBATCH --time=35:00:00
 #SBATCH --job-name=gpu8_slab
 #SBATCH --output=gpu8_slab.%j.out
 #SBATCH --account=st
@@ -19,31 +19,31 @@ echo "Modules loaded"
 # determine hosts
 HOSTS="$(mpirun hostname | sort -n | sed -r 's/\.localdomain//')"
 echo "$HOSTS"
-HOST64="$(echo "$HOSTS" | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST64="$(echo "$HOSTS" | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "64: $HOST64"
-HOST48="$(echo "$HOSTS" | head -n 48 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST48="$(echo "$HOSTS" | head -n 48 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "48: $HOST48"
-HOST32x0="$(echo "$HOSTS" | head -n 32 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST32x0="$(echo "$HOSTS" | head -n 32 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "32x0: $HOST32x0"
-HOST32x1="$(echo "$HOSTS" | tail -n 32 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST32x1="$(echo "$HOSTS" | tail -n 32 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "32x1: $HOST32x1"
-HOST16="$(echo "$HOSTS" | tail -n 16 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST16="$(echo "$HOSTS" | tail -n 16 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "16: $HOST16"
-HOST8x0="$(echo "$HOSTS" | head -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x0="$(echo "$HOSTS" | head -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x0: $HOST8x0"
-HOST8x1="$(echo "$HOSTS" | head -n 16 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x1="$(echo "$HOSTS" | head -n 16 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x1: $HOST8x1"
-HOST8x2="$(echo "$HOSTS" | head -n 24 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x2="$(echo "$HOSTS" | head -n 24 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x2: $HOST8x2"
-HOST8x3="$(echo "$HOSTS" | head -n 32 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x3="$(echo "$HOSTS" | head -n 32 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x3: $HOST8x3"
-HOST8x4="$(echo "$HOSTS" | head -n 40 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x4="$(echo "$HOSTS" | head -n 40 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x4: $HOST8x4"
-HOST8x5="$(echo "$HOSTS" | head -n 48 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x5="$(echo "$HOSTS" | head -n 48 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x5: $HOST8x5"
-HOST8x6="$(echo "$HOSTS" | head -n 56 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x6="$(echo "$HOSTS" | head -n 56 | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x6: $HOST8x6"
-HOST8x7="$(echo "$HOSTS" | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g'"
+HOST8x7="$(echo "$HOSTS" | tail -n 8 | tr '\n' ',' | sed 's/,$//' | sed 's/,/ /g')"
 echo "8x7: $HOST8x7"
 
 # build

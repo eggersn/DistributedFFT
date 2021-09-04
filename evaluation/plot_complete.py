@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import t
 
-prefix = "evaluation/benchmarks/bwunicluster/old/forward"
-title = "BwUniCluster GPU8 Old Forward"
-P = 8
+prefix = "evaluation/benchmarks/bwunicluster/gpu8/small/forward"
+title = "BwUniCluster GPU8 Forward"
+P = 16
 
 def ConvertSizesToLabels(sizes):
     labels = []
@@ -95,13 +95,12 @@ def collect(cuda_aware):
 
     plt.title("Difference " + title + " FFT [P={}{}]".format(P, ", CUDA-aware" if cuda_aware else ""), fontsize=20)
     plt.grid(zorder=0, color="grey")
-    plt.yscale('symlog', base=10)
     plt.ylabel("Time [ms]", fontsize=16)
     plt.yticks(fontsize=14)
     plt.xticks(fontsize=14, rotation=30)
 
     for i in range(len(values_collection)):
-        plt.plot(x_vals_collection[i], [values_collection[i][j] - min([values[j] for values in values_collection if j < len(values)]) for j in range(len(values_collection[i]))], "D-", zorder=3, linewidth=3, markersize=10)
+        plt.plot(x_vals_collection[i], [values_collection[i][j]/min([values[j] for values in values_collection if j < len(values)])-1 for j in range(len(values_collection[i]))], "D-", zorder=3, linewidth=3, markersize=10)
 
     plt.legend(labels, legend, prop={"size":16})
     fig = plt.gcf()

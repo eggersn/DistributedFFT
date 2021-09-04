@@ -10,7 +10,7 @@ from scipy.stats import t
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
 send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type": 2}]
 
-prefix = "benchmarks/argon"
+prefix = "benchmarks/bwunicluster/gpu8/small"
 prec = "double"
 
 # Used to compute the bounds of the mean-interval
