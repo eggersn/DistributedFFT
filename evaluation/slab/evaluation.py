@@ -3,14 +3,27 @@ from os.path import isfile, join
 import pathlib
 import re
 import csv
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import t
+import sys
+import matplotlib as mpl
+mpl.use("pgf")
+import matplotlib.pyplot as plt
+plt.rcParams.update({
+  "text.usetex": True,
+  "pgf.rcfonts": False,
+  "font.size": 14,
+  'pgf.rcfonts': False
+})
 
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
 send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type": 2}]
+markers = ["D", "X", "o", "s", "v"]
+linestyles = ["solid", "dotted", "dashed", "dashdot", (0, (3, 1, 1, 1, 1, 1))]
 
-prefix = "benchmarks/krypton"
+prefix = "benchmarks/bwunicluster/gpu8/small"
+if len(sys.argv) > 1:
+    prefix = "benchmarks" + str(sys.argv[1])
 prec = "double"
 
 run_iterations = 20
@@ -32,11 +45,11 @@ def ConvertSizesToLabels(sizes):
         if dims[0] == dims[1] and dims[1] == dims[2]:
             labels.append(r"${}^3$".format(dims[0]))
         elif dims[0] == dims[1]:
-            labels.append(r"${}^2x{}$".format(dims[0], dims[2]))
+            labels.append(r"${}^2 \times {}$".format(dims[0], dims[2]))
         elif dims[1] == dims[2]:
-            labels.append(r"${}x{}^2$".format(dims[0], dims[2]))
+            labels.append(r"${} \times {}^2$".format(dims[0], dims[2]))
         else:
-            labels.append(r"${}x{}x{}$".format(dims[0], dims[1], dims[2]))
+            labels.append(r"${} \times {} \times {}$".format(dims[0], dims[1], dims[2]))
 
     return labels
 
@@ -253,12 +266,12 @@ def compareMethods(opt, P, cuda_aware, forward, seq, subdir):
                             writer1.writerow([])
 
                 writer2.writerow([])
-                writer2.writerow(["Squared Difference to Minimum"])
+                writer2.writerow(["Proportions w.r.t. Minimum"])
 
                 diff = [{} for i in range(len(runs))]
                 for i in range(len(runs)):
                     for key in runs[i]:
-                        diff[i][key] = (runs[i][key] - min(runs[i].values()))**2
+                        diff[i][key] = runs[i][key] / min(runs[i].values())
 
                 for key in runs[0]:
                     writer2.writerow(key.split("-") + [diff[i][key] for i in range(len(sizes)) if key in diff[i]])
@@ -270,8 +283,10 @@ def compareMethods(opt, P, cuda_aware, forward, seq, subdir):
 
                 fig1, ax1 = plt.subplots()
                 fig2, ax2 = plt.subplots()
+                fig3, ax3 = plt.subplots()
                 labels = []; legend = []
 
+                m_count = 0
                 for comm in comm_methods:
                     for snd in send_methods[comm_methods[comm]]:
                         if "{}-{}".format(comm, snd) in variance_collection:
@@ -284,28 +299,48 @@ def compareMethods(opt, P, cuda_aware, forward, seq, subdir):
 
                             x_vals = ConvertSizesToLabels(sizes)
 
-                            label, = ax1.plot(x_vals, [runs[i]["{}-{}".format(comm, snd)] for i in range(len(sizes))], "D-", zorder=3, linewidth=3, markersize=10)
-                            ax2.plot(x_vals, [np.sqrt(diff[i]["{}-{}".format(comm, snd)]) for i in range(len(sizes))], "D-", zorder=3, linewidth=3, markersize=10)
+                            label, = ax1.plot(x_vals, [runs[i]["{}-{}".format(comm, snd)] for i in range(len(sizes))], linestyle=linestyles[m_count], marker=markers[m_count], zorder=3, linewidth=3, markersize=10)
+                            ax2.plot(x_vals, [diff[i]["{}-{}".format(comm, snd)] for i in range(len(sizes))], linestyle=linestyles[m_count], marker=markers[m_count], zorder=3, linewidth=3, markersize=10)
+                            ax2.errorbar(x_vals, [diff[i]["{}-{}".format(comm, snd)] for i in range(len(sizes))], [eps[i] / min(runs[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
+                            ax2.fill_between(x_vals, [diff[i]["{}-{}".format(comm, snd)] - eps[i] / min(runs[i].values()) for i in range(len(sizes))], [diff[i]["{}-{}".format(comm, snd)] + eps[i] / min(runs[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
+                            if snd != "MPI_Type":
+                                ax3.plot(x_vals, [diff[i]["{}-{}".format(comm, snd)] for i in range(len(sizes))], linestyle=linestyles[m_count], marker=markers[m_count], zorder=3, linewidth=3, markersize=10)
+                                ax3.errorbar(x_vals, [diff[i]["{}-{}".format(comm, snd)] for i in range(len(sizes))], [eps[i] / min(runs[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
+                                ax3.fill_between(x_vals, [diff[i]["{}-{}".format(comm, snd)] - eps[i] / min(runs[i].values()) for i in range(len(sizes))], [diff[i]["{}-{}".format(comm, snd)] + eps[i] / min(runs[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
+                            else:
+                                next(ax3._get_lines.prop_cycler) 
+                                next(ax3._get_patches_for_fill.prop_cycler)
+                            m_count += 1
                             labels.append(label)
                             legend.append("{}-{}".format(comm, snd))
 
-                ax1.set_title(r"Slab Communication Methods [{}, {}, {}{}]".format(P, "ZY_Then_X" if seq==0 else "Z_Then_YX", "default" if opt==0 else "opt 1", ", CUDA-aware" if cuda_aware else ""), fontsize=18)
-                ax2.set_title(r"Slab Communication Methods Difference [{}, {}, {}{}]".format(P, "ZY_Then_X" if seq==0 else "Z_Then_YX", "default" if opt==0 else "opt 1", ", CUDA-aware" if cuda_aware else ""), fontsize=18)
-                for p in [[fig1, ax1], [fig2, ax2]]:
+                # ax1.set_title(r"Slab Communication Methods [{}, {}, {}{}]".format(P, r"ZY $\rightarrow$ X" if seq==0 else r"Z $\rightarrow$ YX", "default" if opt==0 else "data realignment", ", CUDA-aware" if cuda_aware else ""), fontsize=18)
+                # ax2.set_title(r"Slab Communication Methods Proportions [{}, {}, {}{}]".format(P, r"ZY $\rightarrow$ X" if seq==0 else r"Z $\rightarrow$ YX", "default" if opt==0 else "data realignment", ", CUDA-aware" if cuda_aware else ""), fontsize=18)
+                # ax3.set_title(r"Slab Communication Methods Proportions [{}, {}, {}{}]".format(P, r"ZY $\rightarrow$ X" if seq==0 else r"Z $\rightarrow$ YX", "default" if opt==0 else "data realignment", ", CUDA-aware" if cuda_aware else ""), fontsize=18)
+                for p in [[fig1, ax1], [fig2, ax2], [fig3, ax3]]:
                     fig = p[0]; ax = p[1]
 
-                    ax.legend(labels, legend, prop={"size":16})
+                    ax.legend(labels, legend, prop={"size":22})
                     ax.grid(zorder=0, color="grey")
-                    ax.set_yscale('symlog', base=10)
-                    ax.set_ylabel("Time [ms]", fontsize=16)
-                    ax.tick_params(axis='x', labelsize=14)
-                    ax.tick_params(axis='y', labelsize=14)
+                    if fig == fig1:
+                        ax.set_yscale('symlog', base=10)
+                        ax.set_ylabel("Time [ms]", fontsize=24)
+                    else: 
+                        ax.set_ylabel("Proportion", fontsize=24)
+
+                    ax.tick_params(axis='x', labelsize=22, pad=6)
+                    ax.tick_params(axis='y', labelsize=22)
                     plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
                     fig.set_size_inches(12.5, 8)
 
-                pathlib.Path("evaluation/{}/plots".format(join(prefix, subdir))).mkdir(parents=True, exist_ok=True)
-                fig1.savefig('evaluation/{}/plots/plot_{}_{}_{}.png'.format(join(prefix, subdir), opt, P, 1 if cuda_aware else 0), dpi=100)
-                fig2.savefig('evaluation/{}/plots/diff_{}_{}_{}.png'.format(join(prefix, subdir), opt, P, 1 if cuda_aware else 0), dpi=100)
+                path = 'evaluation/{}/plots/{}_{}_{}'.format(join(prefix, subdir), opt, P, 1 if cuda_aware else 0)
+                pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+                fig1.savefig("{}/plot.png".format(path), dpi=100)
+                fig1.savefig("{}/plot.pgf".format(path), dpi=100, bbox_inches='tight')
+                fig2.savefig("{}/diff.png".format(path), dpi=100)
+                fig2.savefig("{}/diff.pgf".format(path), dpi=100, bbox_inches='tight')
+                fig3.savefig("{}/reduced_diff.png".format(path), dpi=100)
+                fig3.savefig("{}/reduced_diff.pgf".format(path), dpi=100, bbox_inches='tight')
                 plt.close()
 
                 

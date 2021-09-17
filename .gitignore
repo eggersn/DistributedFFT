@@ -3,3 +3,4 @@ benchmarks/*
 documentation/*
 commands.txt
 test.py
+evaluation/benchmarks/*
