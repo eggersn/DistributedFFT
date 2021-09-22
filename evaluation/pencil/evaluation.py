@@ -14,8 +14,7 @@ import matplotlib.pyplot as plt
 plt.rcParams.update({
   "text.usetex": True,
   "pgf.rcfonts": False,
-  "font.size": 14,
-  'pgf.rcfonts': False
+  "font.size": 14
 })
 
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
@@ -23,7 +22,7 @@ send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type"
 markers = ["D", "X", "o", "s", "v"]
 linestyles = ["solid", "dotted", "dashed", "dashdot", (0, (3, 1, 1, 1, 1, 1))]
 
-prefix = "benchmarks/bwunicluster/gpu8/small"
+prefix = "benchmarks/bwunicluster/gpu8/large"
 if len(sys.argv) > 1:
     prefix = "benchmarks" + str(sys.argv[1])
 
@@ -369,11 +368,13 @@ def compareMethods(opt, P_str, P, cuda_aware, forward, subdir):
                                         # write run complete 
                                         writer2.writerow([comm1, snd1, comm2, snd2] + data["Run complete"])
                                         if comm1 == "Peer2Peer" and snd1 == "Sync":
-                                            for i in range(len(sizes)):
-                                                runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] = data["Run complete"][i]
+                                            if not (cuda_aware and snd2 == "Streams" and ((forward==1 and opt==1) or (forward==0 and opt==0))):
+                                                for i in range(len(sizes)):
+                                                    runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] = data["Run complete"][i]
                                         if comm2 == "Peer2Peer" and snd2 == "Sync":
-                                            for i in range(len(sizes)):
-                                                runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] = data["Run complete"][i]  
+                                            if not (cuda_aware and snd1 == "Streams" and forward==1 and opt==1):
+                                                for i in range(len(sizes)):
+                                                    runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] = data["Run complete"][i]  
 
                                         writer.writerow([])
                                         writer1.writerow([])   
@@ -414,6 +415,7 @@ def compareMethods(opt, P_str, P, cuda_aware, forward, subdir):
                     legend1 = []; legend2 = []
 
                     m_count0 = 0; m_count1 = 0
+                    max1 = 0; max2 = 0
 
                     if not forward:
                         for ax in [[ax11, ax12], [ax21, ax22], [ax31, ax32]]:
@@ -432,52 +434,68 @@ def compareMethods(opt, P_str, P, cuda_aware, forward, subdir):
                                         eps = [quantile*sd/np.sqrt(P*run_iterations) for sd in sd_arr]
 
                                         if comm1 == "Peer2Peer" and snd1 == "Sync":
-                                            writer2.writerow([comm1, snd1, comm2, snd2] + [runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]-eps[i] for i in range(len(sd_arr))])
-                                            writer2.writerow([comm1, snd1, comm2, snd2] + [runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]+eps[i] for i in range(len(sd_arr))])
+                                            if "{}-{}-{}-{}".format(comm1, snd1, comm2, snd2) in runs1:
+                                                writer2.writerow([comm1, snd1, comm2, snd2] + [runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]-eps[i] for i in range(len(sd_arr))])
+                                                writer2.writerow([comm1, snd1, comm2, snd2] + [runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]+eps[i] for i in range(len(sd_arr))])
 
-                                            label, = ax12.plot(x_vals, [runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count0], marker=markers[m_count0], zorder=3, linewidth=3, markersize=10)
-                                            ax22.plot(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count0], marker=markers[m_count0], zorder=3, linewidth=3, markersize=10)
-                                            ax22.errorbar(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs1[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
-                                            ax22.fill_between(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs1[i].values()) for i in range(len(sizes))], [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs1[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
-                                            if snd2 != "MPI_Type":
-                                                ax32.plot(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count0], marker=markers[m_count0], zorder=3, linewidth=3, markersize=10)
-                                                ax32.errorbar(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs1[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
-                                                ax32.fill_between(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs1[i].values()) for i in range(len(sizes))], [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs1[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
-                                            else:
+                                            if cuda_aware and snd2 == "Streams" and ((forward==1 and opt==1) or (forward==0 and opt==0)):
+                                                next(ax12._get_lines.prop_cycler) 
+                                                next(ax22._get_lines.prop_cycler) 
+                                                next(ax22._get_patches_for_fill.prop_cycler)
                                                 next(ax32._get_lines.prop_cycler) 
                                                 next(ax32._get_patches_for_fill.prop_cycler)
-                                            labels2.append(label)
-                                            legend2.append("{}-{}".format(comm2, snd2))
-                                            m_count0 += 1
-                                            if comm2 == "Peer2Peer" and snd2 == "Sync":
-                                                label, = ax11.plot(x_vals, [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=3, markersize=10)
-                                                ax21.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=3, markersize=10)
+                                            else:
+                                                label, = ax12.plot(x_vals, [runs1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count0], marker=markers[m_count0], zorder=3, linewidth=4, markersize=10)
+                                                ax22.plot(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count0], marker=markers[m_count0], zorder=3, linewidth=4, markersize=10)
+                                                ax22.errorbar(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs1[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
+                                                ax22.fill_between(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs1[i].values()) for i in range(len(sizes))], [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs1[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
+                                                ax32.plot(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count0], marker=markers[m_count0], zorder=3, linewidth=4, markersize=10)
+                                                ax32.errorbar(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs1[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
+                                                ax32.fill_between(x_vals, [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs1[i].values()) for i in range(len(sizes))], [diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs1[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
+                                                labels2.append(label)
+                                                legend2.append("{}-{}".format(comm2, snd2))
+                                                m_count0 += 1
+                                                if snd2 != "MPI_Type":
+                                                    max1 = max(max([diff1[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))]), max1)
+                                                if comm2 == "Peer2Peer" and snd2 == "Sync":
+                                                    label, = ax11.plot(x_vals, [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=4, markersize=10)
+                                                    ax21.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=4, markersize=10)
+                                                    ax21.errorbar(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs2[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
+                                                    ax21.fill_between(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs2[i].values()) for i in range(len(sizes))], [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs2[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
+                                                    ax31.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=4, markersize=10)
+                                                    ax31.errorbar(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs2[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=4, capsize=5)
+                                                    ax31.fill_between(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs2[i].values()) for i in range(len(sizes))], [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs2[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
+                                                    labels1.append(label)
+                                                    legend1.append("{}-{}".format(comm1, snd1))
+                                                    m_count1 += 1
+                                                    max2 = max(max([diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))]), max2)
+                                        else:
+                                            if "{}-{}-{}-{}".format(comm1, snd1, comm2, snd2) in runs2:
+                                                writer2.writerow([comm1, snd1, comm2, snd2] + [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]-eps[i] for i in range(len(sd_arr))])
+                                                writer2.writerow([comm1, snd1, comm2, snd2] + [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]+eps[i] for i in range(len(sd_arr))])
+
+                                            if cuda_aware and snd1 == "Streams" and forward==1 and opt==1:
+                                                next(ax11._get_lines.prop_cycler) 
+                                                next(ax21._get_lines.prop_cycler) 
+                                                next(ax21._get_patches_for_fill.prop_cycler)
+                                                next(ax31._get_lines.prop_cycler) 
+                                                next(ax31._get_patches_for_fill.prop_cycler)
+                                            else:
+                                                label, = ax11.plot(x_vals, [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=4, markersize=10)
+                                                ax21.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=4, markersize=10)
                                                 ax21.errorbar(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs2[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
                                                 ax21.fill_between(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs2[i].values()) for i in range(len(sizes))], [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs2[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
-                                                ax31.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=3, markersize=10)
+                                                ax31.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=4, markersize=10)
                                                 ax31.errorbar(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs2[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
                                                 ax31.fill_between(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs2[i].values()) for i in range(len(sizes))], [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs2[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
                                                 labels1.append(label)
                                                 legend1.append("{}-{}".format(comm1, snd1))
                                                 m_count1 += 1
+                                                if snd1 != "MPI_Type":
+                                                    max2 = max(max([diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))]), max2)
 
-                                        else:
-                                            writer2.writerow([comm1, snd1, comm2, snd2] + [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]-eps[i] for i in range(len(sd_arr))])
-                                            writer2.writerow([comm1, snd1, comm2, snd2] + [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)]+eps[i] for i in range(len(sd_arr))])
-                                            label, = ax11.plot(x_vals, [runs2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=3, markersize=10)
-                                            ax21.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=3, markersize=10)
-                                            ax21.errorbar(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs2[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
-                                            ax21.fill_between(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs2[i].values()) for i in range(len(sizes))], [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs2[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
-                                            if snd1 != "MPI_Type":
-                                                ax31.plot(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], linestyle=linestyles[m_count1], marker=markers[m_count1], zorder=3, linewidth=3, markersize=10)
-                                                ax31.errorbar(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] for i in range(len(sizes))], [eps[i] / min(runs2[i].values()) for i in range(0, len(eps))], fmt='.k', elinewidth=3, capsize=5)
-                                                ax31.fill_between(x_vals, [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] - eps[i] / min(runs2[i].values()) for i in range(len(sizes))], [diff2[i]["{}-{}-{}-{}".format(comm1, snd1, comm2, snd2)] + eps[i] / min(runs2[i].values()) for i in range(len(sizes))], zorder=3, alpha=0.3)
-                                            else:
-                                                next(ax31._get_lines.prop_cycler) 
-                                                next(ax31._get_patches_for_fill.prop_cycler)
-                                            labels1.append(label)
-                                            legend1.append("{}-{}".format(comm1, snd1))
-                                            m_count1 += 1
+                    ax31.set_ylim(top=max2*1.1, bottom=0.8)
+                    ax32.set_ylim(top=max1*1.1, bottom=0.8)
 
                     for p in [[fig1, ax11, ax12], [fig2, ax21, ax22], [fig3, ax31, ax32]]:
                         fig = p[0]; ax1 = p[1]; ax2 = p[2]
@@ -488,53 +506,57 @@ def compareMethods(opt, P_str, P, cuda_aware, forward, subdir):
                             ax2.set_title("First Communication Phase", fontsize=18)
                             ax1.set_title("Second Communication Phase", fontsize=18)
                             
-                        ax1.legend(labels1, legend1, prop={"size":22})
-                        ax2.legend(labels2, legend2, prop={"size":22})
+                        if opt == 0 and P_str=="16_4":
+                            ax1.legend(labels1, legend1, prop={"size":26})
+                        # ax2.legend(labels2, legend2, prop={"size":22})
                         for ax in [ax1, ax2]:
                             if fig == fig1:
-                                ax.set_ylabel("Time [ms]", fontsize=24)
+                                ax.set_ylabel("Time [ms]", fontsize=26)
                                 ax.set_yscale('symlog', base=10)
                             else:
-                                ax.set_ylabel("Proportion", fontsize=24)
+                                ax.set_ylabel("Proportion", fontsize=26)
                                 
                             ax.grid(zorder=0, color="grey")
-                            ax.tick_params(axis='x', labelsize=22)
-                            ax.tick_params(axis='y', labelsize=22, pad=6)
-                            plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+                            ax.tick_params(axis='x', labelsize=24)
+                            ax.tick_params(axis='y', labelsize=24, pad=6)
+                            # plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
                         fig.set_size_inches(25, 8)
+                        # ax1.set_xticks([x_vals[i] if i%3==0 else "" for i in range(len(x_vals))])
+                        # ax2.set_xticks([x_vals[i] if i%3==0 else "" for i in range(len(x_vals))])
 
                     path = 'evaluation/{}/exact/plots/{}_{}_{}'.format(join(prefix, subdir), opt, P_str, 1 if cuda_aware else 0)
+                    print(path)
                     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
                     fig1.savefig("{}/plot.png".format(path), dpi=100)
-                    fig1.savefig("{}/plot.pgf".format(path), dpi=100, bbox_inches='tight')
+                    fig1.savefig("{}/plot.pdf".format(path), dpi=100, bbox_inches='tight')
                     fig2.savefig("{}/diff.png".format(path), dpi=100)
-                    fig2.savefig("{}/diff.pgf".format(path), dpi=100, bbox_inches='tight')
+                    fig2.savefig("{}/diff.pdf".format(path), dpi=100, bbox_inches='tight')
                     fig3.savefig("{}/reduced_diff.png".format(path), dpi=100)
-                    fig3.savefig("{}/reduced_diff.pgf".format(path), dpi=100, bbox_inches='tight')
+                    fig3.savefig("{}/reduced_diff.pdf".format(path), dpi=100, bbox_inches='tight')
                     extent = ax11.get_window_extent().transformed(fig1.dpi_scale_trans.inverted())
                     ax11.set_title("")
                     fig1.savefig("{}/plot_a.png".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
-                    fig1.savefig("{}/plot_a.pgf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
+                    fig1.savefig("{}/plot_a.pdf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
                     extent = ax12.get_window_extent().transformed(fig1.dpi_scale_trans.inverted())
                     ax12.set_title("")
                     fig1.savefig("{}/plot_b.png".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
-                    fig1.savefig("{}/plot_b.pgf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
+                    fig1.savefig("{}/plot_b.pdf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
                     extent = ax21.get_window_extent().transformed(fig2.dpi_scale_trans.inverted())
                     ax21.set_title("")
                     fig2.savefig("{}/diff_a.png".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
-                    fig2.savefig("{}/diff_a.pgf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                    
+                    fig2.savefig("{}/diff_a.pdf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                    
                     extent = ax22.get_window_extent().transformed(fig2.dpi_scale_trans.inverted())
                     ax22.set_title("")
                     fig2.savefig("{}/diff_b.png".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))
-                    fig2.savefig("{}/diff_b.pgf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))  
+                    fig2.savefig("{}/diff_b.pdf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))  
                     extent = ax31.get_window_extent().transformed(fig3.dpi_scale_trans.inverted())
                     ax31.set_title("")
                     fig3.savefig("{}/reduced_diff_a.png".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                    
-                    fig3.savefig("{}/reduced_diff_a.pgf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                    
+                    fig3.savefig("{}/reduced_diff_a.pdf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                    
                     extent = ax32.get_window_extent().transformed(fig3.dpi_scale_trans.inverted())
                     ax32.set_title("")
                     fig3.savefig("{}/reduced_diff_b.png".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                    
-                    fig3.savefig("{}/reduced_diff_b.pgf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                                      
+                    fig3.savefig("{}/reduced_diff_b.pdf".format(path), bbox_inches=bb.Bbox([extent.min-np.array([1,1]), extent.max+np.array([0.3, 0.3])]))                                      
                     plt.close()
 
         # Write approximations   
