@@ -749,6 +749,9 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::execR2C(void *out, const void *in) {
         else 
             this->All2All_Communication((void *)complex);
 
+        if (config.comm_method == Peer2Peer && config.send_method == MPI_Type && cuda_aware) // avoid overwriting send_buffer
+            MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
+
         // compute remaining 1d FFT, for cuda-aware recv and temp buffer are identical
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C, temp_ptr, complex, CUFFT_FORWARD));
         CUDA_CALL(cudaDeviceSynchronize());
@@ -757,7 +760,8 @@ void MPIcuFFT_Slab_Z_Then_YX<T>::execR2C(void *out, const void *in) {
         if (config.comm_method == Peer2Peer) {
             if (config.send_method == Streams)
                 mpisend_thread.join();
-            MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
+            if (!cuda_aware || config.send_method != MPI_Type)
+                MPI_Waitall(pcnt, send_req.data(), MPI_STATUSES_IGNORE);
         }
         timer->stop_store("Run complete");
     }

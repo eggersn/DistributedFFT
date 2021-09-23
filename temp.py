@@ -32,7 +32,7 @@ def truncate(path):
                 print("weird {} {}".format(join(join(path, d), f), count))
 
 def main():
-    path = "benchmarks/argon"
+    path = "benchmarks/pcsgs"
     truncate(path + "/forward")
     truncate(path + "/inverse")
 

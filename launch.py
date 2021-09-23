@@ -79,7 +79,11 @@ def checkIfParamExists(test, key1, key2, error_msg=""):
 
 def run_test(test, size, global_test_settings, additional_flags, parse):
     if parse == True:
-        test.update(global_test_settings)
+        if "--cuda_aware" in test and test["--cuda_aware"] == False:
+            test.update(global_test_settings)
+            test["--cuda_aware"] = False
+        else:    
+            test.update(global_test_settings)
         if size != 0:
             if "--input-dim-x" in test or "-nx" in test:
                 print("Warning: Nx is overridden by size!")
@@ -185,7 +189,6 @@ def main():
     parser.add_argument('--affinity', metavar="c", type=str, nargs='+', dest="affinity", help="List of cores for GPU to bind to. The list has to be of length --gpus. Example: \"--affinity 0:0-9 1:20-29\". Here the first rank is assinged to cores 0-9 on socket 0 for GPU0 and the second rank is assinged to cores 20-29 on socket 1 for GPU1.")
     parser.add_argument('--build_dir', metavar="d", type=str, nargs=1, dest="build_dir", help="Path to build directory (default: ./build).")
 
-
     args = parser.parse_args()
     hostfile = ""
     rankfile = ""
@@ -235,9 +238,11 @@ def main():
                     elif program_args[i] == "-d" or program_args[i] == "--double_prec":
                         data["global_test_settings"]["--double_prec"] = True
                         i += 1
-                    else:
+                    elif len(program_args[i]) > 0 and i+1 < len(program_args):
                         data["global_test_settings"][program_args[i]] = program_args[i+1]
                         i += 2
+                    else:
+                        i += 1
 
             old_keys = list(data["global_test_settings"].keys())[:]
             for key in old_keys:
