@@ -1539,6 +1539,9 @@ void MPIcuFFT_Pencil_Opt1<T>::execC2R(void *out, const void *in, int d) {
             this->Peer2Peer_Communication_SecondTranspose((void *)complex, false);
         else
             this->All2All_Communication_SecondTranspose((void *)complex, false);
+
+        if (cuda_aware && config.comm_method2 == Peer2Peer && config.send_method2 == MPI_Type) //avoid overwriting the send buffer
+            MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
                 
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C_0_inv, copy_ptr, temp_ptr, CUFFT_INVERSE));
         CUDA_CALL(cudaDeviceSynchronize());
@@ -1547,7 +1550,8 @@ void MPIcuFFT_Pencil_Opt1<T>::execC2R(void *out, const void *in, int d) {
         if (config.comm_method2 == Peer2Peer) {
             if (config.send_method2 == Streams)
                 mpisend_thread2.join();
-            MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
+            if (!cuda_aware || config.send_method2 != MPI_Type)
+                MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
         }
         timer->stop_store("First Transpose (Send Complete)");
 
