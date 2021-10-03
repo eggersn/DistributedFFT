@@ -56,7 +56,7 @@ namespace Difference_Slab_Default {
         if (i < Nx*N2*(Nz/2+1)) {
             // get loop variables
             int z = i % (Nz/2+1);
-            int y = (i-z)/(Nz/2+1) % N2;
+            int y = ((i-z)/(Nz/2+1)) % N2;
             int x = (i-z-y*(Nz/2+1)) / (N2*(Nz/2+1));
 
             int k1 = 0, k2 = 0, k3 = 0;
@@ -81,7 +81,7 @@ namespace Difference_Slab_Default {
         if (i < Nx*N2*(Nz/2+1)) {
             // get loop variables
             int z = i % (Nz/2+1);
-            int y = (i-z)/(Nz/2+1) % N2;
+            int y = ((i-z)/(Nz/2+1)) % N2;
             int x = (i-z-y*(Nz/2+1)) / (N2*(Nz/2+1));
 
             int k1 = 0, k2 = 0, k3 = 0;
@@ -639,13 +639,13 @@ int Tests_Slab_Random_Default<T>::testcase4(const int opt, const int runs){
     if (rank < Ny%world_size)
         N2++;
 
-    size_t Nx_offset = rank * Nx / world_size;
+    size_t Nx_offset = rank * (Nx / world_size);
     if (rank < Nx%world_size)
         Nx_offset += rank;
     else 
         Nx_offset += Nx%world_size;
 
-    size_t Ny_offset = rank * Ny / world_size;
+    size_t Ny_offset = rank * (Ny / world_size);
     if (rank < Ny%world_size)
         Ny_offset += rank;
     else 
