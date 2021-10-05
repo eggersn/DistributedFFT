@@ -17,7 +17,7 @@ echo "Modules loaded"
 
 # build
 echo "start building"
-cd /home/eggersn/DistributedFFT/
+cd $HOME/DistributedFFT/
 rm -rf build_krypton
 mkdir build_krypton
 cd build_krypton

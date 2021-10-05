@@ -1,0 +1,274 @@
+\hypertarget{classMPIcuFFT__Slab__Opt1}{}\doxysection{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1$<$ T $>$ Class Template Reference}
+\label{classMPIcuFFT__Slab__Opt1}\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+
+
+{\ttfamily \#include $<$mpicufft\+\_\+slab\+\_\+opt1.\+hpp$>$}
+
+Inheritance diagram for MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classMPIcuFFT__Slab__Opt1}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structMPIcuFFT__Slab__Opt1_1_1Callback__Params}{Callback\+\_\+\+Params}}
+\item 
+struct \mbox{\hyperlink{structMPIcuFFT__Slab__Opt1_1_1Callback__Params__Base}{Callback\+\_\+\+Params\+\_\+\+Base}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a919876bad968d430199a910606ea6c65}{init\+FFT}} (\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$global\+\_\+size, \mbox{\hyperlink{structPartition}{Partition}} $\ast$partition, bool allocate=true)
+\begin{DoxyCompactList}\small\item\em Creates the \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans and allocates the required memory space. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a4b2ad9b69c2aa832675b08157123c81f}{exec\+R2C}} (void $\ast$out, const void $\ast$in)
+\begin{DoxyCompactList}\small\item\em Computes a 3D FFT as illustrated by \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Visualisation}{Visualisation}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a7560968500f6417b7c62e9fc857f67f1}{Peer2\+Peer\+\_\+\+Communication}} (void $\ast$complex\+\_\+)
+\begin{DoxyCompactList}\small\item\em This method implements the Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a6d6beec0dd5b15566873013f6a7ad94c}{Peer2\+Peer\+\_\+\+Sync}} (void $\ast$complex\+\_\+, void $\ast$recv\+\_\+ptr\+\_\+)
+\begin{DoxyCompactList}\small\item\em This method implements the {\itshape Sync} (default) Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a878a743732c3ad5c8182f7a4348eba68}{Peer2\+Peer\+\_\+\+Streams}} (void $\ast$complex\+\_\+, void $\ast$recv\+\_\+ptr\+\_\+)
+\begin{DoxyCompactList}\small\item\em This method implements the {\itshape Streams} Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_ac39871f1467fc0179c2f9f26fa68f707}{Peer2\+Peer\+\_\+\+MPIType}} (void $\ast$complex\+\_\+, void $\ast$recv\+\_\+ptr\+\_\+)
+\begin{DoxyCompactList}\small\item\em This method implements the {\itshape MPI\+\_\+\+Type} Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a6ce8229df9653d64215fa79c3e536da1}{All2\+All\+\_\+\+Communication}} (void $\ast$complex\+\_\+)
+\begin{DoxyCompactList}\small\item\em This method implements the All2\+All communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a62c0a691a95e1085f005ddb706b3212b}{All2\+All\+\_\+\+Sync}} (void $\ast$complex\+\_\+)
+\begin{DoxyCompactList}\small\item\em This method implements the {\itshape Sync} (default) All2\+All communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_a745cf973adf0bb8bc6b6a5af3f39d373}{All2\+All\+\_\+\+MPIType}} (void $\ast$complex\+\_\+)
+\begin{DoxyCompactList}\small\item\em This method implements the {\itshape MPI\+\_\+\+Type} (default) All2\+All communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1$<$ T $>$}
+\hypertarget{classMPIcuFFT__Slab__Opt1_Visualisation}{}\doxysubsection{Visualisation}\label{classMPIcuFFT__Slab__Opt1_Visualisation}
+ The above example illustrates the procedure for P = 3. Each slab is processed by a single rank (e.\+g. the green slab by rank 0). At first, the FFT is computed in z-\/ and y-\/ direction, where the coordinate system is transformed as specified by the \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plan. After the global redistribution, the remaining FFT in x-\/direction is computed as well. Using a second transformation of the coordinate system, the layout of the output data is the same as the layout of the input data. \hypertarget{classMPIcuFFT__Slab__Opt1_Details}{}\doxysubsection{Details}\label{classMPIcuFFT__Slab__Opt1_Details}
+There are a few technical details to consider when using this option\+:
+\begin{DoxyItemize}
+\item Required memory space (besides workspace required by \mbox{\hyperlink{structcuFFT}{cu\+FFT}})\+:
+\begin{DoxyEnumerate}
+\item Send Method\+: {\itshape Sync} or {\itshape Streams\+:} 
+\begin{DoxyItemize}
+\item An additional send-\/buffer is only required if MPI is not CUDA-\/aware (since the area highlighted in red is continuous).
+\item An additional recv-\/ and temp-\/buffer is required, since a 2D memcpy is needed in order to format the received data.
+\item Depending on whether MPI is CUDA-\/aware, the send-\/ and recv-\/buffer are allocated on device or host memory.
+\item The temp-\/buffer is always allocated on device memory and can be used as the input for the FFT in x-\/direction.
+\end{DoxyItemize}
+\item Send Method\+: {\itshape MPI\+\_\+\+Types\+:} 
+\begin{DoxyItemize}
+\item Same as above, only that an additional recv-\/buffer can be omitted if MPI is CUDA-\/aware.
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\item Required cuda\+Memcpy operations for each send/recv/local transpose\+:
+\begin{DoxyEnumerate}
+\item Send Method\+: {\itshape Sync} or {\itshape Streams\+:} 
+\begin{DoxyItemize}
+\item send\+: 1D memcpy (only if MPI is not CUDA-\/aware)
+\item recv\+: 2D (or 3D) memcpy
+\end{DoxyItemize}
+\item Send Method\+: {\itshape MPI\+\_\+\+Types\+:} 
+\begin{DoxyItemize}
+\item send \& recv\+: 1D memcpy (only if MPI is not CUDA-\/aware)
+\item Beware\+: CUDA-\/aware MPI + {\itshape MPI\+\_\+\+Types} might result in an enormous performance loss
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\item For the two different FFT\textquotesingle{}s, we use the following \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans (with cufft\+Make\+Plan\+May64)\+:
+\begin{DoxyEnumerate}
+\item zy-\/direction\+:
+\begin{DoxyItemize}
+\item istride = 1, inembed\mbox{[}1\mbox{]} = Nz, idist = Nz$\ast$\+Ny
+\item ostride = input\+\_\+sizes\+\_\+x\mbox{[}pidx\mbox{]}, onembed\mbox{[}1\mbox{]} = Nz/2+1, odist = 1
+\item batch = input\+\_\+sizes\+\_\+x\mbox{[}pidx\mbox{]}
+\end{DoxyItemize}
+\item x-\/direction\+:
+\begin{DoxyItemize}
+\item istride = 1, idist = Nx
+\item ostride = (Nz/2+1)$\ast$output\+\_\+sizes\+\_\+y\mbox{[}pidx\mbox{]}, odist = 1
+\item batch = (Nz/2+1)$\ast$output\+\_\+sizes\+\_\+y\mbox{[}pidx\mbox{]} 
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\end{DoxyItemize}\hypertarget{classMPIcuFFT__Slab__Opt1_Communication_Methods}{}\doxysubsection{Communication\+\_\+\+Methods}\label{classMPIcuFFT__Slab__Opt1_Communication_Methods}
+There are two available communication methods\+:
+\begin{DoxyEnumerate}
+\item Peer2\+Peer MPI Communication\+: Here, the MPI procedures {\itshape MPI\+\_\+\+Isend} and {\itshape MPI\+\_\+\+Irecv} are used for non-\/blocking communication between the different ranks. As can be seen in Visualization, each rank has to receive a non-\/continuous region (highlighted in red) to rank 2. Therefore, the receiving procedure has to perform a cuda\+Memcpy2D before it can start computing the FFT in x-\/direction. To interleave cuda\+Memcpy2D with MPI\+\_\+\+Irecv, there are two available options\+:
+\begin{DoxyEnumerate}
+\item {\itshape Sync} (default)\+: Receive the data via MPI\+\_\+\+Waitany and perform a 2D memcpy thereafter.
+\item ({\itshape Streams})\+: Same as Sync, except that for non CUDA-\/aware MPI the copy is copied in small batches to the send buffer.
+\item {\itshape MPI\+\_\+\+Type\+:} Here, we avoid the 2D memcpy altogether and use MPI\+\_\+\+Type\+\_\+vector to receive a non-\/continuous data region.
+\end{DoxyEnumerate}
+\item All2\+All MPI Communication\+: Here, the MPI procedures {\itshape MPI\+\_\+\+Alltoallv} (for {\itshape Sync}) and {\itshape MPI\+\_\+\+Alltoallw} (for {\itshape MPI\+\_\+\+Type}) are used for global communication between all ranks. As above, there are multiple options to prepare the sending procedure\+:
+\begin{DoxyEnumerate}
+\item {\itshape Sync} (default)\+: Copy the non-\/continuous regions in a seperated recv-\/buffer. After {\itshape MPI\+\_\+\+Alltoallv} is complete, the data is copied to the temp-\/buffer in batches (each time with cuda\+Memcpy2D)
+\item {\itshape MPI\+\_\+\+Type\+:} Again, MPI\+\_\+\+Type\+\_\+vector can be used to avoid the 2D memcpy altogether. ~\newline
+ 
+\end{DoxyEnumerate}
+\end{DoxyEnumerate}
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a6ce8229df9653d64215fa79c3e536da1}\label{classMPIcuFFT__Slab__Opt1_a6ce8229df9653d64215fa79c3e536da1}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!All2All\_Communication@{All2All\_Communication}}
+\index{All2All\_Communication@{All2All\_Communication}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{All2All\_Communication()}{All2All\_Communication()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::All2\+All\+\_\+\+Communication (\begin{DoxyParamCaption}\item[{void $\ast$}]{complex\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method implements the All2\+All communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. 
+
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_ac0c6902ed32d3be177e8880bedef573f}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a745cf973adf0bb8bc6b6a5af3f39d373}\label{classMPIcuFFT__Slab__Opt1_a745cf973adf0bb8bc6b6a5af3f39d373}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!All2All\_MPIType@{All2All\_MPIType}}
+\index{All2All\_MPIType@{All2All\_MPIType}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{All2All\_MPIType()}{All2All\_MPIType()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::All2\+All\+\_\+\+MPIType (\begin{DoxyParamCaption}\item[{void $\ast$}]{complex\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method implements the {\itshape MPI\+\_\+\+Type} (default) All2\+All communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. 
+
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_aed8b41097a28a04a2b35633c7485b695}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a62c0a691a95e1085f005ddb706b3212b}\label{classMPIcuFFT__Slab__Opt1_a62c0a691a95e1085f005ddb706b3212b}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!All2All\_Sync@{All2All\_Sync}}
+\index{All2All\_Sync@{All2All\_Sync}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{All2All\_Sync()}{All2All\_Sync()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::All2\+All\+\_\+\+Sync (\begin{DoxyParamCaption}\item[{void $\ast$}]{complex\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method implements the {\itshape Sync} (default) All2\+All communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. 
+
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_afc098dcb1bc392b03b9d69f01abb7cd4}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a4b2ad9b69c2aa832675b08157123c81f}\label{classMPIcuFFT__Slab__Opt1_a4b2ad9b69c2aa832675b08157123c81f}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!execR2C@{execR2C}}
+\index{execR2C@{execR2C}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{execR2C()}{execR2C()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::exec\+R2C (\begin{DoxyParamCaption}\item[{void $\ast$}]{out,  }\item[{const void $\ast$}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Computes a 3D FFT as illustrated by \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Visualisation}{Visualisation}}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & is reused for each \mbox{\hyperlink{structcuFFT}{cu\+FFT}} computation. Therefore is must hold that\+:
+\begin{DoxyItemize}
+\item 2D FFT (zy-\/direction)\+: size(out) $>$= input\+\_\+sizes\+\_\+x\mbox{[}pidx\mbox{]}$\ast$\+Ny$\ast$(Nz/2+1)
+\item 1D FFT (x-\/direction)\+: size(out) $>$= Nx$\ast$output\+\_\+sizes\+\_\+y\mbox{[}pidx\mbox{]}$\ast$(Nz/2+1) 
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_a3e73b6a77a21e7d1046d1b7b91a4021a}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a919876bad968d430199a910606ea6c65}\label{classMPIcuFFT__Slab__Opt1_a919876bad968d430199a910606ea6c65}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!initFFT@{initFFT}}
+\index{initFFT@{initFFT}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{initFFT()}{initFFT()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::init\+FFT (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$}]{global\+\_\+size,  }\item[{\mbox{\hyperlink{structPartition}{Partition}} $\ast$}]{partition,  }\item[{bool}]{allocate = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Creates the \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans and allocates the required memory space. 
+
+The function starts by initializing {\itshape pidx}, along with {\itshape input\+\_\+size(s)\+\_\+$\ast$} and {\itshape output\+\_\+size(s)\+\_\+$\ast$}. Afterwards, the \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans are created as described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Details}{Details}}. Finally, set\+Work\+Area is called to allocate the device memory.
+
+
+\begin{DoxyParams}{Parameters}
+{\em global\+\_\+size} & specifies the dimensions Nx, Ny and Nz (of the global input data) \\
+\hline
+{\em partition} & is omitted for slab decomposition. The number of partitions is given by {\itshape pcnt} (= MPI\+\_\+\+Comm\+\_\+size). \\
+\hline
+{\em allocate} & specifies if device memory has to be allocated \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_a416030c5191666fc630f5d2a929486c6}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a7560968500f6417b7c62e9fc857f67f1}\label{classMPIcuFFT__Slab__Opt1_a7560968500f6417b7c62e9fc857f67f1}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!Peer2Peer\_Communication@{Peer2Peer\_Communication}}
+\index{Peer2Peer\_Communication@{Peer2Peer\_Communication}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Peer2Peer\_Communication()}{Peer2Peer\_Communication()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::Peer2\+Peer\+\_\+\+Communication (\begin{DoxyParamCaption}\item[{void $\ast$}]{complex\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method implements the Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. 
+
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_a3e2cf1133a371b4424f6d86265d8c43a}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_ac39871f1467fc0179c2f9f26fa68f707}\label{classMPIcuFFT__Slab__Opt1_ac39871f1467fc0179c2f9f26fa68f707}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!Peer2Peer\_MPIType@{Peer2Peer\_MPIType}}
+\index{Peer2Peer\_MPIType@{Peer2Peer\_MPIType}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Peer2Peer\_MPIType()}{Peer2Peer\_MPIType()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::Peer2\+Peer\+\_\+\+MPIType (\begin{DoxyParamCaption}\item[{void $\ast$}]{complex\+\_\+,  }\item[{void $\ast$}]{recv\+\_\+ptr\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method implements the {\itshape MPI\+\_\+\+Type} Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. 
+
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_a0003abe16ed42e11bacb4c64c26ee24e}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a878a743732c3ad5c8182f7a4348eba68}\label{classMPIcuFFT__Slab__Opt1_a878a743732c3ad5c8182f7a4348eba68}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!Peer2Peer\_Streams@{Peer2Peer\_Streams}}
+\index{Peer2Peer\_Streams@{Peer2Peer\_Streams}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Peer2Peer\_Streams()}{Peer2Peer\_Streams()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::Peer2\+Peer\+\_\+\+Streams (\begin{DoxyParamCaption}\item[{void $\ast$}]{complex\+\_\+,  }\item[{void $\ast$}]{recv\+\_\+ptr\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method implements the {\itshape Streams} Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. 
+
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_a2f68c714ff05771df42b153bf5dfb6e0}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Slab__Opt1_a6d6beec0dd5b15566873013f6a7ad94c}\label{classMPIcuFFT__Slab__Opt1_a6d6beec0dd5b15566873013f6a7ad94c}} 
+\index{MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}!Peer2Peer\_Sync@{Peer2Peer\_Sync}}
+\index{Peer2Peer\_Sync@{Peer2Peer\_Sync}!MPIcuFFT\_Slab\_Opt1$<$ T $>$@{MPIcuFFT\_Slab\_Opt1$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Peer2Peer\_Sync()}{Peer2Peer\_Sync()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1}{MPIcu\+FFT\+\_\+\+Slab\+\_\+\+Opt1}}$<$ T $>$\+::Peer2\+Peer\+\_\+\+Sync (\begin{DoxyParamCaption}\item[{void $\ast$}]{complex\+\_\+,  }\item[{void $\ast$}]{recv\+\_\+ptr\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+This method implements the {\itshape Sync} (default) Peer2\+Peer communication method described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Communication_Methods}{Communication\+\_\+\+Methods}}. 
+
+
+
+Reimplemented from \mbox{\hyperlink{classMPIcuFFT__Slab_a440e9601624ea468af3463755b054f58}{MPIcu\+FFT\+\_\+\+Slab$<$ T $>$}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/mpicufft\+\_\+slab\+\_\+opt1.\+hpp\item 
+src/slab/default/mpicufft\+\_\+slab\+\_\+opt1.\+cpp\end{DoxyCompactItemize}

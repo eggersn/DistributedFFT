@@ -1423,6 +1423,7 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
         // Afterwards the data alignment is [y][x][z] (input alignment [z][y][x])
         CUFFT_CALL(cuFFT<T>::execR2C(planR2C, real, complex));
         // Wait for 1D FFT in z-direction
+        CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("1D FFT Z-Direction");
 
         // Used to random_dist_1D test
@@ -1439,7 +1440,6 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
         *  *********************************************************************************************************************** */
 
         // Synchronize first 1D FFT (z-direction)
-        CUDA_CALL(cudaDeviceSynchronize());
 
         if (config.comm_method == Peer2Peer)
             this->Peer2Peer_Communication_FirstTranspose((void *)complex);
@@ -1452,6 +1452,7 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
 
         // Afterwards the data alignment is [x][z][y] (input alignment [z][y][x])
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C_0, temp_ptr, complex, CUFFT_FORWARD));
+        CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("1D FFT Y-Direction");
 
         // used for random_dist_2D test
@@ -1472,7 +1473,6 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
                 mpisend_thread1.join();
             MPI_Waitall(partition->P2, send_req.data(), MPI_STATUSES_IGNORE);
         }
-        CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("First Transpose (Send Complete)");
 
         if (config.comm_method2 == Peer2Peer)
@@ -1486,13 +1486,13 @@ void MPIcuFFT_Pencil_Opt1<T>::execR2C(void *out, const void *in, int d) {
 
         // Compute the 1D FFT in x-direction
         CUFFT_CALL(cuFFT<T>::execC2C(planC2C_1, temp_ptr, complex, CUFFT_FORWARD));
+        CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("1D FFT X-Direction");
         if (config.comm_method2 == Peer2Peer && !cuda_aware) {
             if (config.send_method2 == Streams)
                 mpisend_thread2.join();
             MPI_Waitall(partition->P1, send_req.data(), MPI_STATUSES_IGNORE);
         }
-        CUDA_CALL(cudaDeviceSynchronize());
         timer->stop_store("Run complete");
     }
     if (config.warmup_rounds == 0) 

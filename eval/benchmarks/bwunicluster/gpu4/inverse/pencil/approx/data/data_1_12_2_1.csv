@@ -1,0 +1,109 @@
+Peer2Peer,Sync,Peer2Peer,Sync
+,128_128_128
+init,660.0549583333338
+1D FFT Z-Direction,1.00588485625
+First Transpose (First Send),0.026188399999999994
+First Transpose (Packing),0.13638222083333335
+First Transpose (Start Local Transpose),0.13659783125
+First Transpose (Start Receive),0.13979704375
+First Transpose (First Receive),0.7824209687500001
+First Transpose (Finished Receive),0.7826577020833334
+First Transpose (Unpacking),0.7851367083333333
+First Transpose (Send Complete),0.8041894645833331
+1D FFT Y-Direction,0.8012512354166667
+Second Transpose (First Send),0.8175151958333334
+Second Transpose (Packing),0.8196474812500001
+Second Transpose (Start Local Transpose),0.8198558854166668
+Second Transpose (Start Receive),0.8231855145833331
+Second Transpose (First Receive),0.9880350937499998
+Second Transpose (Finished Receive),0.9882268166666669
+Second Transpose (Unpacking),0.99046339375
+1D FFT X-Direction,0.014841997916666667
+Run complete,1.0131191395833334
+
+Peer2Peer,Streams,Peer2Peer,Sync
+,128_128_128
+init,658.7384583333334
+1D FFT Z-Direction,0.98453415
+First Transpose (First Send),0.028000385416666666
+First Transpose (Packing),0.13922479583333333
+First Transpose (Start Local Transpose),0.13947084583333333
+First Transpose (Start Receive),0.14294171249999998
+First Transpose (First Receive),0.7186678708333333
+First Transpose (Finished Receive),0.7189409708333333
+First Transpose (Unpacking),0.7215999625000002
+First Transpose (Send Complete),0.7412818958333335
+1D FFT Y-Direction,0.7387346854166665
+Second Transpose (First Send),0.8656376979166666
+Second Transpose (Packing),0.8735144875000003
+Second Transpose (Start Local Transpose),0.7876491416666668
+Second Transpose (Start Receive),0.8021598875000001
+Second Transpose (First Receive),0.9495410041666668
+Second Transpose (Finished Receive),0.9497947229166667
+Second Transpose (Unpacking),0.9669876333333336
+1D FFT X-Direction,0.015673981250000003
+Run complete,0.9963542583333331
+
+Peer2Peer,MPI\_Type,Peer2Peer,Sync
+,128_128_128
+init,658.4342916666668
+1D FFT Z-Direction,3.9006912916666665
+First Transpose (First Send),0.02708406458333333
+First Transpose (Packing),0.13398236458333335
+First Transpose (Start Local Transpose),0.13420811875
+First Transpose (Start Receive),0.13742280833333337
+First Transpose (First Receive),0.7115449229166668
+First Transpose (Finished Receive),0.711795775
+First Transpose (Unpacking),0.7142763916666667
+First Transpose (Send Complete),0.73221809375
+1D FFT Y-Direction,0.7304722583333333
+Second Transpose (First Send),0.73353773125
+Second Transpose (Packing),0.7325040145833334
+Second Transpose (Start Local Transpose),0.7347892270833333
+Second Transpose (Start Receive),0.73887513125
+Second Transpose (First Receive),3.8824868958333325
+Second Transpose (Finished Receive),3.882792479166666
+Second Transpose (Unpacking),3.8848909375000007
+1D FFT X-Direction,0.015361947916666667
+Run complete,4.471060416666665
+
+All2All,Sync,Peer2Peer,Sync
+,128_128_128
+init,647.4072916666667
+1D FFT Z-Direction,0.9174718916666667
+First Transpose (First Send),0.026151027083333327
+First Transpose (Packing),0.13198930833333336
+First Transpose (Start Local Transpose),0.13220096458333333
+First Transpose (Start Receive),0.13885861041666664
+First Transpose (First Receive),0.6988711979166666
+First Transpose (Finished Receive),0.6991129916666667
+First Transpose (Unpacking),0.7015879937499999
+First Transpose (Send Complete),0.7254225291666666
+1D FFT Y-Direction,0.7206936125000001
+Second Transpose (Packing),0.7389330416666666
+Second Transpose (Start All2All),0.7391350645833333
+Second Transpose (Finished All2All),0.9017289270833334
+Second Transpose (Unpacking),0.9019629291666666
+1D FFT X-Direction,0.014780562500000002
+Run complete,0.9176543083333335
+
+All2All,MPI\_Type,Peer2Peer,Sync
+,128_128_128
+init,659.2695416666667
+1D FFT Z-Direction,6.449753958333333
+First Transpose (First Send),0.027967097916666666
+First Transpose (Packing),0.1375936125
+First Transpose (Start Local Transpose),0.1378189520833333
+First Transpose (Start Receive),0.1411983
+First Transpose (First Receive),0.69000818125
+First Transpose (Finished Receive),0.6902667000000001
+First Transpose (Unpacking),0.6927687500000002
+First Transpose (Send Complete),0.71316848125
+1D FFT Y-Direction,0.7090017229166666
+Second Transpose (Packing),0.7134571208333332
+Second Transpose (Start All2All),0.71366024375
+Second Transpose (Finished All2All),6.432997541666667
+Second Transpose (Unpacking),6.433311833333334
+1D FFT X-Direction,0.0156012625
+Run complete,6.449960937499998
+

@@ -1,0 +1,273 @@
+\hypertarget{classMPIcuFFT__Pencil}{}\doxysection{MPIcu\+FFT\+\_\+\+Pencil$<$ T $>$ Class Template Reference}
+\label{classMPIcuFFT__Pencil}\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+
+
+{\ttfamily \#include $<$mpicufft\+\_\+pencil.\+hpp$>$}
+
+Inheritance diagram for MPIcu\+FFT\+\_\+\+Pencil$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classMPIcuFFT__Pencil}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structMPIcuFFT__Pencil_1_1Callback__Params}{Callback\+\_\+\+Params}}
+\item 
+struct \mbox{\hyperlink{structMPIcuFFT__Pencil_1_1Callback__Params__Base}{Callback\+\_\+\+Params\+\_\+\+Base}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_ab21f80d2743c852a4d78853a82a3abf3}\label{classMPIcuFFT__Pencil_ab21f80d2743c852a4d78853a82a3abf3}} 
+{\bfseries MPIcu\+FFT\+\_\+\+Pencil} (\mbox{\hyperlink{structConfigurations}{Configurations}} config, MPI\+\_\+\+Comm comm=MPI\+\_\+\+COMM\+\_\+\+WORLD, int max\+\_\+world\+\_\+size=-\/1)
+\begin{DoxyCompactList}\small\item\em Prepares for initialization (see init\+FFT) \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classMPIcuFFT__Pencil_a393c8fb0b7d6443f0c681b6f7d3ef28b}{init\+FFT}} (\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$global\+\_\+size, \mbox{\hyperlink{structPartition}{Partition}} $\ast$partition, bool allocate=true)
+\begin{DoxyCompactList}\small\item\em Creates the \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans and allocates the required memory space. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classMPIcuFFT__Pencil_aea569968f806ebe72ca59aa838eb6f4c}{set\+Work\+Area}} (void $\ast$device=nullptr, void $\ast$host=nullptr)
+\begin{DoxyCompactList}\small\item\em Allocates the required host and device memory (see \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Details}{Details}}) \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classMPIcuFFT__Pencil_a49c76e94979064c5f5cd1f063a8eca35}{exec\+R2C}} (void $\ast$out, const void $\ast$in)
+\begin{DoxyCompactList}\small\item\em Computes a 3D FFT as illustrated by \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Visualisation}{Visualisation}}. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classMPIcuFFT__Pencil_aced90297560dcc0ab3d75b31a57e2c3b}{exec\+R2C}} (void $\ast$out, const void $\ast$in, int d)
+\begin{DoxyCompactList}\small\item\em Computes the FFT in its first d dimensions as illustrated by \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Visualisation}{Visualisation}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a960be008dde3abd90a703609b7f60f8d}\label{classMPIcuFFT__Pencil_a960be008dde3abd90a703609b7f60f8d}} 
+void {\bfseries MPIsend\+\_\+\+Thread\+\_\+\+First\+Callback} (\mbox{\hyperlink{structMPIcuFFT__Pencil_1_1Callback__Params__Base}{Callback\+\_\+\+Params\+\_\+\+Base}} \&params, void $\ast$ptr)
+\begin{DoxyCompactList}\small\item\em Sending thread for the first global redistribution. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_af0eb309050884f63694a084d621ee9f1}\label{classMPIcuFFT__Pencil_af0eb309050884f63694a084d621ee9f1}} 
+void {\bfseries MPIsend\+\_\+\+Thread\+\_\+\+Second\+Callback} (\mbox{\hyperlink{structMPIcuFFT__Pencil_1_1Callback__Params__Base}{Callback\+\_\+\+Params\+\_\+\+Base}} \&params, void $\ast$ptr)
+\begin{DoxyCompactList}\small\item\em Sending thread for the second global redistribution. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_aa6805c7e5fa7f333d7ac8af7aa7af9d2}\label{classMPIcuFFT__Pencil_aa6805c7e5fa7f333d7ac8af7aa7af9d2}} 
+void {\bfseries MPIsend\+\_\+\+Thread\+\_\+\+First\+Callback\+\_\+\+Base} (void $\ast$data, void $\ast$ptr)
+\begin{DoxyCompactList}\small\item\em Can be called by \mbox{\hyperlink{classMPIcuFFT__Pencil__Opt1}{MPIcu\+FFT\+\_\+\+Pencil\+\_\+\+Opt1}} to avoid redundancy. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a8eab8b853f63b0441ba85551b351d5eb}\label{classMPIcuFFT__Pencil_a8eab8b853f63b0441ba85551b351d5eb}} 
+void {\bfseries MPIsend\+\_\+\+Thread\+\_\+\+Second\+Callback\+\_\+\+Base} (void $\ast$data, void $\ast$ptr)
+\begin{DoxyCompactList}\small\item\em Can be called by \mbox{\hyperlink{classMPIcuFFT__Pencil__Opt1}{MPIcu\+FFT\+\_\+\+Pencil\+\_\+\+Opt1}} to avoid redundancy. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a33f9899860e7a40807ac343b51dde4ad}\label{classMPIcuFFT__Pencil_a33f9899860e7a40807ac343b51dde4ad}} 
+void {\bfseries comm\+Order\+\_\+\+First\+Transpose} ()
+\begin{DoxyCompactList}\small\item\em Computes the global rank of the sending and receiving ranks relevant for the first global redistribution. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_ad0ee0a3efe38fc4885c63c23a56b53ec}\label{classMPIcuFFT__Pencil_ad0ee0a3efe38fc4885c63c23a56b53ec}} 
+void {\bfseries comm\+Order\+\_\+\+Second\+Transpose} ()
+\begin{DoxyCompactList}\small\item\em Computes the global rank of the sending and receiving ranks relevant for the second global redistribution. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a7399bca82c39c4fddbace8ba51f2923a}\label{classMPIcuFFT__Pencil_a7399bca82c39c4fddbace8ba51f2923a}} 
+static void CUDART\+\_\+\+CB {\bfseries MPIsend\+\_\+\+Callback} (void $\ast$data)
+\begin{DoxyCompactList}\small\item\em Called by cuda\+Call\+Host\+Func after a memcpy (used by the send procedure) is complete. It notifies the sending thread that is can start sending to the corresponding rank. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class MPIcu\+FFT\+\_\+\+Pencil$<$ T $>$}
+\hypertarget{classMPIcuFFT__Slab__Opt1_Visualisation}{}\doxysubsection{Visualisation}\label{classMPIcuFFT__Slab__Opt1_Visualisation}
+ The above example illustrates the procedure for P1 = P2 = 3. The pencil highlighted in green is (0, 2), i.\+e., {\itshape pidx\+\_\+i} = 0 and {\itshape pidx\+\_\+j} = 2. \hypertarget{classMPIcuFFT__Slab__Opt1_Details}{}\doxysubsection{Details}\label{classMPIcuFFT__Slab__Opt1_Details}
+There are a few technical details to consider when using this option\+:
+\begin{DoxyItemize}
+\item Required memory space (besides workspace required by \mbox{\hyperlink{structcuFFT}{cu\+FFT}})\+:
+\begin{DoxyEnumerate}
+\item If MPI is not CUDA-\/aware\+:
+\begin{DoxyItemize}
+\item For both redistribution, an additional send-\/ and recv-\/buffer (on host memory) is required
+\item An additional buffer is needed, which contains the received data (on device memory) and serves as the input for the second and third FFT.
+\end{DoxyItemize}
+\item If MPI is CUDA-\/aware\+:
+\begin{DoxyItemize}
+\item Same as above, only that send-\/ and recv-\/buffer are allocated on device memory
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\item Required cuda\+Memcpy operations for each send/recv/local transpose\+:
+\begin{DoxyEnumerate}
+\item First redistribution\+:
+\begin{DoxyItemize}
+\item send\+: 2D (or 3D) memcpy
+\item recv\+: 2D (or 3D) memcpy
+\end{DoxyItemize}
+\item Second redistribution\+:
+\begin{DoxyItemize}
+\item send\+: 2D (or 3D) memcpy
+\item recv\+: 1D memcpy (only if MPI is not CUDA-\/aware)
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\item For the three different 1D-\/\+FFT\textquotesingle{}s, we use the following \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans (with cufft\+Make\+Plan\+May64)
+\begin{DoxyEnumerate}
+\item z-\/direction\+: A single plan with\+:
+\begin{DoxyItemize}
+\item istride = 1, idist = Nz
+\item ostride = 1, odist = $\lfloor Nz/2 \rfloor + 1$
+\item batch = input\+\_\+dim.\+size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]} $\ast$ input\+\_\+dim.\+size\+\_\+y\mbox{[}pidx\+\_\+j\mbox{]}
+\end{DoxyItemize}
+\item y-\/direction\+: min(transposed\+\_\+dim.\+size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]}, transposed\+\_\+dim.\+size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}) plans, where each one is executed in a different stream. ~\newline
+ Each plan is defined by the following properties\+:
+\begin{DoxyItemize}
+\item istride = ostride = transposed\+\_\+dim.\+size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}
+\item if transposed\+\_\+dim.\+size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]} $<$= transposed\+\_\+dim.\+size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}\+: idist = odist = 1
+\item else\+: idist = odist = transposed\+\_\+dim.\+size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]} $\ast$ transposed\+\_\+dim.\+size\+\_\+y\mbox{[}0\mbox{]}
+\item batch = transposed\+\_\+dim.\+size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}$\ast$transposed\+\_\+dim.size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]}
+\end{DoxyItemize}
+\item x-\/direction\+: A single plan with\+:
+\begin{DoxyItemize}
+\item istride = ostride = output\+\_\+dim.\+size\+\_\+y\mbox{[}pidx\+\_\+i\mbox{]}$\ast$output\+\_\+dim.size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}
+\item idist = odist = 1
+\item batch = output\+\_\+dim.\+size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}$\ast$output\+\_\+dim.size\+\_\+y\mbox{[}pidx\+\_\+i\mbox{]} 
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\end{DoxyItemize}
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a49c76e94979064c5f5cd1f063a8eca35}\label{classMPIcuFFT__Pencil_a49c76e94979064c5f5cd1f063a8eca35}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!execR2C@{execR2C}}
+\index{execR2C@{execR2C}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{execR2C()}{execR2C()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+virtual void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::exec\+R2C (\begin{DoxyParamCaption}\item[{void $\ast$}]{out,  }\item[{const void $\ast$}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Computes a 3D FFT as illustrated by \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Visualisation}{Visualisation}}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & is reused for each 1D \mbox{\hyperlink{structcuFFT}{cu\+FFT}} computation. Therefore is must hold that\+:
+\begin{DoxyItemize}
+\item 1D FFT (z-\/direction)\+: size(out) $>$= input\+\_\+dim.\+size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]}$\ast$input\+\_\+dim.size\+\_\+y\mbox{[}pidx\+\_\+j\mbox{]}$\ast$(Nz/2+1)
+\item 1D FFT (y-\/direction)\+: size(out) $>$= transposed\+\_\+dim.\+size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]}$\ast$\+Ny$\ast$transposed\+\_\+dim.size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}
+\item 1D FFT (x-\/direction)\+: size(out) $>$= Nx$\ast$out\+\_\+dim.size\+\_\+y\mbox{[}pidx\+\_\+i\mbox{]}$\ast$out\+\_\+dim.size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]} 
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classMPIcuFFT__Pencil__Opt1_a2c45805c3976606c141ac415de14210c}{MPIcu\+FFT\+\_\+\+Pencil\+\_\+\+Opt1$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_aced90297560dcc0ab3d75b31a57e2c3b}\label{classMPIcuFFT__Pencil_aced90297560dcc0ab3d75b31a57e2c3b}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!execR2C@{execR2C}}
+\index{execR2C@{execR2C}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{execR2C()}{execR2C()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::exec\+R2C (\begin{DoxyParamCaption}\item[{void $\ast$}]{out,  }\item[{const void $\ast$}]{in,  }\item[{int}]{d }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Computes the FFT in its first d dimensions as illustrated by \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Visualisation}{Visualisation}}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & is reused for each 1D \mbox{\hyperlink{structcuFFT}{cu\+FFT}} computation. Therefore is must hold that\+:
+\begin{DoxyItemize}
+\item 1D FFT (z-\/direction)\+: size(out) $>$= input\+\_\+dim.\+size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]}$\ast$input\+\_\+dim.size\+\_\+y\mbox{[}pidx\+\_\+j\mbox{]}$\ast$(Nz/2+1)
+\item 1D FFT (y-\/direction)\+: size(out) $>$= transposed\+\_\+dim.\+size\+\_\+x\mbox{[}pidx\+\_\+i\mbox{]}$\ast$\+Ny$\ast$transposed\+\_\+dim.size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]}
+\item 1D FFT (x-\/direction)\+: size(out) $>$= Nx$\ast$out\+\_\+dim.size\+\_\+y\mbox{[}pidx\+\_\+i\mbox{]}$\ast$out\+\_\+dim.size\+\_\+z\mbox{[}pidx\+\_\+j\mbox{]} 
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{classMPIcuFFT__Pencil__Opt1_a1b0ed3c699d0550e3420e0790329f2c6}{MPIcu\+FFT\+\_\+\+Pencil\+\_\+\+Opt1$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a1eab9bfe96a73ff86b2719da6e56f341}\label{classMPIcuFFT__Pencil_a1eab9bfe96a73ff86b2719da6e56f341}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!getInSize@{getInSize}}
+\index{getInSize@{getInSize}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getInSize()}{getInSize()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::get\+In\+Size (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{isize }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_ab8645da66d0618f9d10cedf3fe32ad21}\label{classMPIcuFFT__Pencil_ab8645da66d0618f9d10cedf3fe32ad21}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!getInStart@{getInStart}}
+\index{getInStart@{getInStart}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getInStart()}{getInStart()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::get\+In\+Start (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{istart }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a7b5271c964e0d148332e1a765015aee9}\label{classMPIcuFFT__Pencil_a7b5271c964e0d148332e1a765015aee9}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!getOutSize@{getOutSize}}
+\index{getOutSize@{getOutSize}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getOutSize()}{getOutSize()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::get\+Out\+Size (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{osize }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_abf93b80db78a6043bddd8cf27c6ce9b5}\label{classMPIcuFFT__Pencil_abf93b80db78a6043bddd8cf27c6ce9b5}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!getOutStart@{getOutStart}}
+\index{getOutStart@{getOutStart}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getOutStart()}{getOutStart()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::get\+Out\+Start (\begin{DoxyParamCaption}\item[{size\+\_\+t $\ast$}]{ostart }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_a393c8fb0b7d6443f0c681b6f7d3ef28b}\label{classMPIcuFFT__Pencil_a393c8fb0b7d6443f0c681b6f7d3ef28b}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!initFFT@{initFFT}}
+\index{initFFT@{initFFT}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{initFFT()}{initFFT()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::init\+FFT (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGlobalSize}{Global\+Size}} $\ast$}]{global\+\_\+size,  }\item[{\mbox{\hyperlink{structPartition}{Partition}} $\ast$}]{partition,  }\item[{bool}]{allocate = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Creates the \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans and allocates the required memory space. 
+
+The function starts by initializing {\itshape pidx\+\_\+i} and {\itshape pidx\+\_\+j}, along with {\itshape input\+\_\+dim}, {\itshape transposed\+\_\+dim} and {\itshape output\+\_\+dim}. Afterwards, the \mbox{\hyperlink{structcuFFT}{cu\+FFT}} plans are created as described in \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Details}{Details}}. Finally, set\+Work\+Area is called to allocate the device memory.
+
+
+\begin{DoxyParams}{Parameters}
+{\em global\+\_\+size} & specifies the dimensions Nx, Ny and Nz (of the global input data) \\
+\hline
+{\em partition} & specifies the grid size used to partition the global input data \\
+\hline
+{\em allocate} & specifies if device memory has to be allocated \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classMPIcuFFT__Pencil__Opt1_ad444c57f37c750414a022b7df30aa1ec}{MPIcu\+FFT\+\_\+\+Pencil\+\_\+\+Opt1$<$ T $>$}}.
+
+\mbox{\Hypertarget{classMPIcuFFT__Pencil_aea569968f806ebe72ca59aa838eb6f4c}\label{classMPIcuFFT__Pencil_aea569968f806ebe72ca59aa838eb6f4c}} 
+\index{MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}!setWorkArea@{setWorkArea}}
+\index{setWorkArea@{setWorkArea}!MPIcuFFT\_Pencil$<$ T $>$@{MPIcuFFT\_Pencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{setWorkArea()}{setWorkArea()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classMPIcuFFT__Pencil}{MPIcu\+FFT\+\_\+\+Pencil}}$<$ T $>$\+::set\+Work\+Area (\begin{DoxyParamCaption}\item[{void $\ast$}]{device = {\ttfamily nullptr},  }\item[{void $\ast$}]{host = {\ttfamily nullptr} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Allocates the required host and device memory (see \mbox{\hyperlink{classMPIcuFFT__Slab__Opt1_Details}{Details}}) 
+
+
+
+Implements \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT$<$ T $>$}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classMPIcuFFT__Pencil__Opt1_a00fb45873afbab78af9427fec07bcbe5}{MPIcu\+FFT\+\_\+\+Pencil\+\_\+\+Opt1$<$ T $>$}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/mpicufft\+\_\+pencil.\+hpp\item 
+src/pencil/mpicufft\+\_\+pencil.\+cpp\end{DoxyCompactItemize}

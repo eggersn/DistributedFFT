@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "start building"
-cd /home/eggersn/DistributedFFT/
+cd $HOME/DistributedFFT/
 rm -rf build_pcsgs
 mkdir build_pcsgs
 cd build_pcsgs

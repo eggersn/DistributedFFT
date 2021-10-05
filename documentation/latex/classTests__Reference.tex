@@ -1,0 +1,162 @@
+\hypertarget{classTests__Reference}{}\doxysection{Tests\+\_\+\+Reference$<$ T $>$ Class Template Reference}
+\label{classTests__Reference}\index{Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classTests__Reference_a352ee278353b62b5f4518367cfacf84e}{run}} (const int testcase, const int opt, const int runs)
+\begin{DoxyCompactList}\small\item\em Executes the selected testcase for the specified number of repetitions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classTests__Reference_a29c1b1031eff9655f248fa15e3771b65}{testcase0}} (const int runs)
+\begin{DoxyCompactList}\small\item\em A simple reference testcase, where the complete input is gathered on a single MPI rank to compute the complete 3D FFT with \mbox{\hyperlink{structcuFFT}{cu\+FFT}}. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classTests__Reference_aa342eeefc9903e4f75e05602e89e8f69}{testcase1}} (const int opt, const int runs)
+\begin{DoxyCompactList}\small\item\em A simple reference testcase which measures the bandwidth with cuda\+Memcpy1D in MB/s for each rank. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classTests__Reference_af087cb509ccbb2863814f293f376955f}{testcase2}} (const int opt, const int runs)
+\begin{DoxyCompactList}\small\item\em A simple reference testcase which measures the bandwidth with cuda\+Memcpy2D (for sender only) in MB/s for each rank. This testcase is mostly relevant for the slab decomposition (2D-\/$>$1D). \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classTests__Reference_a198275d3975f65d238a3a1cf63cffd02}{testcase3}} (const int opt, const int runs)
+\begin{DoxyCompactList}\small\item\em A simple reference testcase which measures the bandwidth with cuda\+Memcpy3D (for sender \& receiver) in MB/s for each rank. This testcase is mostly relevant for the pencil decomposition. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classTests__Reference_ae49fbeb39ee3ff15c0258b809b475a76}\label{classTests__Reference_ae49fbeb39ee3ff15c0258b809b475a76}} 
+size\+\_\+t {\bfseries P1}
+\begin{DoxyCompactList}\small\item\em Number of partitions in x-\/direction. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTests__Reference_ac5db227aed95c4a66ae1195406271db6}\label{classTests__Reference_ac5db227aed95c4a66ae1195406271db6}} 
+size\+\_\+t {\bfseries P2}
+\begin{DoxyCompactList}\small\item\em Number of partitions in y-\/direction. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTests__Reference_a0a1c9fb52c2ba294179aff1ad5a5156e}\label{classTests__Reference_a0a1c9fb52c2ba294179aff1ad5a5156e}} 
+bool {\bfseries cuda\+\_\+aware} = false
+\begin{DoxyCompactList}\small\item\em Indicates, whether CUDA-\/aware MPI is available {\bfseries{and}} selected. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTests__Reference_a15f69529c9c95bb5a67a33c5b6542c48}\label{classTests__Reference_a15f69529c9c95bb5a67a33c5b6542c48}} 
+int {\bfseries warmup\+\_\+rounds} = 0
+\begin{DoxyCompactList}\small\item\em Number of rounds, before the timer is started. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTests__Reference_a63fddd42407354053d0d58ff7117c21e}\label{classTests__Reference_a63fddd42407354053d0d58ff7117c21e}} 
+std\+::string {\bfseries benchmark\+\_\+dir} = \char`\"{}../benchmarks\char`\"{}
+\begin{DoxyCompactList}\small\item\em benchmark directory. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTests__Reference_a1ed178c7caca9999870d051f44234110}\label{classTests__Reference_a1ed178c7caca9999870d051f44234110}} 
+\mbox{\hyperlink{classTimer}{Timer}} $\ast$ {\bfseries timer}
+\begin{DoxyCompactList}\small\item\em Benchmark timer. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTests__Reference_ae701e9222e4d2df9d316cded7c83b53d}\label{classTests__Reference_ae701e9222e4d2df9d316cded7c83b53d}} 
+std\+::vector$<$ std\+::string $>$ {\bfseries section\+\_\+descriptions} = \{\char`\"{}init\char`\"{}, \char`\"{}Finished Send\char`\"{}, \char`\"{}3D FFT\char`\"{}, \char`\"{}Finished Receive\char`\"{}, \char`\"{}Run complete\char`\"{}\}
+\begin{DoxyCompactList}\small\item\em Tags for the different timer sections. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classTests__Reference_a352ee278353b62b5f4518367cfacf84e}\label{classTests__Reference_a352ee278353b62b5f4518367cfacf84e}} 
+\index{Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}!run@{run}}
+\index{run@{run}!Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+int \mbox{\hyperlink{classTests__Reference}{Tests\+\_\+\+Reference}}$<$ T $>$\+::run (\begin{DoxyParamCaption}\item[{const int}]{testcase,  }\item[{const int}]{opt,  }\item[{const int}]{runs }\end{DoxyParamCaption})}
+
+
+
+Executes the selected testcase for the specified number of repetitions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em testcase} & It should hold $0 \leq testcase \leq 2$ \\
+\hline
+{\em opt} & Selects a specific option for a given testcase, in case multiple options exist. Otherwise, this parameter is disregarded. \\
+\hline
+{\em runs} & Specifies the number of repetitions. The argument is passed to the selected testcase. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classTests__Reference_a29c1b1031eff9655f248fa15e3771b65}\label{classTests__Reference_a29c1b1031eff9655f248fa15e3771b65}} 
+\index{Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}!testcase0@{testcase0}}
+\index{testcase0@{testcase0}!Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{testcase0()}{testcase0()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+int \mbox{\hyperlink{classTests__Reference}{Tests\+\_\+\+Reference}}$<$ T $>$\+::testcase0 (\begin{DoxyParamCaption}\item[{const int}]{runs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+A simple reference testcase, where the complete input is gathered on a single MPI rank to compute the complete 3D FFT with \mbox{\hyperlink{structcuFFT}{cu\+FFT}}. 
+
+For a given grid $P_1 \times P_2$, each rank starts by generating random input data for $\frac{N_x}{P_1} \cdot \frac{N_y}{P_2} \cdot N_z$. Afterwards each rank sends the data to rank 0. Here we simply wait for all input data to arrive and compute the complete 3D FFT. Finally, rank 0 distributes the computed result to the individual ranks, such that each rank ends up with the same partition $\frac{N_x}{P_1} \cdot \frac{N_y}{P_2} \cdot \lfloor \frac{N_z}{2}+1 \rfloor$.
+
+
+\begin{DoxyParams}{Parameters}
+{\em runs} & Specifies the number of repetitions \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classTests__Reference_aa342eeefc9903e4f75e05602e89e8f69}\label{classTests__Reference_aa342eeefc9903e4f75e05602e89e8f69}} 
+\index{Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}!testcase1@{testcase1}}
+\index{testcase1@{testcase1}!Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{testcase1()}{testcase1()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+int \mbox{\hyperlink{classTests__Reference}{Tests\+\_\+\+Reference}}$<$ T $>$\+::testcase1 (\begin{DoxyParamCaption}\item[{const int}]{opt,  }\item[{const int}]{runs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+A simple reference testcase which measures the bandwidth with cuda\+Memcpy1D in MB/s for each rank. 
+
+Each process generates a random input of size $N_x*N_y*N_z$. Afterwards the same data is send to all other ranks. If cuda\+\_\+aware is disabled, the input data is copied in each $\ast$ iteration to pinned memory. There are multiple available options to consider\+:
+\begin{DoxyItemize}
+\item opt=0\+: MPI uses Peer2\+Peer communication
+\item opt=1\+: MPI uses All2\+All communication
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em opt} & Selects one of the above options. \\
+\hline
+{\em runs} & Specifies the number of iterations across which the benchmark averages the result. There are an additional 10 warm-\/up rounds, which are not considered for the resulting bandwidth. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classTests__Reference_af087cb509ccbb2863814f293f376955f}\label{classTests__Reference_af087cb509ccbb2863814f293f376955f}} 
+\index{Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}!testcase2@{testcase2}}
+\index{testcase2@{testcase2}!Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{testcase2()}{testcase2()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+int \mbox{\hyperlink{classTests__Reference}{Tests\+\_\+\+Reference}}$<$ T $>$\+::testcase2 (\begin{DoxyParamCaption}\item[{const int}]{opt,  }\item[{const int}]{runs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+A simple reference testcase which measures the bandwidth with cuda\+Memcpy2D (for sender only) in MB/s for each rank. This testcase is mostly relevant for the slab decomposition (2D-\/$>$1D). 
+
+Each process generates a random input of size $N_{p_x}*N_y*N_z$. Afterwards the region is split into multiple parts across the y-\/axis, where the i\textquotesingle{}th region is send to rank i. Therefore the sending process has to perform a 2D-\/\+Memcpy to the send buffer. The receiving process simply gathers all arriving messages (with an 1D-\/\+Memcpy for non CUDA-\/aware MPI versions). There are multiple options to consider\+:
+\begin{DoxyItemize}
+\item opt=0\+: Sender performs cuda\+Memcpy2D from device to pinned memory, such that the relevant data is continuous. Afterwards the data is send as MPI\+\_\+\+BYTE.
+\item opt=1\+: Same as opt=0, except that cuda\+Memcpy2D is performed on different streams and the MPI\+\_\+\+Isend routine is called indirectly via cuda\+Launch\+Host\+Func.
+\item opt=2\+: Sender performs cuda\+Memcpy(1\+D) from device to pinned memory (for non CUDA-\/aware MPI) and sends non-\/continuous data with a custom data type (via MPI\+\_\+\+Type\+\_\+vector).
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em opt} & Selects one of the above options. \\
+\hline
+{\em runs} & Specifies the number of iterations across which the benchmark averages the result. There are an additional 10 warm-\/up rounds, which are not considered for the resulting bandwidth. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classTests__Reference_a198275d3975f65d238a3a1cf63cffd02}\label{classTests__Reference_a198275d3975f65d238a3a1cf63cffd02}} 
+\index{Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}!testcase3@{testcase3}}
+\index{testcase3@{testcase3}!Tests\_Reference$<$ T $>$@{Tests\_Reference$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{testcase3()}{testcase3()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+int \mbox{\hyperlink{classTests__Reference}{Tests\+\_\+\+Reference}}$<$ T $>$\+::testcase3 (\begin{DoxyParamCaption}\item[{const int}]{opt,  }\item[{const int}]{runs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+A simple reference testcase which measures the bandwidth with cuda\+Memcpy3D (for sender \& receiver) in MB/s for each rank. This testcase is mostly relevant for the pencil decomposition. 
+
+Each process generates a random input of size $N_{p_x}*N_{p_y}*N_z$. Afterwards the region is split into multiple parts across the z-\/axis, where the i\textquotesingle{}th region is send to rank i. Therefore the sending process has to perform a 3D-\/\+Memcpy to the send buffer. The receive buffer is of size $N_{p_x}*N_{y}*N_{p_z}$. Therefore, we need an additional 3D-\/\+Memcpy. There are multiple options to consider\+:
+\begin{DoxyItemize}
+\item opt=0\+: Both sender and receiver perform a 3D-\/\+Memcpy. The receiver uses MPI\+\_\+\+Waitany to overlap the receive and copy routines.
+\item opt=1\+: Same as opt=0, except that cuda\+Memcpy3D is performed on different streams and the MPI\+\_\+\+Isend routine is called indirectly via cuda\+Launch\+Host\+Func.
+\item opt=2\+: Both sender and receiver use custom MPI\+\_\+\+Types (advantage\+: For CUDA-\/aware MPI no recv/send buffer has to be allocated).
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em opt} & Selects one of the above options. \\
+\hline
+{\em runs} & Specifies the number of iterations across which the benchmark averages the result. There are an additional 10 warm-\/up rounds, which are not considered for the resulting bandwidth. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+tests/include/tests\+\_\+reference.\+hpp\end{DoxyCompactItemize}

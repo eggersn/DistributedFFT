@@ -24,7 +24,7 @@ echo "64: $HOST64"
 
 # build
 echo "start building"
-cd /home/st/st_us-051200/st_st160727/DistributedFFT/
+cd $HOME/DistributedFFT/
 rm -rf build_gpu8
 mkdir build_gpu8
 cd build_gpu8
@@ -41,19 +41,19 @@ echo "start python script"
 echo "Starting on HOST64"
 echo "-----------------------------------------------------------------------------"
 echo "Slab 2D->1D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward "
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward "
 echo "Slab 2D->1D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward --opt 1"
 echo "Slab 1D->2D default"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward -s Z_Then_YX"
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward -s Z_Then_YX"
 echo "Slab 1D->2D opt1"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward -s Z_Then_YX --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json bwunicluster/slab/validation.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-p 64 -b ../benchmarks/bwunicluster/gpu8/large/forward -s Z_Then_YX --opt 1"
 echo "Slab 2D->1D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse"
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse"
 echo "Slab 2D->1D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse --opt 1"
 echo "Slab 1D->2D default (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse -s Z_Then_YX"
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse -s Z_Then_YX"
 echo "Slab 1D->2D opt1 (inverse)"
-python launch.py --jobs bwunicluster/slab/benchmarks_base0.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse -s Z_Then_YX --opt 1"
+python launch.py --jobs bwunicluster/slab/benchmarks_base.json --hosts $HOST64 --gpus 8 --affinity 0:0-9 0:0-9 0:0-9 0:0-9 1:0-9 1:0-9 1:0-9 1:0-9 --build_dir "build_gpu8" --global_params "-t 2 -p 64 -b ../benchmarks/bwunicluster/gpu8/large/inverse -s Z_Then_YX --opt 1"
 

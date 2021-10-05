@@ -1,6 +1,4 @@
 build/*
-benchmarks/*
-documentation/*
 commands.txt
-test.py
-eval/*
+test_environments/*
+truncate.py

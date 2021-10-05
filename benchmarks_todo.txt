@@ -1,2 +1,0 @@
-- gpu8
-    slab:   1. inverse z_then_yx opt 1 on 16 gpus (typo with -p 24)

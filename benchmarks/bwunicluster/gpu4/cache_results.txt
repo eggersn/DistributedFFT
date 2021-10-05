@@ -1,0 +1,301 @@
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16802789    16802789    16802789    16802789
+          1               l2_subp0_read_sector_misses    16810258    16810258    16810258    16810258
+    Kernel: void vector_fft_r2c<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    17158929    17158929    17158929    17158929
+          1               l2_subp0_read_sector_misses    16797689    16797689    16797689    16797689
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    18443310    18443310    18443310    18443310
+          1               l2_subp0_read_sector_misses    17897585    17897585    17897585    17897585
+==2310571== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16801203    16801203    16801203    16801203
+          1               l2_subp0_read_sector_misses    16810372    16810372    16810372    16810372
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33591887    33591887    33591887    33591887
+          1               l2_subp0_read_sector_misses    99244085    99244085    99244085    99244085
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z24postprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    33671012    33671012    33671012    33671012
+          1               l2_subp0_read_sector_misses    50682941    50682941    50682941    50682941
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16780749    16780749    16780749    16780749
+          1               l2_subp0_read_sector_misses    16777514    16777514    16777514    16777514
+==2310743== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c --opt 1
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33907505    33907505    33907505    33907505
+          1               l2_subp0_read_sector_misses   101414173   101414173   101414173   101414173
+    Kernel: void vector_fft_r2c<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    17159456    17159456    17159456    17159456
+          1               l2_subp0_read_sector_misses    16799169    16799169    16799169    16799169
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33804832    33804832    33804832    33804832
+          1               l2_subp0_read_sector_misses    99432051    99432051    99432051    99432051
+==2310907== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c -s Z_Then_YX
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33825370    33825370    33825370    33825370
+          1               l2_subp0_read_sector_misses    50624631    50624631    50624631    50624631
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33801592    33801592    33801592    33801592
+          1               l2_subp0_read_sector_misses    99426264    99426264    99426264    99426264
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z24postprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    24414586    24414586    24414586    24414586
+          1               l2_subp0_read_sector_misses    27614760    27614760    27614760    27614760
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16780744    16780744    16780744    16780744
+          1               l2_subp0_read_sector_misses    16777530    16777530    16777530    16777530
+==2311082== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c -s Z_Then_YX --opt 1
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void vector_fft<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16900363    16900363    16900363    16900363
+          1               l2_subp0_read_sector_misses    16908852    16908852    16908852    16908852
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16938129    16938129    16938129    16938129
+          1               l2_subp0_read_sector_misses    67586158    67586158    67586158    67586158
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z23preprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    17291756    17291756    17291756    17291756
+          1               l2_subp0_read_sector_misses    16918643    16918643    16918643    16918643
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16763117    16763117    16763117    16763117
+          1               l2_subp0_read_sector_misses    16777519    16777519    16777519    16777519
+==2311241== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c -s Z_Then_YX --opt 1 -t 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void vector_fft_r2c<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    34303644    34303644    34303644    34303644
+          1               l2_subp0_read_sector_misses    33596243    33596243    33596243    33596243
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    33613045    36878652    35245848    70491697
+          2               l2_subp0_read_sector_misses    33621016    35865404    34743210    69486420
+==2287102== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    33611787    67214267    50413027   100826054
+          2               l2_subp0_read_sector_misses    33621204   197468913   115545058   231090117
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z24postprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    67291142    67291142    67291142    67291142
+          1               l2_subp0_read_sector_misses   101391855   101391855   101391855   101391855
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33558554    33558554    33558554    33558554
+          1               l2_subp0_read_sector_misses    33554858    33554858    33554858    33554858
+==2287302== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c --opt 1
+
+
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void vector_fft_r2c<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    34304486    34304486    34304486    34304486
+          1               l2_subp0_read_sector_misses    33595486    33595486    33595486    33595486
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    67636371    67720637    67678504   135357008
+          2               l2_subp0_read_sector_misses   202969822   202971560   202970691   405941382
+==2287467== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c -s Z_Then_YX
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    67634521    67676480    67655500   135311001
+          2               l2_subp0_read_sector_misses   101468009   202968713   152218361   304436722
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z24postprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    48812467    48812467    48812467    48812467
+          1               l2_subp0_read_sector_misses    55517950    55517950    55517950    55517950
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33557185    33557185    33557185    33557185
+          1               l2_subp0_read_sector_misses    33555092    33555092    33555092    33555092
+==2287637== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c -s Z_Then_YX --opt 1
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=16, unsigned int=2, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+        257              l2_subp0_write_sector_misses      259537      303262      262315    67415109
+        257               l2_subp0_read_sector_misses      782174      787934      786585   202152465
+    Kernel: void vector_fft_r2c<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    34304744    34304744    34304744    34304744
+          1               l2_subp0_read_sector_misses    33596695    33596695    33596695    33596695
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33679648    33679648    33679648    33679648
+          1               l2_subp0_read_sector_misses    33686612    33686612    33686612    33686612
+==2299271== Profiling application: pencil -nx 1024 -ny 1024 -nz 1024 -d -c -p1 2 -p2 2
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    33680570    33684459    33682514    67365029
+          2               l2_subp0_read_sector_misses    33686512    33687038    33686775    67373550
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z24postprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    48402169    48402169    48402169    48402169
+          1               l2_subp0_read_sector_misses    55182889    55182889    55182889    55182889
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33556609    33556609    33556609    33556609
+          1               l2_subp0_read_sector_misses    33554868    33554868    33554868    33554868
+==2299445== Profiling application: pencil -nx 1024 -ny 1024 -nz 1024 -d -c -p1 2 -p2 2 --opt 1
+
+
+
+
+
+
+
+
+
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void vector_fft_c2r<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33543805    33543805    33543805    33543805
+          1               l2_subp0_read_sector_misses    33785081    33785081    33785081    33785081
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    33624304    36863632    35243968    70487936
+          2               l2_subp0_read_sector_misses    33621852    36013217    34817534    69635069
+==2288000== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c -t 2
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z23preprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    34045628    34045628    34045628    34045628
+          1               l2_subp0_read_sector_misses   135259229   135259229   135259229   135259229
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    33634452    67295553    50465002   100930005
+          2               l2_subp0_read_sector_misses    33622458   197495398   115558928   231117856
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33529519    33529519    33529519    33529519
+          1               l2_subp0_read_sector_misses    33555284    33555284    33555284    33555284
+==2288178== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c -t 2 --opt 1
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void vector_fft_c2r<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33544116    33544116    33544116    33544116
+          1               l2_subp0_read_sector_misses    33782681    33782681    33782681    33782681
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          2              l2_subp0_write_sector_misses    67636113    67705643    67670878   135341756
+          2               l2_subp0_read_sector_misses   202970190   202971717   202970953   405941907
+==2288350== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c -t 2 -s Z_Then_YX
+
+==2288508== Event result:
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void vector_fft<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33808735    33808735    33808735    33808735
+          1               l2_subp0_read_sector_misses    33817140    33817140    33817140    33817140
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z23preprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    34515096    34515096    34515096    34515096
+          1               l2_subp0_read_sector_misses    33859814    33859814    33859814    33859814
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33847683    33847683    33847683    33847683
+          1               l2_subp0_read_sector_misses   135272862   135272862   135272862   135272862
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33540855    33540855    33540855    33540855
+          1               l2_subp0_read_sector_misses    33554862    33554862    33554862    33554862
+==2288510== Profiling application: slab -nx 1024 -ny 1024 -nz 1024 -d -c -t 2 -s Z_Then_YX --opt 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16805313    16805313    16805313    16805313
+          1               l2_subp0_read_sector_misses    16810486    16810486    16810486    16810486
+    Kernel: void vector_fft_r2c<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    17158168    17158168    17158168    17158168
+          1               l2_subp0_read_sector_misses    16797254    16797254    16797254    16797254
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    18451072    18451072    18451072    18451072
+          1               l2_subp0_read_sector_misses    17931965    17931965    17931965    17931965
+==2289663== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16805771    16805771    16805771    16805771
+          1               l2_subp0_read_sector_misses    16810356    16810356    16810356    16810356
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33598283    33598283    33598283    33598283
+          1               l2_subp0_read_sector_misses    99071631    99071631    99071631    99071631
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z24postprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    33671423    33671423    33671423    33671423
+          1               l2_subp0_read_sector_misses    50681340    50681340    50681340    50681340
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16780885    16780885    16780885    16780885
+          1               l2_subp0_read_sector_misses    16777538    16777538    16777538    16777538
+
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33893915    33893915    33893915    33893915
+          1               l2_subp0_read_sector_misses   101411943   101411943   101411943   101411943
+    Kernel: void vector_fft_r2c<unsigned int=1024, unsigned int=16, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    17158690    17158690    17158690    17158690
+          1               l2_subp0_read_sector_misses    16800667    16800667    16800667    16800667
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33806967    33806967    33806967    33806967
+          1               l2_subp0_read_sector_misses    99433350    99433350    99433350    99433350
+==2290011== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c -s Z_Then_YX
+
+Invocations                                Event Name         Min         Max         Avg       Total
+Device "Tesla V100-SXM2-32GB (0)"
+    Kernel: void regular_fft<unsigned int=512, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33816684    33816684    33816684    33816684
+          1               l2_subp0_read_sector_misses    50603253    50603253    50603253    50603253
+    Kernel: void regular_fft<unsigned int=1024, unsigned int=8, unsigned int=8, padding_t=1, twiddle_t=0, loadstore_modifier_t=2, layout_t=1, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    33801525    33801525    33801525    33801525
+          1               l2_subp0_read_sector_misses    99459094    99459094    99459094    99459094
+    Kernel: __nv_static_43__30_RealComplex_compute_80_cpp1_ii_4f42778e__Z24postprocessC2C_kernelMemIjdL9fftAxii_t1EEvP7ComplexIT0_EPKS3_T_15coordDivisors_tIS7_E7coord_tIS7_ESB_S7_S2_10callback_tmb
+          1              l2_subp0_write_sector_misses    24321386    24321386    24321386    24321386
+          1               l2_subp0_read_sector_misses    27581588    27581588    27581588    27581588
+    Kernel: void vector_fft<unsigned int=512, unsigned int=8, unsigned int=1, padding_t=6, twiddle_t=0, loadstore_modifier_t=2, layout_t=0, unsigned int, double>(kernel_arguments_t<unsigned int>)
+          1              l2_subp0_write_sector_misses    16779929    16779929    16779929    16779929
+          1               l2_subp0_read_sector_misses    16777532    16777532    16777532    16777532
+==2290169== Profiling application: slab -nx 512 -ny 1024 -nz 1024 -d -c -s Z_Then_YX --opt 1
+

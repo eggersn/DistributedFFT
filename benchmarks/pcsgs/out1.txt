@@ -1,0 +1,915 @@
+start building
+-- The CUDA compiler identification is NVIDIA 11.2.152
+-- The CXX compiler identification is GNU 9.2.0
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local.nfs/sw/cuda/cuda-11.2.2/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/local.nfs/sw/gcc/gcc-9.2.0/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found MPI_CXX: /home/eggersn/opt/openmpi-4.1.1/lib/libmpi.so (found version "3.1") 
+-- Found MPI: TRUE (found version "3.1")  
+-- Found CUDAToolkit: /usr/local.nfs/sw/cuda/cuda-11.2.2/include (found version "11.2.152") 
+-- Looking for C++ include pthread.h
+-- Looking for C++ include pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE  
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/eggersn/DistributedFFT/build_pcsgs
+Scanning dependencies of target timer
+[  3%] Building CXX object CMakeFiles/timer.dir/src/timer.cpp.o
+[  6%] Linking CXX shared library libtimer.so
+[  6%] Built target timer
+Scanning dependencies of target mpicufft
+[  9%] Building CXX object CMakeFiles/mpicufft.dir/src/mpicufft.cpp.o
+[ 12%] Linking CXX shared library libmpicufft.so
+[ 12%] Built target mpicufft
+Scanning dependencies of target pencil_decomp
+[ 15%] Building CXX object CMakeFiles/pencil_decomp.dir/src/pencil/mpicufft_pencil.cpp.o
+[ 18%] Building CXX object CMakeFiles/pencil_decomp.dir/src/pencil/mpicufft_pencil_opt1.cpp.o
+[ 21%] Linking CXX shared library libpencil_decomp.so
+[ 21%] Built target pencil_decomp
+Scanning dependencies of target test_base
+[ 24%] Building CUDA object CMakeFiles/test_base.dir/tests/src/base.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 27%] Linking CUDA shared library libtest_base.so
+[ 27%] Built target test_base
+Scanning dependencies of target reference_tests
+[ 30%] Building CUDA object CMakeFiles/reference_tests.dir/tests/src/reference/reference.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 33%] Linking CUDA shared library libreference_tests.so
+[ 33%] Built target reference_tests
+Scanning dependencies of target reference
+[ 36%] Building CXX object CMakeFiles/reference.dir/tests/src/reference/main.cpp.o
+[ 39%] Linking CXX executable reference
+[ 39%] Built target reference
+Scanning dependencies of target slab_decomp
+[ 42%] Building CXX object CMakeFiles/slab_decomp.dir/src/slab/default/mpicufft_slab.cpp.o
+[ 45%] Building CXX object CMakeFiles/slab_decomp.dir/src/slab/default/mpicufft_slab_opt1.cpp.o
+[ 48%] Building CXX object CMakeFiles/slab_decomp.dir/src/slab/z_then_yx/mpicufft_slab_z_then_yx.cpp.o
+[ 51%] Building CXX object CMakeFiles/slab_decomp.dir/src/slab/z_then_yx/mpicufft_slab_z_then_yx_opt1.cpp.o
+[ 54%] Building CXX object CMakeFiles/slab_decomp.dir/src/slab/y_then_zx/mpicufft_slab_y_then_zx.cpp.o
+[ 57%] Linking CXX shared library libslab_decomp.so
+[ 57%] Built target slab_decomp
+Scanning dependencies of target slab_tests
+[ 60%] Building CUDA object CMakeFiles/slab_tests.dir/tests/src/slab/base.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 63%] Building CUDA object CMakeFiles/slab_tests.dir/tests/src/slab/random_dist_default.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 66%] Building CUDA object CMakeFiles/slab_tests.dir/tests/src/slab/random_dist_y_then_zx.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 69%] Building CUDA object CMakeFiles/slab_tests.dir/tests/src/slab/random_dist_z_then_yx.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 72%] Linking CUDA shared library libslab_tests.so
+[ 72%] Built target slab_tests
+Scanning dependencies of target pencil_tests
+[ 75%] Building CUDA object CMakeFiles/pencil_tests.dir/tests/src/pencil/base.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 78%] Building CUDA object CMakeFiles/pencil_tests.dir/tests/src/pencil/random_dist_1D.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 81%] Building CUDA object CMakeFiles/pencil_tests.dir/tests/src/pencil/random_dist_2D.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 84%] Building CUDA object CMakeFiles/pencil_tests.dir/tests/src/pencil/random_dist_3D.cu.o
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+[ 87%] Linking CUDA shared library libpencil_tests.so
+[ 87%] Built target pencil_tests
+Scanning dependencies of target pencil
+[ 90%] Building CXX object CMakeFiles/pencil.dir/tests/src/pencil/main.cpp.o
+[ 93%] Linking CXX executable pencil
+[ 93%] Built target pencil
+Scanning dependencies of target slab
+[ 96%] Building CXX object CMakeFiles/slab.dir/tests/src/slab/main.cpp.o
+[100%] Linking CXX executable slab
+[100%] Built target slab
+finished building
+Slab 1D->2D opt1 (inverse)
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+No protocol specified
+Starting computation for size 128
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:16.770934
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:23.943286
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:26.495290
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:29.387105
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:32.211152
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:34.703168
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:37.203097
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:39.835812
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:42.423223
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 128 --testcase 2
+2021-09-04 13:52:44.985301
+b''
+
+Starting computation for size [128, 128, 256]
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:52:47.487183
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:52:50.975648
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:52:54.531025
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:52:58.627067
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:53:02.695065
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:53:06.203019
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:53:09.619396
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:53:12.947098
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:53:16.427215
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 128 -nz 256 --testcase 2
+2021-09-04 13:53:20.005877
+b''
+
+Starting computation for size [128, 256, 256]
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:53:23.391141
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:53:28.523171
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:53:33.711060
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:53:39.759115
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:53:45.667185
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:53:50.947125
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:53:56.299132
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:01.587124
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:06.903146
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 128 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:12.203199
+b''
+
+Starting computation for size 256
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:17.511134
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:26.443552
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:35.226922
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:43.779133
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:54:53.346991
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:55:02.423211
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:55:11.567325
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:55:20.291071
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:55:29.239125
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 256 --testcase 2
+2021-09-04 13:55:38.299251
+b''
+
+Starting computation for size [256, 256, 512]
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:55:47.039539
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:56:02.823056
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:56:18.155559
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:56:34.187195
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:56:50.137681
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:57:05.763176
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:57:21.543092
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:57:36.983198
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:57:53.015346
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 256 -nz 512 --testcase 2
+2021-09-04 13:58:09.075076
+b''
+
+Starting computation for size [256, 512, 512]
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 13:58:24.687266
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 13:58:54.595142
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 13:59:24.699146
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 13:59:54.919203
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:00:25.743752
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:01:23.847768
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:01:55.611571
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:02:26.695066
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:02:58.604171
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 256 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:03:28.555255
+b''
+
+Starting computation for size 512
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:03:59.191044
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:04:55.231185
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:05:54.043318
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:07:05.027299
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:08:04.247043
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:09:02.291161
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:09:57.403084
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:10:57.723194
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:11:54.395035
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 512 --testcase 2
+2021-09-04 14:12:53.387210
+b''
+
+Starting computation for size [512, 512, 1024]
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:13:52.947224
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:15:44.159104
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:17:47.079529
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:20:21.759144
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:22:14.235172
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:24:10.979314
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:26:03.467098
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:27:57.895261
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:29:49.211146
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 512 -nz 1024 --testcase 2
+2021-09-04 14:31:44.039272
+b''
+
+Starting computation for size [512, 1024, 1024]
+-> Executing test 0
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 14:33:41.336521
+b''
+
+-> Executing test 1
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 14:37:40.643326
+b''
+
+-> Executing test 2
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 14:41:25.827103
+b''
+
+-> Executing test 3
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd Streams --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 14:46:14.407260
+b''
+
+-> Executing test 4
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 14:49:55.467234
+b''
+
+-> Executing test 5
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm Peer2Peer -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 14:54:10.051298
+b''
+
+-> Executing test 6
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 14:57:49.771236
+b''
+
+-> Executing test 7
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd Sync --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 15:01:35.739871
+b''
+
+-> Executing test 8
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 15:05:11.735080
+b''
+
+-> Executing test 9
+mpiexec -n 4 --hostfile ../mpi/hostfile_pcsgs slab -comm All2All -snd MPI_Type --cuda_aware --warmup-rounds 10 --iterations 20 --double_prec -t 2 -p 4 -b ../benchmarks/pcsgs/inverse -s Z_Then_YX --opt 1 -nx 512 -ny 1024 -nz 1024 --testcase 2
+2021-09-04 15:09:57.971271
+b''
+
+all done

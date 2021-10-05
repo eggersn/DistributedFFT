@@ -1,0 +1,28 @@
+This library implements different methods for distributed FFT computation on heterogeneous GPU Systems. ~\newline
+In general, we assume that the input data is aligned as \mbox{[}z\mbox{]}\mbox{[}y\mbox{]}\mbox{[}x\mbox{]} (such that the data is continuous in z-\/direction). The various implementations can be grouped into\+:
+
+
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{Slab_Decomposition}{Slab\+\_\+\+Decomposition}} ~\newline
+ Here the global input data $N_x \times N_y \times N_z$ is split in x-\/direction. Therefore, we assume that each process starts with input data of size $\frac{N_x}{P} \times N_y \times N_z$. ~\newline
+ The default procedure for slab decomposition is the following\+:
+\begin{DoxyEnumerate}
+\item Input\+: $\frac{N_x}{P} \times N_y \times N_z$
+\item Compute the 2D-\/\+FFT in y-\/ and z-\/direction\+: $\frac{N_x}{P} \times \hat{N_y} \times \hat{N_z}$
+\item Redistribute\+: Each node has $N_x \times \frac{\hat{N_y}}{P} \times \hat{N_z}$
+\item Compute the remaining 1D-\/\+FFT in x-\/direction\+: $\hat{N_x} \times \frac{\hat{N_y}}{P} \times \hat{N_z}$
+\end{DoxyEnumerate}
+\item \mbox{\hyperlink{Pencil_Decomposition}{Pencil\+\_\+\+Decomposition}} ~\newline
+ Here the global input data $N_x \times N_y \times N_z$ is split in x-\/ and y-\/direction. Therefore, we assume that each process starts with input data of size $\frac{N_x}{P1} \times \frac{N_y}{P2} \times N_z$. ~\newline
+ The default procedure for pencil decomposition is the following\+:
+\begin{DoxyEnumerate}
+\item Input\+: $\frac{N_x}{P1} \times \frac{N_y}{P2} \times N_z$
+\item Compute the 1D-\/\+FFT in z-\/direction\+: $\frac{N_x}{P1} \times \frac{N_y}{P2} \times \hat{N_z}$
+\item Redistribute\+: Each node has $\frac{N_x}{P1} \times N_y \times \frac{\hat{N_z}}{P2}$
+\item Compute the 1D-\/\+FFT in y-\/direction\+: $\frac{N_x}{P1} \times \hat{N_y} \times \frac{\hat{N_z}}{P2}$
+\item Redistribute\+: Each node has $N_x \times \frac{\hat{N_y}}{P1} \times \frac{\hat{N_z}}{P2}$
+\item Compute the 1D-\/\+FFT in x-\/direction\+: $\hat{N_x} \times \frac{\hat{N_y}}{P1} \times \frac{\hat{N_z}}{P2}$
+\end{DoxyEnumerate}
+\end{DoxyItemize}
+
+All methods implement \mbox{\hyperlink{classMPIcuFFT}{MPIcu\+FFT}}. 
