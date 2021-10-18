@@ -9,12 +9,14 @@ import numpy as np
 from scipy.stats import t
 
 
-prefix = "benchmarks/bwunicluster/gpu8/large"
+prefix = "benchmarks/argon"
 
-files = [f for f in listdir(prefix) if isfile(join(prefix,f)) and f[-3:]=="out"]
+files = [f for f in listdir(prefix) if isfile(join(prefix,f)) and (f[-3:]=="out" or f[-3:]=="txt") ]
 index_map = ["Peer2Peer-Sync", "Peer2Peer-Streams", "Peer2Peer-MPI_Type", "All2All-Sync", "All2All-MPI_Type"]
 buffer = {}
 sizes = []
+
+files.sort()
 
 for f in files:
     with open(join(prefix,f)) as out_file:
@@ -60,7 +62,13 @@ for f in files:
                 if size not in sizes:
                     sizes.append(size)
 
-                buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size] = [float(row.split(": ")[1].split("\\n")[0]), float(row.split(": ")[2].split("\\n")[0])]
+                if len(row.split(": ")) == 3:
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size] = [float(row.split(": ")[1].split("\\n")[0]), float(row.split(": ")[2].split("\\n")[0])]
+                elif len(row.split(": ")) == 2:
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size] = [0, 0]
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size][0] = float(row.split(": ")[1].split("\\n")[0])
+                    row = next(out_file)
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size][1] = float(row.split(": ")[1].split("\\n")[0])
 
             lines[1] = lines[0]
             lines[0] = row 

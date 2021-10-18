@@ -89,37 +89,40 @@ def collect(cuda_aware, P, max_labels, title, prefix):
                                 x_vals = ConvertSizesToLabels(it_sizes)
                                 values = [-1 for s in it_sizes]
                                 best_comm = [[] for s in it_sizes]
-                                row = next(csv_reader)
-                                while row != []:
-                                    runs = [float(x) for x in row[offset:]]
-                                    for i in range(len(runs)):
-                                        if i < len(values) and  (values[i] == -1 or runs[i] < values[i]):
-                                            values[i] = runs[i]
-                                            best_comm[i] = row[:offset]
-
+                                try:
                                     row = next(csv_reader)
+                                    while row != []:
+                                        runs = [float(x) for x in row[offset:]]
+                                        for i in range(len(runs)):
+                                            if i < len(values) and  (values[i] == -1 or runs[i] < values[i]):
+                                                values[i] = runs[i]
+                                                best_comm[i] = row[:offset]
 
-                                row = next(csv_reader)
-                                while row != []:
-                                    row = next(csv_reader)
-
-                                # get t student intervals
-                                row = next(csv_reader)
-                                student_count = 0
-                                lower_interval = [0 for s in it_sizes]
-                                upper_interval = [0 for s in it_sizes]
-                                while row != []:
-                                    try:
                                         row = next(csv_reader)
-                                        indices = [i for i in range(len(best_comm)) if best_comm[i] == row[:offset]]
-                                        for i in indices:
-                                            if student_count % 2 == 0:
-                                                lower_interval[i] = row[offset+i]
-                                            else:
-                                                upper_interval[i] = row[offset+i]
-                                        student_count += 1
-                                    except:
-                                        break                            
+
+                                    row = next(csv_reader)
+                                    while row != []:
+                                        row = next(csv_reader)
+
+                                    # get t student intervals
+                                    row = next(csv_reader)
+                                    student_count = 0
+                                    lower_interval = [0 for s in it_sizes]
+                                    upper_interval = [0 for s in it_sizes]
+                                    while row != []:
+                                        try:
+                                            row = next(csv_reader)
+                                            indices = [i for i in range(len(best_comm)) if best_comm[i] == row[:offset]]
+                                            for i in indices:
+                                                if student_count % 2 == 0:
+                                                    lower_interval[i] = row[offset+i]
+                                                else:
+                                                    upper_interval[i] = row[offset+i]
+                                            student_count += 1
+                                        except:
+                                            break     
+                                except:
+                                    print("Failure for ", f)                       
                                 
                                 print(best_comm)
                                 with open(join(prefix, subdir, "proportions", "proportions"+f.split("runs")[1])) as csv_file1:
@@ -214,7 +217,7 @@ def collect(cuda_aware, P, max_labels, title, prefix):
             values = [float(x) for x in s_values]
             label, = plt.plot(x_vals, values, zorder=3, linewidth=5, markersize=15, marker=markers[count%len(markers)], linestyle="-.")
             labels.append(label)
-            legend.append("Reference")
+            legend.append("3D-FFT")
         x_vals_collection.append(x_vals)
         values_collection.append(values)
 
@@ -343,12 +346,13 @@ def collect(cuda_aware, P, max_labels, title, prefix):
 
 def main():
     collection = [
-    ["bwunicluster/gpu4/forward", "BwUniCluster GPU4 Forward", [32, 24, 16, 8, 4], 10], ["bwunicluster/gpu4/inverse", "BwUniCluster GPU4 Inverse", [32, 24, 16, 8, 4], 10],
+    # ["bwunicluster/gpu4/forward", "BwUniCluster GPU4 Forward", [32, 24, 16, 8, 4], 10], ["bwunicluster/gpu4/inverse", "BwUniCluster GPU4 Inverse", [32, 24, 16, 8, 4], 10],
     # ["argon/forward", "Argon Forward", [4], 6], ["argon/inverse", "Argon Inverse", [4], 6], 
     # ["pcsgs/forward", "PCSGS Forward", [4], 6], ["pcsgs/inverse", "PCSGS Inverse", [4], 6], 
     # ["krypton/forward", "Krypton Forward", [4], 6], ["krypton/inverse", "Krypton Inverse", [4], 6],
     # ["bwunicluster/gpu8/small/forward", "BwUniCluster GPU8 Forward", [8, 16], 10], ["bwunicluster/gpu8/small/inverse", "BwUniCluster GPU8 Inverse", [8, 16], 10],
-    # ["bwunicluster/gpu8/large/forward", "BwUniCluster GPU8 Forward", [16, 32, 48, 64], 10], ["bwunicluster/gpu8/large/inverse", "BwUniCluster GPU8 Inverse", [16, 32, 48, 64], 10]
+    # ["bwunicluster/gpu8/large/forward", "BwUniCluster GPU8 Forward", [16, 32, 48, 64], 10], 
+    ["bwunicluster/gpu8/large/inverse", "BwUniCluster GPU8 Inverse", [64], 10]
     ]
 
     for entry in collection:
