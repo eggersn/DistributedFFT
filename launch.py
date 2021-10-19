@@ -1,7 +1,23 @@
+# Copyright (C) 2021 Simon Egger
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 import json
 import os, sys
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, isdir
 import argparse
 import multiprocessing
 import re
@@ -15,12 +31,11 @@ def menu_main():
         print("Select a Category:\n" +
         "-" * 35 + "\n" + 
         "[0] Run Specified Job (job.json)\n" +
-        "[1] Pencil Decomposition \n" + 
-        "[2] Slab Decomposition \n\n" +
+        "[1] Run Evaluation Scripts \n\n" +
         "Selection: ")
         try: 
             opt = int(input())
-            if opt >= 0 and opt <= 2:
+            if opt >= 0 and opt <= 1:
                 return opt    
         except ValueError: 
             os.system("clear")
@@ -62,6 +77,79 @@ def select_job():
                 print("\nexiting...")
                 sys.exit()
     return 0
+
+def select_eval():
+    valid = False
+    script_collection = ["eval/global_redist/evaluation_slab.py", "eval/global_redist/evaluation_pencil.py", "eval/global_redist/evaluation_single.py", "eval/complete/plot_complete.py", "eval/complete/numerical_results.py"]
+    os.system("clear")
+    while not valid:
+        print("Select the Evaluation Scripts:\n" +
+        "-" * 35 + "\n" + 
+        "[0] All (equal to [2] + [3] + [4] -> [1])\n" +
+        "[1] Summary (requires [2] and/or [3], ) \n" +
+        "[2] Slab Decomposition\n" +
+        "[3] Pencil Decomposition\n" +
+        "[4] Single\n" +
+        "Selection: ")
+        try: 
+            opt = int(input())
+            if opt >= 2 and opt <= 4:
+                return [script_collection[opt-2]]
+            elif opt == 1:
+                return [script_collection[3], script_collection[4]]
+            elif opt == 0:
+                return script_collection
+        except ValueError: 
+            os.system("clear")
+            print("Please enter an integer!\n")
+        except KeyboardInterrupt:
+            print("\nexiting...")
+            sys.exit()
+
+    return 0
+
+def rec_benchmarks(prefix):
+    if isdir(join(prefix, "forward")) or isdir(join(prefix, "inverse")):
+        return [prefix] 
+
+    subdir = [f for f in listdir(prefix)]
+    res = []
+    for d in subdir:
+        res += rec_benchmarks(join(prefix, d))
+    return res
+
+
+def select_benchmark():
+    selected_benchmarks = []
+    prefix = "benchmarks"
+    while True:
+        os.system("clear")
+        valid = False
+        benchmarks = [f for f in listdir(prefix)]
+        while not valid:
+            print("Select a Benchmark:\n" + "-" * 35)
+            print("[0] all")
+            for i in range(len(benchmarks)):
+                print("[{}] {}".format(i+1, benchmarks[i]))
+            print("Selection: ")
+            try: 
+                opt = int(input())
+                if opt == 0:
+                    # find all valid subdirs of benchmarks
+                    return rec_benchmarks(prefix)
+                if opt > 0 and opt <= len(benchmarks):
+                    if isdir(join(prefix, benchmarks[opt-1], "forward")) or isdir(join(prefix, benchmarks[opt-1], "inverse")):
+                        return [prefix + "/" + benchmarks[opt-1]]
+                    prefix += "/" + benchmarks[opt-1]
+                    valid = True
+            except ValueError: 
+                os.system("clear")
+                print("Please enter an integer!\n")
+            except KeyboardInterrupt:
+                print("\nexiting...")
+                sys.exit()
+    return 0
+
 
 def keysToLower(test):
     for key in test:
@@ -218,6 +306,14 @@ def main():
         opt = menu_main()
         if opt == 0:
             jobs = select_job()
+        else:
+            os.chdir("..")
+            eval_scripts = select_eval() 
+            benchmarks = select_benchmark()
+            
+            for script in eval_scripts:
+                for benchmark in benchmarks:
+                    os.system("python {} --prefix {}".format(script, benchmark))
     else:
         jobs = ["../jobs/" + job for job in args.jobs]
 

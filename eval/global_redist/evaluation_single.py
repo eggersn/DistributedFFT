@@ -1,3 +1,18 @@
+# Copyright (C) 2021 Simon Egger
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 from os import listdir
 from os.path import isfile, join
 import pathlib
@@ -6,12 +21,18 @@ import csv
 import numpy as np
 from scipy.stats import t
 import sys
+import argparse
 
 
 prefix = "benchmarks/bwunicluster/gpu4"
-if len(sys.argv) > 1:
-    prefix = "benchmarks" + str(sys.argv[1])
 prec = "double"
+
+parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
+
+args = parser.parse_args()
+if args.p != None:
+    prefix = args.p[0]
 
 run_iterations = 20
 

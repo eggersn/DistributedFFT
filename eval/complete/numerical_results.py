@@ -1,3 +1,18 @@
+# Copyright (C) 2021 Simon Egger
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 from os import listdir
 from os.path import isfile, join
 import os
@@ -7,14 +22,24 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import t
+import argparse
 
 
-prefix = "benchmarks/bwunicluster/gpu8/large"
+prefix = "benchmarks/argon"
 
-files = [f for f in listdir(prefix) if isfile(join(prefix,f)) and f[-3:]=="out"]
+parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
+
+args = parser.parse_args()
+if args.p != None:
+    prefix = args.p[0]
+
+files = [f for f in listdir(prefix) if isfile(join(prefix,f)) and (f[-3:]=="out" or f[-3:]=="txt") ]
 index_map = ["Peer2Peer-Sync", "Peer2Peer-Streams", "Peer2Peer-MPI_Type", "All2All-Sync", "All2All-MPI_Type"]
 buffer = {}
 sizes = []
+
+files.sort()
 
 for f in files:
     with open(join(prefix,f)) as out_file:
@@ -60,7 +85,13 @@ for f in files:
                 if size not in sizes:
                     sizes.append(size)
 
-                buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size] = [float(row.split(": ")[1].split("\\n")[0]), float(row.split(": ")[2].split("\\n")[0])]
+                if len(row.split(": ")) == 3:
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size] = [float(row.split(": ")[1].split("\\n")[0]), float(row.split(": ")[2].split("\\n")[0])]
+                elif len(row.split(": ")) == 2:
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size] = [0, 0]
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size][0] = float(row.split(": ")[1].split("\\n")[0])
+                    row = next(out_file)
+                    buffer[P][name][index_map.index("{}-{}".format(comm, snd))][size][1] = float(row.split(": ")[1].split("\\n")[0])
 
             lines[1] = lines[0]
             lines[0] = row 

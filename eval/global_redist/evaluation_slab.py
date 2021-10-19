@@ -1,3 +1,18 @@
+# Copyright (C) 2021 Simon Egger
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 from os import listdir
 from os.path import isfile, join
 import os
@@ -10,13 +25,20 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pylab
 import sys
+import argparse
 
 # Config
 Table = False
 prefix = "benchmarks/bwunicluster/gpu8/large"
 
+parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
 
+args = parser.parse_args()
+if args.p != None:
+    prefix = args.p[0]
 
+print(prefix)
 
 if not Table:
     mpl.use("pgf")
@@ -31,8 +53,6 @@ send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type"
 markers = ["D", "X", "o", "s", "v"]
 linestyles = ["solid", "dotted", "dashed", "dashdot", (0, (3, 1, 1, 1, 1, 1))]
 
-if len(sys.argv) > 1:
-    prefix = "benchmarks" + str(sys.argv[1])
 prec = "double"
 
 run_iterations = 20

@@ -1,3 +1,18 @@
+# Copyright (C) 2021 Simon Egger
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 from os import listdir
 from os.path import isfile, join
 import os
@@ -9,6 +24,7 @@ from scipy.stats import t
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pylab
+import argparse
 
 # Config
 Table = False
@@ -89,37 +105,40 @@ def collect(cuda_aware, P, max_labels, title, prefix):
                                 x_vals = ConvertSizesToLabels(it_sizes)
                                 values = [-1 for s in it_sizes]
                                 best_comm = [[] for s in it_sizes]
-                                row = next(csv_reader)
-                                while row != []:
-                                    runs = [float(x) for x in row[offset:]]
-                                    for i in range(len(runs)):
-                                        if i < len(values) and  (values[i] == -1 or runs[i] < values[i]):
-                                            values[i] = runs[i]
-                                            best_comm[i] = row[:offset]
-
+                                try:
                                     row = next(csv_reader)
+                                    while row != []:
+                                        runs = [float(x) for x in row[offset:]]
+                                        for i in range(len(runs)):
+                                            if i < len(values) and  (values[i] == -1 or runs[i] < values[i]):
+                                                values[i] = runs[i]
+                                                best_comm[i] = row[:offset]
 
-                                row = next(csv_reader)
-                                while row != []:
-                                    row = next(csv_reader)
-
-                                # get t student intervals
-                                row = next(csv_reader)
-                                student_count = 0
-                                lower_interval = [0 for s in it_sizes]
-                                upper_interval = [0 for s in it_sizes]
-                                while row != []:
-                                    try:
                                         row = next(csv_reader)
-                                        indices = [i for i in range(len(best_comm)) if best_comm[i] == row[:offset]]
-                                        for i in indices:
-                                            if student_count % 2 == 0:
-                                                lower_interval[i] = row[offset+i]
-                                            else:
-                                                upper_interval[i] = row[offset+i]
-                                        student_count += 1
-                                    except:
-                                        break                            
+
+                                    row = next(csv_reader)
+                                    while row != []:
+                                        row = next(csv_reader)
+
+                                    # get t student intervals
+                                    row = next(csv_reader)
+                                    student_count = 0
+                                    lower_interval = [0 for s in it_sizes]
+                                    upper_interval = [0 for s in it_sizes]
+                                    while row != []:
+                                        try:
+                                            row = next(csv_reader)
+                                            indices = [i for i in range(len(best_comm)) if best_comm[i] == row[:offset]]
+                                            for i in indices:
+                                                if student_count % 2 == 0:
+                                                    lower_interval[i] = row[offset+i]
+                                                else:
+                                                    upper_interval[i] = row[offset+i]
+                                            student_count += 1
+                                        except:
+                                            break     
+                                except:
+                                    print("Failure for ", f)                       
                                 
                                 print(best_comm)
                                 with open(join(prefix, subdir, "proportions", "proportions"+f.split("runs")[1])) as csv_file1:
@@ -214,7 +233,7 @@ def collect(cuda_aware, P, max_labels, title, prefix):
             values = [float(x) for x in s_values]
             label, = plt.plot(x_vals, values, zorder=3, linewidth=5, markersize=15, marker=markers[count%len(markers)], linestyle="-.")
             labels.append(label)
-            legend.append("Reference")
+            legend.append("3D-FFT")
         x_vals_collection.append(x_vals)
         values_collection.append(values)
 
@@ -341,21 +360,47 @@ def collect(cuda_aware, P, max_labels, title, prefix):
             plt.savefig(prefix+"/{}/reduced_proportions_{}_{}.pdf".format("table_plots" if Table else "plots", P, 1 if cuda_aware else 0))
         plt.close()
 
-def main():
-    collection = [
-    ["bwunicluster/gpu4/forward", "BwUniCluster GPU4 Forward", [32, 24, 16, 8, 4], 10], ["bwunicluster/gpu4/inverse", "BwUniCluster GPU4 Inverse", [32, 24, 16, 8, 4], 10],
-    # ["argon/forward", "Argon Forward", [4], 6], ["argon/inverse", "Argon Inverse", [4], 6], 
-    # ["pcsgs/forward", "PCSGS Forward", [4], 6], ["pcsgs/inverse", "PCSGS Inverse", [4], 6], 
-    # ["krypton/forward", "Krypton Forward", [4], 6], ["krypton/inverse", "Krypton Inverse", [4], 6],
-    # ["bwunicluster/gpu8/small/forward", "BwUniCluster GPU8 Forward", [8, 16], 10], ["bwunicluster/gpu8/small/inverse", "BwUniCluster GPU8 Inverse", [8, 16], 10],
-    # ["bwunicluster/gpu8/large/forward", "BwUniCluster GPU8 Forward", [16, 32, 48, 64], 10], ["bwunicluster/gpu8/large/inverse", "BwUniCluster GPU8 Inverse", [16, 32, 48, 64], 10]
-    ]
+def getSlabPartitions(cuda_aware, subdir):
+    files = [f for f in listdir(subdir) if isfile(join(subdir, f)) and re.match("test_\d_\d_\d_\d*_\d*_\d*_{}_\d*".format((1 if cuda_aware else 0)), f)]
+    partitions = []
+    for f in files:
+        partitions.append(int(f.split("_")[-1].split(".")[0]))
+    partitions.sort()
+    partitions = list(dict.fromkeys(partitions))
+    return partitions
 
-    for entry in collection:
-        for p in entry[2]:
-            for c in range(2):
-                print(entry[1], p, c)
-                collect(c==1, p, entry[3], entry[1], "eval/benchmarks/{}".format(entry[0]))
+def getPencilPartitions(cuda_aware, subdir):
+    files = [f for f in listdir(subdir) if isfile(join(subdir, f)) and re.match("test_\d_\d_\d_\d_\d_\d*_\d*_\d*_{}_\d*_\d*".format((1 if cuda_aware else 0)), f)]
+    partitions = []
+    partitions_strings = []
+    for f in files:
+        partitions_strings.append("{}_{}".format(f.split("_")[-2], f.split("_")[-1].split(".")[0]))
+    partitions_strings.sort()
+    partitions_strings = list(dict.fromkeys(partitions_strings))
+
+    partitions = [int(p.split("_")[0])*int(p.split("_")[1]) for p in partitions_strings]
+
+    return partitions
+
+def main():
+    parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+    parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
+
+    args = parser.parse_args()
+    if args.p != None:
+        prefix = args.p[0]
+
+    
+    for c in range(2):
+        for direction in ["forward", "inverse"]:
+            partitions = getSlabPartitions(c, "{}/{}/slab_default".format(prefix, direction))
+            partitions += getSlabPartitions(c, "{}/{}/slab_z_then_yx".format(prefix, direction))
+            partitions += getPencilPartitions(c, "{}/{}/pencil".format(prefix, direction))
+            partitions = list(dict.fromkeys(partitions))
+            
+            for p in partitions:
+                print("eval/{}".format(join(prefix, direction)), p, c)
+                collect(c==1, p, 10, str(join(prefix, direction)).replace("/", " ")[11:], "eval/{}".format(join(prefix, direction)))
                 print()
 
 if __name__ == "__main__":
