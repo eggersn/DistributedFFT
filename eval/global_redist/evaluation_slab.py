@@ -10,13 +10,20 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pylab
 import sys
+import argparse
 
 # Config
 Table = False
 prefix = "benchmarks/bwunicluster/gpu8/large"
 
+parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
 
+args = parser.parse_args()
+if args.p != None:
+    prefix = args.p[0]
 
+print(prefix)
 
 if not Table:
     mpl.use("pgf")
@@ -31,8 +38,6 @@ send_methods = [{"Sync": 0, "Streams": 1, "MPI_Type": 2}, {"Sync": 0, "MPI_Type"
 markers = ["D", "X", "o", "s", "v"]
 linestyles = ["solid", "dotted", "dashed", "dashdot", (0, (3, 1, 1, 1, 1, 1))]
 
-if len(sys.argv) > 1:
-    prefix = "benchmarks" + str(sys.argv[1])
 prec = "double"
 
 run_iterations = 20

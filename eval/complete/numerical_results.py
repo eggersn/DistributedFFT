@@ -7,9 +7,17 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import t
+import argparse
 
 
 prefix = "benchmarks/argon"
+
+parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
+
+args = parser.parse_args()
+if args.p != None:
+    prefix = args.p[0]
 
 files = [f for f in listdir(prefix) if isfile(join(prefix,f)) and (f[-3:]=="out" or f[-3:]=="txt") ]
 index_map = ["Peer2Peer-Sync", "Peer2Peer-Streams", "Peer2Peer-MPI_Type", "All2All-Sync", "All2All-MPI_Type"]
