@@ -10,13 +10,19 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pylab
 import sys
+import argparse
 
 
 # Config
 Table = False
 prefix = "benchmarks/bwunicluster/gpu4"
 
+parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
 
+args = parser.parse_args()
+if args.p != None:
+    prefix = args.p[0]
 
 
 if not Table:
@@ -30,9 +36,6 @@ if not Table:
 comm_methods = {"Peer2Peer": 0, "All2All": 1}
 send_methods = [{"Sync": 0, "Streams": 1, "MPI\_Type": 2}, {"Sync": 0, "MPI\_Type": 2}]
 markers = ["D", "X", "o", "s", "v"]
-
-if len(sys.argv) > 1:
-    prefix = "benchmarks" + str(sys.argv[1])
 
 prec = "double"
 

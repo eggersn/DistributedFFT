@@ -6,12 +6,18 @@ import csv
 import numpy as np
 from scipy.stats import t
 import sys
+import argparse
 
 
 prefix = "benchmarks/bwunicluster/gpu4"
-if len(sys.argv) > 1:
-    prefix = "benchmarks" + str(sys.argv[1])
 prec = "double"
+
+parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
+
+args = parser.parse_args()
+if args.p != None:
+    prefix = args.p[0]
 
 run_iterations = 20
 

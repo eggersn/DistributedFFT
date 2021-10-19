@@ -9,6 +9,7 @@ from scipy.stats import t
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pylab
+import argparse
 
 # Config
 Table = False
@@ -344,22 +345,47 @@ def collect(cuda_aware, P, max_labels, title, prefix):
             plt.savefig(prefix+"/{}/reduced_proportions_{}_{}.pdf".format("table_plots" if Table else "plots", P, 1 if cuda_aware else 0))
         plt.close()
 
-def main():
-    collection = [
-    # ["bwunicluster/gpu4/forward", "BwUniCluster GPU4 Forward", [32, 24, 16, 8, 4], 10], ["bwunicluster/gpu4/inverse", "BwUniCluster GPU4 Inverse", [32, 24, 16, 8, 4], 10],
-    # ["argon/forward", "Argon Forward", [4], 6], ["argon/inverse", "Argon Inverse", [4], 6], 
-    # ["pcsgs/forward", "PCSGS Forward", [4], 6], ["pcsgs/inverse", "PCSGS Inverse", [4], 6], 
-    # ["krypton/forward", "Krypton Forward", [4], 6], ["krypton/inverse", "Krypton Inverse", [4], 6],
-    # ["bwunicluster/gpu8/small/forward", "BwUniCluster GPU8 Forward", [8, 16], 10], ["bwunicluster/gpu8/small/inverse", "BwUniCluster GPU8 Inverse", [8, 16], 10],
-    # ["bwunicluster/gpu8/large/forward", "BwUniCluster GPU8 Forward", [16, 32, 48, 64], 10], 
-    ["bwunicluster/gpu8/large/inverse", "BwUniCluster GPU8 Inverse", [64], 10]
-    ]
+def getSlabPartitions(cuda_aware, subdir):
+    files = [f for f in listdir(subdir) if isfile(join(subdir, f)) and re.match("test_\d_\d_\d_\d*_\d*_\d*_{}_\d*".format((1 if cuda_aware else 0)), f)]
+    partitions = []
+    for f in files:
+        partitions.append(int(f.split("_")[-1].split(".")[0]))
+    partitions.sort()
+    partitions = list(dict.fromkeys(partitions))
+    return partitions
 
-    for entry in collection:
-        for p in entry[2]:
-            for c in range(2):
-                print(entry[1], p, c)
-                collect(c==1, p, entry[3], entry[1], "eval/benchmarks/{}".format(entry[0]))
+def getPencilPartitions(cuda_aware, subdir):
+    files = [f for f in listdir(subdir) if isfile(join(subdir, f)) and re.match("test_\d_\d_\d_\d_\d_\d*_\d*_\d*_{}_\d*_\d*".format((1 if cuda_aware else 0)), f)]
+    partitions = []
+    partitions_strings = []
+    for f in files:
+        partitions_strings.append("{}_{}".format(f.split("_")[-2], f.split("_")[-1].split(".")[0]))
+    partitions_strings.sort()
+    partitions_strings = list(dict.fromkeys(partitions_strings))
+
+    partitions = [int(p.split("_")[0])*int(p.split("_")[1]) for p in partitions_strings]
+
+    return partitions
+
+def main():
+    parser = argparse.ArgumentParser(description='Slab Evaluation Script.')
+    parser.add_argument('--prefix', metavar="p", type=str, nargs=1, dest='p', help='Benchmark Prefix')
+
+    args = parser.parse_args()
+    if args.p != None:
+        prefix = args.p[0]
+
+    
+    for c in range(2):
+        for direction in ["forward", "inverse"]:
+            partitions = getSlabPartitions(c, "{}/{}/slab_default".format(prefix, direction))
+            partitions += getSlabPartitions(c, "{}/{}/slab_z_then_yx".format(prefix, direction))
+            partitions += getPencilPartitions(c, "{}/{}/pencil".format(prefix, direction))
+            partitions = list(dict.fromkeys(partitions))
+            
+            for p in partitions:
+                print("eval/{}".format(join(prefix, direction)), p, c)
+                collect(c==1, p, 10, str(join(prefix, direction)).replace("/", " ")[11:], "eval/{}".format(join(prefix, direction)))
                 print()
 
 if __name__ == "__main__":
