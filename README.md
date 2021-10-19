@@ -18,7 +18,50 @@ $ ./pencil -h
 ```
 # Defining Testcases
 
+Instead of manually starting each testcase (cf. [Manual Execution](#manual-execution)), multiple testcases can also be described in JSON. The following provides a example for Argon from [here](https://github.com/eggersn/DistributedFFT/blob/master/jobs/argon/slab/benchmarks_base.json). 
 
+Principally, the defined parameters in *global_test_settings* and *tests* simply take available programm parameter, described in (cf. [Manual Execution](#manual-execution)). The parameters defined in *global_test_settings* are used for each test described in *tests*. Furthermore the testcases are repeated for each defined *size*. Additional MPI flags are specified via *additional-flags*, e.g., to specify the hostfile. 
+
+This testcase can later be executed by using either of the following execution methods: [Python Launch Script](#python-launch-script) or [SLURM](#slurm).
+
+```javascript
+{
+    "size": [128, [128, 128, 256], [128, 256, 256], 256, [256, 256, 512], [256, 512, 512], 512, [512, 512, 1024], [512, 1024, 1024], 1024],
+    "additional-flags": "--hostfile ../mpi/hostfile_argon --rankfile ../mpi/rankfile_argon",
+    "global_test_settings": {
+        "--warmup-rounds": 10,
+        "--iterations": 20,
+        "--double_prec": true
+    },
+    "tests": [
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "Sync",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Slab",
+            "-comm": "Peer2Peer",
+            "-snd": "Sync",
+            "--cuda_aware": true
+        },
+        // ...
+        {
+            "name": "Slab",
+            "-comm": "All2All",
+            "-snd": "MPI_Type",
+            "--cuda_aware": false
+        }, 
+        {
+            "name": "Slab",
+            "-comm": "All2All",
+            "-snd": "MPI_Type",
+            "--cuda_aware": true
+        }
+    ]
+}
+```
 
 # Execution
 
@@ -201,3 +244,6 @@ Example:
 "mpirun -n 4 pencil -nx 256 -ny 256 -nz 256 -p1 2 -p2 2 -snd Streams -o 1 -i 10 -c -b ../new_benchmarks"
 Here, four MPI processes are started which execute the default testcase using option 1. Each rank start with input size 128x128x256. A sending rank uses the "Streams" method. CUDA-aware MPI is enabled, the algorithm performs 10 iterations of the testcase, and the benchmark results are saved under ../new_benchmarks (relative to the build dir).
 ```
+
+# License
+This library is distributed under GNU GENERAL PUBLIC LICENSE Version 3. Please see LICENSE file.
