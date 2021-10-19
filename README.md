@@ -1,7 +1,7 @@
 # DistributedFFT
 Library for Distributed Fast Fourier Transforms for heterogeneous GPU Systems
 
-## Installation
+# Building
 Before building the project, make sure that *CMakeLists.txt* contains your specific CUDA_ARCHITECTURE.
 
 ```
@@ -10,55 +10,122 @@ $ cd build
 $ cmake ..
 $ cmake --build .
 ```
-Afterwards, there should be the executables "reference", "slab" and "pencil". The commands
+Afterwards, there should be the executables "slab" and "pencil". The help menu can be accessed via:
 
 ```
-$ ./reference -h
 $ ./slab -h
 $ ./pencil -h
 ```
-display the available options. Additionally, they are listed in the following.
+# Defining Testcases
 
-### Reference
-```
-Usage: mpirun -n X [mpi args] reference [options] 
-Options (required):
- --input-dim-x [-nx]:   Defines the size of the input data in x-direction.
- --input-dim-y [-ny]:   Defines the size of the input data in y-direction.
- --input-dim-z [-nz]:   Defines the size of the input data in z-direction.
-Options (optional):
- --testcase [-t]:       Specifies which test should be executed.
-   Available values are:
-         --testcase 0:  Each rank sends its input to rank 0, where the complete 3D FFT is computed.
-         --testcase 1:  Compares the bandwidth of different MPI communication methods.
-           To select the communcation method, use "--opt" (or "-o"). For this testcase, available methods are:
-                 --opt 0: MPI Peer2Peer communcation.
-                 --opt 0: MPI All2All communcation.
-         --testcase 2:  Compares the bandwidth of different MPI sending methods, where the sender has to perform a cudaMemcpy2D (relevant for slab decomposition).
-           For this testcase, the arguments "--partition1" (or "-p1") and "--partition2" (or "-p2") are required!
-           To select the sending method, use "--opt" (or "-o"). For this testcase, available methods are:
-                 --opt 0: The sending rank performs a cudaMemcpy2D for each receiver, using cudaDeviceSync before MPI_Isend.
-                 --opt 1: The sending rank performs a cudaMemcpy2D for each receiver, using cudaStreams and cudaCallHostFunc to notify a second thread to call MPI_Isend. Here, MPI has to support MPI_THREAD_MULTIPLE.
-                 --opt 2: The sending rank uses a custom MPI_Datatype to avoid using cudaMemcpy2D. If MPI is not CUDA-aware, the sender still has to perform a cudaMemcpy1D (D->H).
-         --testcase 3:  Compares the bandwidth of different MPI sending methods, where the sender and receiver have to perform a cudaMemcpy2D (relevant for pencil decomposition).
-           For this testcase, the arguments "--partition1" (or "-p1") and "--partition2" (or "-p2") are required!
-           To select the sending method, use "--opt" (or "-o"). For this testcase, available methods are:
-                 --opt 0: The sending rank performs a cudaMemcpy2D for each receiver, using cudaDeviceSync before MPI_Isend.
-                 --opt 1: The sending rank performs a cudaMemcpy2D for each receiver, using cudaStreams and cudaCallHostFunc to notify a second thread to call MPI_Isend. Here, MPI has to support MPI_THREAD_MULTIPLE.
-                 --opt 2: The sending rank uses a custom MPI_Datatype to avoid using cudaMemcpy2D. If MPI is not CUDA-aware, the sender still has to perform a cudaMemcpy1D (D->H).
- --opt [-o]:            Specifies which option should be used (depending on the testcase).
- --partition1 [-p1]:    Specifies the number of partitions in x-direction.
- --partition2 [-p2]:    Specifies the number of partitions in y-direction.
- --iterations [-i]:     Specifies how often the given testcase should be repeated. For testcases 1-3, the bandwidth is computed as the average across the number of iterations. Default value is 1.
- --warmup-rounds [-w]:  This value is added to the number of iterations. For a warmup round, the performance metrics are not stored.
- --cuda_aware [-c]:     If set and available, device memory pointer are used to call MPI routines.
- --double_prec [-d]:    If set, double precision is used.
- --benchmark_dir [-b]:  Sets the prefix for the benchmark director (default is ../benchmarks).
 
-Example: 
-"mpirun -n 4 reference -nx 256 -ny 256 -nz 256 -t 2 -o 1 -p1 2 -p2 2 -i 10 -c -b ../new_benchmarks"
-Here, four MPI processes are started which execute the testcase 2 using option 1 (see above). The input data is of size 256^3, where both x- and y-direction are partitioned (thus, each rank starts with input size 128x128x256). The bandwidht is computed as the average across 10 iterations while CUDA-aware MPI is used. The results are stored in ../new_benchmarks (relative to the build dir).
+
+# Execution
+
+There are three available methods to execute predefined testcases:
+
+- [Python Launch Script](#python-launch-script)
+- [SLURM](#slurm)
+- [Manual Execution](#manual-execution)
+
+## Python Launch Script
+The simplest method is to use the provided launch script:
 ```
+python launch.py
+Select a Category:
+-----------------------------------
+[0] Run Specified Job (job.json)
+[1] Run Evaluation Scripts 
+
+Selection: <USER INPUT>
+```
+By selection option *0*, the user can select predefined jobs from the *jobs* folder (cf. [Defining Testcases](#defining-testcases)). Further programm parameters can be displayed using *python launch.py --help*:
+```
+usage: launch.py [-h] [--jobs j1 [j1 ...]] [--global_params p] [--mpi_params p]
+                 [--hosts h1 [h1 ...]] [--id n] [--gpus n] [--affinity c [c ...]]
+                 [--build_dir d]
+
+Launch script for the performance benchmarks.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --jobs j1 [j1 ...]    A list of jobs (located in the ./jobs folder), where individual
+                        jobs are seperated by spaces. Example "--jobs
+                        home/slab/zy_then_x.json home/slab/z_then_yx.json"
+  --global_params p     Params passed to slab, pencil or reference MPI call.
+  --mpi_params p        Params passed to MPI.
+  --hosts h1 [h1 ...]   A list of hostnames seperated by spaces, specifying which hosts
+                        to use for MPI execution.
+  --id n                Identifier for host- and rankfile in the ./mpi folder. Is
+                        required for parallel execution of tests (using this script) to
+                        avoid ambiguity.
+  --gpus n              Number of GPUs per node.
+  --affinity c [c ...]  List of cores for GPU to bind to. The list has to be of length
+                        --gpus. Example: "--affinity 0:0-9 1:20-29". Here the first rank
+                        is assinged to cores 0-9 on socket 0 for GPU0 and the second
+                        rank is assinged to cores 20-29 on socket 1 for GPU1.
+  --build_dir d         Path to build directory (default: ./build).
+
+```
+
+## SLURM
+
+Predefined testcases can also be started by using [SLURM](https://slurm.schedmd.com/documentation.html). Exemplary sbatch-scripts can be found in the *jobs* folder. 
+
+We provide an overview of a simple sbatch-script in the following: The script starts by specifying the sbatch parameters and by loading the required modules. Afterwards, the project is rebuild before executing the different testcases. The called testcases (cf. [Define Testcases](#define-testcases)) cover the full spectrum of slab decomposition. For example, the corresponding testcasea of *--jobs argon/slab/benchmarks_base.json* can be found [here](https://github.com/eggersn/DistributedFFT/blob/master/jobs/argon/slab/benchmarks_base.json). Note, that the testcase contains the relevant location of the used hostfile and rankfile. Alternatively, the hostfile can be specified by using *--mpi_params "--hostfile \<location\>"* (cf. [Python Launch Script](#python-launch-script)). The script can be submitted by using *sbatch \<name-of-script\>*.
+```bash
+#!/bin/bash
+#SBATCH -p all
+#SBATCH --nodelist=argon-tesla1, argon-tesla2
+#SBATCH --exclusive
+#SBATCH --ntasks=4
+#SBATCH --time=24:00:00
+#SBATCH --job-name=slab
+#SBATCH --output=slab.%j.out
+#SBATCH --account=st
+
+# load modules
+module load mpi/u2004/openmpi-4.1.1-cuda
+echo "Modules loaded"
+
+# build
+echo "start building"
+cd /home/eggersn/DistributedFFT/
+rm -rf build_argon
+mkdir build_argon
+cd build_argon
+
+cmake ..
+cmake --build .
+echo "finished building"
+
+sleep 5
+cd ..
+
+echo "start python script"
+echo "-----------------------------------------------------------------------------"
+echo "Slab 2D->1D default"
+python launch.py --jobs argon/slab/benchmarks_base.json argon/slab/validation.json --build_dir "build_argon" --global_params "-p 4 -b ../benchmarks/argon/forward"
+echo "Slab 2D->1D opt1"
+python launch.py --jobs argon/slab/benchmarks_base.json argon/slab/validation.json --build_dir "build_argon" --global_params "-p 4 -b ../benchmarks/argon/forward --opt 1"
+echo "Slab 1D->2D default"
+python launch.py --jobs argon/slab/benchmarks_base.json argon/slab/validation.json --build_dir "build_argon" --global_params "-p 4 -b ../benchmarks/argon/forward -s Z_Then_YX"
+echo "Slab 1D->2D opt1"
+python launch.py --jobs argon/slab/benchmarks_base.json argon/slab/validation.json --build_dir "build_argon" --global_params "-p 4 -b ../benchmarks/argon/forward -s Z_Then_YX --opt 1"
+echo "Slab 2D->1D default (inverse)"
+python launch.py --jobs argon/slab/benchmarks_base.json --build_dir "build_argon" --global_params "-t 2 -p 4 -b ../benchmarks/argon/inverse"
+echo "Slab 2D->1D opt1 (inverse)"
+python launch.py --jobs argon/slab/benchmarks_base.json --build_dir "build_argon" --global_params "-t 2 -p 4 -b ../benchmarks/argon/inverse --opt 1"
+echo "Slab 1D->2D default (inverse)"
+python launch.py --jobs argon/slab/benchmarks_base.json --build_dir "build_argon" --global_params "-t 2 -p 4 -b ../benchmarks/argon/inverse -s Z_Then_YX"
+echo "Slab 1D->2D opt1 (inverse)"
+python launch.py --jobs argon/slab/benchmarks_base.json --build_dir "build_argon" --global_params "-t 2 -p 4 -b ../benchmarks/argon/inverse -s Z_Then_YX --opt 1"
+
+echo "all done"
+```
+
+## Manual Execution
+The program can also be directly started by using mpirun. The available commands are summarized in the following:
 ### Slab
 ```
 Usage: mpirun -n P [mpi args] slab [options] 
