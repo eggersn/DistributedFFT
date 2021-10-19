@@ -1,6 +1,16 @@
 # DistributedFFT
 Library for Distributed Fast Fourier Transforms for heterogeneous GPU Systems
 
+# Clone Repository
+Use the following, to clone the repository **including the full test data**.
+```
+git clone https://github.com/eggersn/DistributedFFT
+```
+Alternatively, use the following if you are not interested in the raw test data:
+```
+git clone -b dev https://github.com/eggersn/DistributedFFT
+```
+
 # Building
 Before building the project, make sure that *CMakeLists.txt* contains your specific CUDA_ARCHITECTURE.
 
