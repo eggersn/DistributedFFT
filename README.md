@@ -1,5 +1,9 @@
 # DistributedFFT
-Library for Distributed Fast Fourier Transforms for heterogeneous GPU Systems
+Library for "Distributed Fast Fourier Transforms for heterogeneous GPU Systems". 
+
+This Library aims to provide an easily extendable framework for comparing different approaches of computing distributed 3D-FFTs on NVIDIA GPUs (via CUDA). The theoretical background and the implementation details can be found in my bachelor's thesis.
+
+(TODO: Link & Citation)
 
 # Clone Repository
 Use the following, to clone the repository **including the full test data**.
