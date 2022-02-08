@@ -1,9 +1,7 @@
 # DistributedFFT
 Library for "Distributed Fast Fourier Transforms for heterogeneous GPU Systems". 
 
-This Library aims to provide an easily extendable framework for comparing different approaches of computing distributed 3D-FFTs on NVIDIA GPUs (via CUDA). The theoretical background and the implementation details can be found in my bachelor's thesis.
-
-(TODO: Link & Citation)
+This Library aims to provide an easily extendable framework for comparing different approaches of computing distributed 3D-FFTs on NVIDIA GPUs (via CUDA). The theoretical background and the implementation details can be found in my [bachelor's thesis](http://dx.doi.org/10.18419/opus-11918).
 
 # Clone Repository
 Use the following, to clone the repository **including the full test data**.
@@ -257,6 +255,19 @@ Options (optional):
 Example: 
 "mpirun -n 4 pencil -nx 256 -ny 256 -nz 256 -p1 2 -p2 2 -snd Streams -o 1 -i 10 -c -b ../new_benchmarks"
 Here, four MPI processes are started which execute the default testcase using option 1. Each rank start with input size 128x128x256. A sending rank uses the "Streams" method. CUDA-aware MPI is enabled, the algorithm performs 10 iterations of the testcase, and the benchmark results are saved under ../new_benchmarks (relative to the build dir).
+```
+
+# Cite
+```
+@mastersthesis{Egger2021,
+  type    = {Bachelor's thesis},
+  author  = {Simon Egger},
+  school  = {University of Stuttgart},
+  title   = {Distributed Fast Fourier Transform for heterogeneous GPU systems},
+  year    = {2021},
+  doi     = {10.18419/opus-11918},
+  url     = {http://dx.doi.org/10.18419/opus-11918},
+}
 ```
 
 # License
